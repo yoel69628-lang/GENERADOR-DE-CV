@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IngeniaCV Pro - Diseñador de Currículums para Ingeniería</title>
+    <title>IngeniaCV Pro - Plataforma Avanzada de Currículums</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <style>
         :root {
-            --primary: #1e3a8a; /* Azul Marino por defecto */
+            --primary: #1e3a8a; 
             --accent: #0284c7;
             --bg-main: #f8fafc;
             --sidebar-bg: #ffffff;
@@ -20,7 +20,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
         body { background-color: var(--bg-main); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        /* PORTAL DE INICIO (LANDING PAGE) EXPANDE CON CONTEXTO VISUAL */
+        /* PORTAL DE INICIO (LANDING PAGE PROFESIONAL) */
         #landing-page {
             position: fixed;
             top: 0;
@@ -34,46 +34,44 @@
             align-items: center;
             z-index: 1000;
             overflow-y: auto;
-            padding: 50px 20px;
+            padding: 60px 20px;
             transition: all 0.5s ease;
         }
         #landing-page.hidden { opacity: 0; pointer-events: none; transform: translateY(-50px); }
         
-        .landing-header { text-align: center; max-width: 800px; margin-bottom: 40px; }
-        .landing-logo { font-size: 46px; font-weight: 800; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 12px; }
+        .landing-header { text-align: center; max-width: 850px; margin-bottom: 35px; }
+        .landing-logo { font-size: 48px; font-weight: 800; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 12px; }
         .landing-logo span { color: #38bdf8; }
-        .landing-tagline { font-size: 18px; color: #94a3b8; line-height: 1.6; }
+        
+        /* Introducción al sistema */
+        .landing-intro { font-size: 16px; color: #cbd5e1; max-width: 750px; margin: 0 auto 30px auto; line-height: 1.6; text-align: center; background: rgba(255,255,255,0.03); padding: 20px; border-radius: 8px; border: 1px dashed rgba(255,255,255,0.1); }
 
-        /* Sección de Muestras del Portal */
-        .showcase-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            max-width: 1100px;
-            width: 100%;
-            margin-bottom: 40px;
-        }
-        .showcase-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            transition: transform 0.3s;
-        }
-        .showcase-card:hover { transform: translateY(-5px); background: rgba(255, 255, 255, 0.08); }
-        .showcase-icon { font-size: 32px; color: #38bdf8; margin-bottom: 12px; }
-        .showcase-card h3 { font-size: 18px; margin-bottom: 8px; }
+        /* SECCIÓN BOCETO FINAL (LO QUE OFRECEMOS) */
+        .boceto-section { width: 100%; max-width: 1000px; margin-bottom: 40px; }
+        .boceto-title { text-align: center; font-size: 20px; font-weight: 700; margin-bottom: 20px; color: #38bdf8; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .boceto-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .boceto-item { background: #ffffff; color: #1e293b; border-radius: 8px; padding: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); position: relative; overflow: hidden; height: 220px; display: flex; flex-direction: column; justify-content: space-between; }
+        
+        /* Mini bocetos simulados */
+        .boceto-header-sim { height: 12px; width: 60%; background: #1e3a8a; border-radius: 2px; margin-bottom: 8px; }
+        .boceto-line { height: 6px; background: #e2e8f0; border-radius: 2px; margin-bottom: 6px; }
+        .boceto-badge { display: inline-block; padding: 3px 8px; font-size: 10px; font-weight: 700; color: white; border-radius: 4px; margin-top: auto; align-self: flex-start; }
+
+        /* Cuadrícula de características */
+        .showcase-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; max-width: 1000px; width: 100%; margin-bottom: 40px; }
+        .showcase-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 20px; text-align: center; }
+        .showcase-icon { font-size: 28px; color: #38bdf8; margin-bottom: 10px; }
+        .showcase-card h3 { font-size: 16px; margin-bottom: 6px; }
         .showcase-card p { font-size: 13px; color: #94a3b8; line-height: 1.4; }
 
-        /* Muestra de Paleta de Colores en la Landing */
-        .color-showcase-list { display: flex; justify-content: center; gap: 10px; margin-top: 15px; }
-        .color-sample-dot { width: 16px; height: 16px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.3); }
+        .color-showcase-list { display: flex; justify-content: center; gap: 8px; margin-top: 10px; }
+        .color-sample-dot { width: 14px; height: 14px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.4); }
 
-        .btn-start { background: #0284c7; color: white; padding: 16px 40px; font-size: 18px; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 25px rgba(2, 132, 199, 0.4); margin-bottom: 20px; }
+        .btn-start { background: #0284c7; color: white; padding: 18px 45px; font-size: 18px; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 25px rgba(2, 132, 199, 0.4); margin-bottom: 10px; }
         .btn-start:hover { background: #0369a1; }
 
-        /* APP EDITOR (OCULTA POR DEFECTO) */
+        /* APP EDITOR (SEGUNDO ENTORNO) */
         #app-interface { display: none; flex-direction: column; height: 100vh; }
         #app-interface.active { display: flex; }
 
@@ -82,7 +80,7 @@
         .logo { font-size: 22px; font-weight: 800; color: #1e3a8a; display: flex; align-items: center; gap: 8px; }
         .logo span { color: var(--accent); }
 
-        /* Personalización de Colores y Estilos */
+        /* Personalización */
         .customizer-bar { display: flex; gap: 25px; align-items: center; }
         .color-picker { display: flex; gap: 6px; align-items: center; font-size: 13px; font-weight: 600; }
         .color-dot { width: 20px; height: 20px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; }
@@ -129,7 +127,7 @@
         .preview-container { width: 55%; background: var(--bg-main); overflow-y: auto; padding: 40px 20px; display: flex; justify-content: center; }
         .cv-sheet { width: 210mm; min-height: 297mm; background: #fff; box-shadow: 0 8px 20px rgba(0,0,0,0.08); display: flex; box-sizing: border-box; }
         
-        /* DISEÑO MODELO 1: AURA (2 columnas con fondo lateral) */
+        /* MODELOS CV INYECTADOS */
         .model-aura { display: flex; width: 100%; }
         .model-aura .cv-sidebar { width: 34%; background: var(--primary); color: white; padding: 30px 20px; display: flex; flex-direction: column; gap: 20px; }
         .model-aura .cv-main { width: 66%; padding: 35px 25px; display: flex; flex-direction: column; gap: 20px; }
@@ -137,20 +135,18 @@
         .model-aura .section-title { font-size: 13px; text-transform: uppercase; border-bottom: 2px solid var(--accent); padding-bottom: 4px; margin-bottom: 10px; font-weight: 700; color: var(--primary); }
         .model-aura .side-title { font-size: 13px; text-transform: uppercase; border-bottom: 2px solid var(--accent); padding-bottom: 4px; margin-bottom: 10px; font-weight: 700; color: #fff; }
 
-        /* DISEÑO MODELO 2: MODERNO MINIMALISTA */
         .model-minimal { display: block; width: 100%; padding: 40px; }
         .model-minimal .cv-header { border-bottom: 3px solid var(--primary); padding-bottom: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: flex-end; }
         .model-minimal .cv-name { font-size: 28px; color: var(--primary); font-weight: 800; letter-spacing: -0.5px; }
         .model-minimal .section-title { font-size: 14px; font-weight: 700; color: var(--primary); text-transform: uppercase; margin-top: 20px; margin-bottom: 10px; border-left: 4px solid var(--accent); padding-left: 8px; }
         .model-minimal .grid-split { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
 
-        /* DISEÑO MODELO 3: INGENIERÍA ESTRUCTURADA */
         .model-engineering { display: block; width: 100%; padding: 45px; background: #fafafa; }
         .model-engineering .cv-header { background: var(--primary); color: white; padding: 25px; border-radius: 4px; margin-bottom: 25px; }
         .model-engineering .cv-name { font-size: 26px; color: #ffffff; font-weight: 700; }
         .model-engineering .section-title { font-size: 13px; font-weight: 700; color: #ffffff; background: var(--accent); padding: 5px 10px; border-radius: 3px; margin-top: 15px; margin-bottom: 12px; text-transform: uppercase; }
 
-        /* Elementos comunes de renderizado */
+        /* Elementos */
         .cv-headline { font-size: 14px; color: var(--accent); font-weight: 600; margin-top: 4px; text-transform: uppercase; }
         .cv-summary { font-size: 11px; line-height: 1.5; text-align: justify; margin-top: 8px; color: #334155; }
         .render-item { margin-bottom: 12px; }
@@ -179,50 +175,103 @@
 </head>
 <body>
 
-    <!-- PORTAL DE INICIO (LANDING PAGE EXPANDIDA) -->
+    <!-- PORTAL DE INICIO FINALIZADO -->
     <div id="landing-page">
         <div class="landing-header">
             <div class="landing-logo"><i class="fa-solid fa-graduation-cap"></i> Ingenia<span>CV</span> Pro</div>
-            <div class="landing-tagline">El primer constructor de CVs optimizado exclusivamente para ingenieros, jefes de proyectos y gerentes de obra. Destaca ante algoritmos ATS y reclutadores técnicos.</div>
+            
+            <!-- Introducción Requerida -->
+            <div class="landing-intro">
+                <b>Bienvenido a la ingeniería de tu futuro profesional.</b> IngeniaCV Pro no es un editor común. Es una herramienta de precisión diseñada estructuralmente para ingenieros y gestores de contratos que necesitan plasmar obras por contrata, valorizaciones, presupuestos e hitos técnicos bajo los estándares más estrictos exigidos por reclutadores del sector público y privado.
+            </div>
         </div>
 
-        <!-- Muestra de Modelos y Colores en la presentación -->
+        <!-- BOCETO FINAL DE LO QUE OFRECEMOS -->
+        <div class="boceto-section">
+            <div class="boceto-title"><i class="fa-solid fa-eye"></i> Boceto de Modelos Disponibles</div>
+            <div class="boceto-container">
+                
+                <!-- Tarjeta de Boceto 1 -->
+                <div class="boceto-item">
+                    <div style="display:flex; gap:10px; height:100%;">
+                        <div style="width:30%; background:#1e3a8a; border-radius:4px; padding:5px;">
+                            <div style="width:100%; height:8px; background:rgba(255,255,255,0.4); margin-bottom:5px;"></div>
+                            <div style="width:70%; height:4px; background:rgba(255,255,255,0.2);"></div>
+                        </div>
+                        <div style="width:70%;">
+                            <div class="boceto-header-sim"></div>
+                            <div class="boceto-line" style="width:90%;"></div>
+                            <div class="boceto-line" style="width:100%;"></div>
+                            <div class="boceto-line" style="width:40%;"></div>
+                        </div>
+                    </div>
+                    <div class="boceto-badge" style="background:#1e3a8a;">Diseño Aura (2 Columnas)</div>
+                </div>
+
+                <!-- Tarjeta de Boceto 2 -->
+                <div class="boceto-item">
+                    <div>
+                        <div class="boceto-header-sim" style="background:#be185d; width:45%;"></div>
+                        <div style="display:grid; grid-template-columns: 2fr 1fr; gap:10px; margin-top:15px;">
+                            <div>
+                                <div class="boceto-line" style="width:100%;"></div>
+                                <div class="boceto-line" style="width:90%;"></div>
+                            </div>
+                            <div>
+                                <div class="boceto-line" style="width:80%; background:#f472b6;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="boceto-badge" style="background:#be185d;">Moderno Minimalista</div>
+                </div>
+
+                <!-- Tarjeta de Boceto 3 -->
+                <div class="boceto-item">
+                    <div>
+                        <div style="background:#6d28d9; padding:8px; border-radius:4px; margin-bottom:10px;">
+                            <div style="width:50%; height:10px; background:white;"></div>
+                        </div>
+                        <div class="boceto-line" style="width:95%;"></div>
+                        <div class="boceto-line" style="width:100%;"></div>
+                        <div class="boceto-line" style="width:85%;"></div>
+                    </div>
+                    <div class="boceto-badge" style="background:#6d28d9;">Ingeniería Estructurada</div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Características Adicionales y Muestra de Paletas -->
         <div class="showcase-container">
             <div class="showcase-card">
-                <div class="showcase-icon"><i class="fa-solid fa-table-columns"></i></div>
-                <h3>3 Modelos Profesionales</h3>
-                <p>Cambia instantáneamente entre el diseño <b>Aura de 2 Columnas</b>, el formato <b>Moderno Minimalista</b>, o la estructura rígida de <b>Ingeniería Compacta</b>.</p>
-            </div>
-            <div class="showcase-card">
                 <div class="showcase-icon"><i class="fa-solid fa-palette"></i></div>
-                <h3>Paleta Ejecutiva Expandida</h3>
-                <p>Elige combinaciones de alto impacto: desde azules corporativos hasta tonos sofisticados de diseño femenino y de vanguardia.</p>
+                <h3>Gama de Estilos y Géneros</h3>
+                <p>Configura tu marca personal con tonos ejecutivos tradicionales o nuestras paletas exclusivas para liderazgo femenino.</p>
                 <div class="color-showcase-list">
-                    <div class="color-sample-dot" style="background:#1e3a8a;"></div>
-                    <div class="color-sample-dot" style="background:#0f766e;"></div>
-                    <div class="color-sample-dot" style="background:#be185d;"></div>
-                    <div class="color-sample-dot" style="background:#6d28d9;"></div>
+                    <div class="color-sample-dot" style="background:#1e3a8a;" title="Azul"></div>
+                    <div class="color-sample-dot" style="background:#0f766e;" title="Verde"></div>
+                    <div class="color-sample-dot" style="background:#be185d;" title="Rosa"></div>
+                    <div class="color-sample-dot" style="background:#6d28d9;" title="Violeta"></div>
                 </div>
             </div>
             <div class="showcase-card">
-                <div class="showcase-icon"><i class="fa-solid fa-layer-group"></i></div>
-                <h3>Campos Dinámicos</h3>
-                <p>Desglosa infinitas obras contratadas, licitaciones, formación continua y barras de nivel de software técnico con total libertad.</p>
+                <div class="showcase-icon"><i class="fa-solid fa-bolt"></i></div>
+                <h3>Fases en Tiempo Real</h3>
+                <p>Navega a través de las pestañas asistidas y observa cómo se compila el documento técnico al instante.</p>
             </div>
         </div>
 
-        <button class="btn-start" onclick="enterApp()"><i class="fa-solid fa-file-signature"></i> Comenzar a Construir mi CV</button>
+        <!-- Botón de Acción para saltar al segundo entorno -->
+        <button class="btn-start" onclick="enterApp()"><i class="fa-solid fa-gears"></i> Entrar al Editor Asistido</button>
     </div>
 
-    <!-- INTERFAZ PRINCIPAL -->
+    <!-- SEGUNDO ENTORNO: INTERFAZ DEL EDITOR -->
     <div id="app-interface">
         
-        <!-- Navbar Superior Personalizada -->
         <nav class="navbar">
             <div class="logo"><i class="fa-solid fa-graduation-cap"></i> Ingenia<span>CV</span> Pro</div>
             
             <div class="customizer-bar">
-                <!-- Selector de 5 Colores (Incluye tonos corporativos femeninos) -->
                 <div class="color-picker">
                     <span>Estilo Visual:</span>
                     <div class="color-dot active" style="background:#1e3a8a;" title="Azul Corporativo" onclick="changeColor('#1e3a8a', '#0284c7', this)"></div>
@@ -232,7 +281,6 @@
                     <div class="color-dot" style="background:#6d28d9;" title="Violeta Liderazgo" onclick="changeColor('#6d28d9', '#a78bfa', this)"></div>
                 </div>
 
-                <!-- Selector de Diseños -->
                 <div class="template-picker">
                     <span>Estructura:</span>
                     <select id="template-select" onchange="changeTemplateLayout()">
@@ -244,7 +292,6 @@
             </div>
         </nav>
 
-        <!-- Pasos del Flujo -->
         <div class="wizard-steps">
             <div class="step active" id="st-1">1. Datos Personales</div>
             <div class="step" id="st-2">2. Perfil</div>
@@ -254,7 +301,6 @@
         </div>
 
         <div class="main-wrapper">
-            <!-- EDITOR (Izquierda) -->
             <div class="editor-container">
                 <!-- Fase 1 -->
                 <div class="phase-block active" id="ph-1">
@@ -319,7 +365,6 @@
                     </div>
                 </div>
 
-                <!-- Controles Inferiores -->
                 <div class="nav-controls">
                     <button class="btn btn-back" id="back-btn" onclick="moveStep(-1)" disabled><i class="fa-solid fa-arrow-left"></i> Atrás</button>
                     <button class="btn btn-next" id="next-btn" onclick="moveStep(1)">Siguiente <i class="fa-solid fa-arrow-right"></i></button>
@@ -327,13 +372,11 @@
                 </div>
             </div>
 
-            <!-- CONTENEDOR DE LA HOJA DE PREVISUALIZACIÓN -->
             <div class="preview-container">
                 <div class="cv-sheet" id="cv-target"></div>
             </div>
         </div>
 
-        <!-- Muro de Pago -->
         <div class="paywall" id="paywall-screen">
             <div class="paywall-header">
                 <h2><i class="fa-solid fa-lock" style="color:#d4af37;"></i> Exportación Profesional</h2>
@@ -343,7 +386,7 @@
                 <p style="font-weight:700; color:#92400e; font-size:14px;">Acceso Ilimitado Pro</p>
                 <p style="font-size:32px; font-weight:900; color:var(--primary);">$19.99/mes</p>
             </div>
-            <button class="btn" style="background:var(--primary); color:white; width:100%; justify-content:center;" onclick="alert('Usa Ctrl + P para guardar tu PDF con el diseño y color elegidos de forma totalmente gratuita.')">Activar Descarga Imbatible</button>
+            <button class="btn" style="background:var(--primary); color:white; width:100%; justify-content:center;" onclick="alert('Usa Ctrl + P para guardar tu PDF con el diseño y color elegidos.')">Activar Descarga Imbatible</button>
         </div>
     </div>
 
@@ -371,6 +414,7 @@
             liveRender();
         }
 
+        // Sistema de navegación por las pestañas del paso 2 en adelante
         function moveStep(dir) {
             if (step + dir < 1 || step + dir > maxSteps) return;
             document.getElementById(`ph-${step}`).classList.remove('active');
