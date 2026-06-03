@@ -1,51 +1,76 @@
-<!-- ESTO VA DENTRO DE TU LANDING PAGE, JUSTO DESPUÉS DE LA INTRODUCCIÓN -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>IngeniaCV Pro - Portal de Inicio</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <style>
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #f8fafc; }
+        
+        /* BLOQUE 1: HERO (IMAGEN + TEXTO) */
+        .hero-section { background: white; padding: 60px 20px; display: flex; align-items: center; justify-content: center; gap: 60px; max-width: 1100px; margin: 0 auto; }
+        .hero-image { flex: 1; max-width: 400px; }
+        .hero-image img { width: 100%; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .hero-content { flex: 1; }
+        .btn-start { background: #0284c7; color: white; padding: 12px 30px; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; }
 
-<div class="models-showcase">
-    <div class="showcase-title">
-        <i class="fa-solid fa-file-invoice"></i> Modelos generados por ingenieros de éxito
+        /* BLOQUE 2: ¿CÓMO FUNCIONA? */
+        .how-section { text-align: center; padding: 60px 20px; background: #fff; }
+        .steps-grid { display: flex; justify-content: center; gap: 40px; margin-top: 40px; }
+        .step-item { width: 250px; }
+        .step-num { width: 40px; height: 40px; border: 2px solid #cbd5e1; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-weight: 700; }
+
+        /* BLOQUE 3: MODELOS DE INGENIEROS */
+        .showcase-section { background: #0f172a; color: white; padding: 60px 20px; text-align: center; }
+        .scroll-container { display: flex; gap: 20px; overflow-x: auto; padding: 20px; max-width: 1000px; margin: 0 auto; }
+        .mockup-card { min-width: 280px; background: rgba(255,255,255,0.05); padding: 20px; border-radius: 8px; text-align: left; }
+    </style>
+</head>
+<body>
+
+    <!-- BLOQUE 1: CABECERA SEGÚN image_8639fe.png -->
+    <div class="hero-section">
+        <div class="hero-image">
+            <img src="image_8639fe.png" alt="Previsualización de CV">
+        </div>
+        <div class="hero-content">
+            <h1>Crear un Currículum Vitae profesional</h1>
+            <p>Complete los datos personales, seleccione una plantilla, descargue su CV e impresione a los empleadores.</p>
+            <button class="btn-start" onclick="window.location.href='#editor'">Crear CV</button>
+        </div>
     </div>
-    <div class="scroll-container">
-        <!-- Tarjeta 1: Especialista en Hidráulica -->
-        <div class="mockup-card">
-            <div class="mockup-header">Ing. Roberto Sánchez</div>
-            <div class="mockup-sub">MSc. en Recursos Hídricos - UNI</div>
-            <div class="mockup-content">
+
+    <!-- BLOQUE 2: ¿CÓMO FUNCIONA? -->
+    <div class="how-section">
+        <h2>¿Cómo funciona?</h2>
+        <div class="steps-grid">
+            <div class="step-item"><div class="step-num">1</div><p>Rellenar datos personales</p></div>
+            <div class="step-item"><div class="step-num">2</div><p>Seleccionar plantilla</p></div>
+            <div class="step-item"><div class="step-num">3</div><p>Descargar Currículum Vitae</p></div>
+        </div>
+    </div>
+
+    <!-- BLOQUE 3: MODELOS DE ÉXITO PARA INGENIEROS -->
+    <div class="showcase-section">
+        <h2>Ejemplos de Perfiles de Ingeniería</h2>
+        <div class="scroll-container">
+            <div class="mockup-card">
+                <h3>Ing. Roberto Sánchez</h3>
+                <p style="font-size: 12px; color: #94a3b8;">MSc. Recursos Hídricos - UNI</p>
                 <p><strong>Obra:</strong> Represa Huancavelica</p>
-                <p><strong>Logro:</strong> Optimización de flujo al 115%</p>
-                <span class="tag">Estructuras</span>
             </div>
-        </div>
-        <!-- Tarjeta 2: Gerente de Contratos -->
-        <div class="mockup-card">
-            <div class="mockup-header">Ing. Lucía Méndez</div>
-            <div class="mockup-sub">MBA Gestión de la Construcción</div>
-            <div class="mockup-content">
-                <p><strong>Obra:</strong> Interconexión Vial Lima</p>
-                <p><strong>Logro:</strong> Liquidación presupuestal exitosa</p>
-                <span class="tag">Gerencia</span>
+            <div class="mockup-card">
+                <h3>Ing. Lucía Méndez</h3>
+                <p style="font-size: 12px; color: #94a3b8;">MBA Gestión de Construcción</p>
+                <p><strong>Obra:</strong> Interconexión Vial</p>
             </div>
-        </div>
-        <!-- Tarjeta 3: Especialista en Geotecnia -->
-        <div class="mockup-card">
-            <div class="mockup-header">Ing. Carlos Quispe</div>
-            <div class="mockup-sub">Esp. en Mecánica de Suelos - PUCP</div>
-            <div class="mockup-content">
+            <div class="mockup-card">
+                <h3>Ing. Carlos Quispe</h3>
+                <p style="font-size: 12px; color: #94a3b8;">Esp. Mecánica de Suelos</p>
                 <p><strong>Obra:</strong> Túneles de Alta Montaña</p>
-                <p><strong>Logro:</strong> Cero incidentes técnicos</p>
-                <span class="tag">Geotecnia</span>
             </div>
         </div>
     </div>
-</div>
 
-<!-- AÑADE ESTOS ESTILOS A TU <style> -->
-<style>
-    .models-showcase { margin-top: 40px; padding: 20px; width: 100%; max-width: 900px; }
-    .showcase-title { text-align: center; font-size: 18px; font-weight: 700; color: #38bdf8; margin-bottom: 20px; }
-    .scroll-container { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 15px; }
-    .mockup-card { min-width: 260px; background: #ffffff; color: #1e293b; padding: 20px; border-radius: 8px; border-left: 5px solid #0284c7; }
-    .mockup-header { font-weight: 800; font-size: 16px; margin-bottom: 4px; }
-    .mockup-sub { font-size: 12px; color: #64748b; margin-bottom: 12px; font-style: italic; }
-    .mockup-content p { font-size: 13px; margin-bottom: 5px; }
-    .tag { display: inline-block; background: #e0f2fe; color: #0369a1; padding: 2px 8px; font-size: 10px; font-weight: 700; border-radius: 4px; margin-top: 10px; }
-</style>
+</body>
+</html>
