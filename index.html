@@ -14,7 +14,7 @@
       --cv-accent: #1e3a8a;
     }
 
-    body { margin: 0; font-family: 'Segoe UI', system-ui, sans-serif; background: #f1f5f9; color: #334155; }
+    body { margin: 0; font-family: 'Segoe UI', system-ui, sans-serif; background: #f1f5f9; color: #334155; overflow-x: hidden; }
     .app { display: grid; grid-template-columns: 500px 1fr; min-height: 100vh; }
     
     /* Panel Izquierdo (Editor) */
@@ -39,7 +39,7 @@
     .btn-add { background: #ecf2ff; color: var(--primary); border: 1px dashed var(--primary); padding: 8px; border-radius: 6px; width: 100%; font-weight: 600; cursor: pointer; font-size: 13px; }
     
     /* Panel Derecho (Previsualización) */
-    .panel-right { display: flex; flex-direction: column; height: 100vh; background: #cbd5e1; }
+    .panel-right { display: flex; flex-direction: column; height: 100vh; background: #cbd5e1; position: relative; }
     .toolbar { background: #fff; padding: 10px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
     .btn-download { background: #22c55e; color: #fff; border: none; padding: 8px 16px; font-weight: 600; border-radius: 6px; cursor: pointer; }
     
@@ -47,73 +47,85 @@
     
     /* --- ESTRUCTURA DEL CV --- */
     .cv-page { background: #fff; width: 210mm; min-height: 297mm; box-shadow: 0 10px 25px rgba(0,0,0,0.15); box-sizing: border-box; display: grid; grid-template-columns: 260px 1fr; font-size: 13px; color: #333; line-height: 1.4; }
-    
-    /* Columna Lateral (Izquierda) */
     .cv-side { background: var(--cv-bg-side); color: var(--cv-text-side); padding: 30px 15px; box-sizing: border-box; }
     .cv-photo-container { width: 150px; height: 150px; border-radius: 50%; overflow: hidden; margin: 0 auto 15px; border: 3px solid #fff; background: #e2e8f0; }
     .cv-photo { width: 100%; height: 100%; object-fit: cover; }
     .cv-side-title { text-align: center; font-size: 16px; font-weight: bold; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 0.5px; }
-    
     .cv-side h2 { font-size: 14px; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.4); padding-bottom: 4px; margin: 20px 0 10px 0; font-weight: 600; }
     .cv-info-item { margin-bottom: 10px; font-size: 12px; display: flex; align-items: flex-start; gap: 8px; }
     .cv-info-item span { word-break: break-all; }
-    
     .cv-side-list { margin: 0; padding: 0; list-style: none; }
     .cv-side-list li { margin-bottom: 6px; font-size: 12px; text-transform: uppercase; font-weight: 500; }
     
-    /* Estrellas de Idioma */
     .lang-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 12px; }
     .stars { color: #fff; font-size: 14px; letter-spacing: 1px; }
     .stars .dot { opacity: 0.3; }
-
-    /* Contenedor de Programas */
     .prog-item { font-size: 12px; margin-bottom: 8px; display: flex; align-items: flex-start; gap: 6px; }
     .prog-item::before { content: "■"; font-size: 10px; margin-top: 1px; opacity: 0.7; }
     
-    /* Cuerpo Principal (Derecha) */
     .cv-main { padding: 30px 25px; box-sizing: border-box; background: #fff; }
     .cv-main h2 { font-size: 15px; text-transform: uppercase; color: #000; border-bottom: 1px solid #ddd; padding-bottom: 4px; margin: 20px 0 12px 0; font-weight: 700; letter-spacing: 0.5px; }
     .cv-main h2:first-of-type { margin-top: 0; }
-    
     .cv-profile-text { text-align: justify; font-size: 12.5px; margin-bottom: 15px; color: #222; }
     
-    /* Filas de Experiencia / Estudios */
     .cv-row { display: grid; grid-template-columns: 120px 1fr; margin-bottom: 12px; font-size: 12.5px; }
     .cv-date { font-weight: bold; color: #333; font-size: 12px; padding-right: 10px; }
     .cv-content-title { font-weight: bold; color: #111; text-transform: uppercase; }
     .cv-content-sub { color: var(--cv-accent); font-weight: 600; margin-top: 1px; text-transform: uppercase; font-size: 11.5px; }
     .cv-content-desc { font-size: 12px; color: #444; margin-top: 3px; white-space: pre-line; text-align: justify; }
-
     .consent-text { font-size: 9px; color: #666; margin-top: 30px; text-align: justify; line-height: 1.2; }
 
-    /* --- ESTILOS INTERFAZ FLOTANTE COMERCIAL --- */
-    .payment-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.7); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-    .payment-card { background: #ffffff; padding: 30px; border-radius: 12px; max-width: 460px; width: 90%; text-align: center; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); position: relative; border: 1px solid var(--border); animation: modalSlide 0.3s ease-out; }
-    @keyframes modalSlide { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-    .payment-close { position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 22px; cursor: pointer; color: #94a3b8; transition: color 0.2s; }
-    .payment-close:hover { color: #475569; }
+    /* --- PANEL LATERAL DE PAGO DESLIZABLE (ESTILO IMAGE_A20B8D) --- */
+    .side-panel-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); z-index: 9999; }
+    .side-payment-panel { position: fixed; top: 0; right: -450px; width: 420px; height: 100%; background: #ffffff; box-shadow: -5px 0 25px rgba(0,0,0,0.15); z-index: 10000; display: flex; flex-direction: column; transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+    .side-payment-panel.open { right: 0; }
     
-    .plans-container { display: flex; flex-direction: column; gap: 14px; margin: 20px 0; text-align: left; }
-    .plan-box { border: 2px solid var(--border); border-radius: 10px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between; text-decoration: none; color: inherit; transition: all 0.2s ease; position: relative; cursor: pointer; }
-    .plan-box:hover { border-color: #2563eb; background: #f8fafc; transform: translateY(-2px); }
+    .side-panel-header { background: #111827; color: #ffffff; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; }
+    .side-panel-header h3 { margin: 0; font-size: 15px; font-weight: 600; letter-spacing: 0.3px; }
+    .side-panel-close { background: none; border: none; color: #9ca3af; font-size: 20px; cursor: pointer; }
+    .side-panel-close:hover { color: #ffffff; }
+
+    .side-panel-body { padding: 24px; overflow-y: auto; flex: 1; }
+    .side-panel-body h4 { margin: 0 0 16px 0; font-size: 18px; color: #111827; font-weight: 700; }
     
-    .plan-tag { position: absolute; top: -10px; right: 15px; background: #e0f2fe; color: #0369a1; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; }
-    .plan-title { font-size: 15px; font-weight: 700; color: #0f172a; margin: 0 0 4px 0; display: flex; align-items: center; gap: 6px; }
-    .plan-desc { font-size: 12px; color: #64748b; margin: 0; line-height: 1.4; }
-    .plan-price { font-size: 18px; font-weight: 800; color: #2563eb; margin-top: 8px; text-align: right; }
-    .plan-price span { font-size: 11px; color: #64748b; font-weight: 500; }
+    /* Selector de periodo */
+    .period-select-container { display: flex; justify-content: flex-end; margin-bottom: 20px; align-items: center; gap: 8px; }
+    .period-select-container span { font-size: 13px; color: #4b5563; }
+    .period-select { width: auto; padding: 4px 28px 4px 10px; font-size: 13px; border: 1px solid #d1d5db; border-radius: 4px; background-color: #fff; cursor: pointer; }
+
+    /* Precio Gigante */
+    .price-box { text-align: center; margin: 25px 0; font-family: system-ui, sans-serif; }
+    .price-amount { font-size: 42px; font-weight: 700; color: #111827; display: inline-block; }
+    .price-currency { font-size: 24px; font-weight: 600; margin-left: 4px; }
+    .price-period { font-size: 12px; color: #6b7280; display: inline-block; margin-left: 4px; }
+    .price-subtext { font-size: 12px; color: #9ca3af; margin-top: 4px; }
+
+    /* Pestañas de Métodos de Pago pasarela */
+    .payment-tabs { display: grid; grid-template-columns: 1fr 1fr 1fr; border: 1px solid #e5e7eb; border-radius: 6px; overflow: hidden; margin-bottom: 24px; }
+    .pay-tab-btn { background: #f9fafb; border: none; padding: 12px 8px; font-size: 12px; font-weight: 500; color: #4b5563; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 6px; border-right: 1px solid #e5e7eb; }
+    .pay-tab-btn:last-child { border-right: none; }
+    .pay-tab-btn img { height: 16px; object-fit: contain; }
+    .pay-tab-btn.active { background: #ffffff; color: #2563eb; font-weight: 600; box-shadow: inset 0 -2px 0 #2563eb; }
+
+    /* Contenedores de pasarela */
+    .tab-content-pay { display: none; min-height: 150px; }
+    .tab-content-pay.active { display: block; }
+    
+    .disclaimer-text { font-size: 11px; color: #6b7280; line-height: 1.4; text-align: justify; margin-top: 30px; border-top: 1px solid #f3f4f6; padding-top: 15px; }
 
     @media (max-width: 1024px) {
       .app { grid-template-columns: 1fr; }
       .panel-left { max-height: none; }
       .preview-container { overflow-x: auto; justify-content: flex-start; }
       .cv-page { min-width: 210mm; }
+      .side-payment-panel { width: 100%; right: -100%; }
     }
   </style>
 </head>
 <body>
 
 <div class="app">
+  <!-- Panel izquierdo de edición (Se mantiene igual) -->
   <div class="panel-left">
     <div class="panel-header">
       <h1>Panel de Edición de Currículum</h1>
@@ -137,44 +149,17 @@
       </div>
 
       <div id="step-trayectoria" class="step-content" style="display:none;">
-        <h3>Formación Académica</h3>
-        <div id="wrapper-educacion"></div>
-        <button class="btn-add" onclick="addItem('educacion')">+ Agregar Educación</button>
-        <hr style="margin:20px 0; border:0; border-top:1px solid #ddd;">
-        
-        <h3>Experiencia Laboral</h3>
-        <div id="wrapper-experiencia"></div>
-        <button class="btn-add" onclick="addItem('experiencia')">+ Agregar Experiencia</button>
-        <hr style="margin:20px 0; border:0; border-top:1px solid #ddd;">
-
-        <h3>Certificados</h3>
-        <div id="wrapper-certificados"></div>
-        <button class="btn-add" onclick="addItem('certificados')">+ Agregar Certificado</button>
-        <hr style="margin:20px 0; border:0; border-top:1px solid #ddd;">
-
-        <h3>Cursos</h3>
-        <div id="wrapper-cursos"></div>
-        <button class="btn-add" onclick="addItem('cursos')">+ Agregar Curso</button>
-        <hr style="margin:20px 0; border:0; border-top:1px solid #ddd;">
-
-        <h3>Diplomados</h3>
-        <div id="wrapper-diplomados"></div>
-        <button class="btn-add" onclick="addItem('diplomados')">+ Agregar Diplomado</button>
+        <h3>Formación Académica</h3><div id="wrapper-educacion"></div><button class="btn-add" onclick="addItem('educacion')">+ Agregar Educación</button><hr style="margin:20px 0; border:0; border-top:1px solid #ddd;">
+        <h3>Experiencia Laboral</h3><div id="wrapper-experiencia"></div><button class="btn-add" onclick="addItem('experiencia')">+ Agregar Experiencia</button><hr style="margin:20px 0; border:0; border-top:1px solid #ddd;">
+        <h3>Certificados</h3><div id="wrapper-certificados"></div><button class="btn-add" onclick="addItem('certificados')">+ Agregar Certificado</button><hr style="margin:20px 0; border:0; border-top:1px solid #ddd;">
+        <h3>Cursos</h3><div id="wrapper-cursos"></div><button class="btn-add" onclick="addItem('cursos')">+ Agregar Curso</button><hr style="margin:20px 0; border:0; border-top:1px solid #ddd;">
+        <h3>Diplomados</h3><div id="wrapper-diplomados"></div><button class="btn-add" onclick="addItem('diplomados')">+ Agregar Diplomado</button>
       </div>
 
       <div id="step-complementos" class="step-content" style="display:none;">
-        <div class="group">
-          <label>Habilidades (una por línea)</label>
-          <textarea id="form-habilidades" rows="5"></textarea>
-        </div>
-        <div class="group">
-          <label>Idiomas (Formato: Idioma|Estrellas)</label>
-          <textarea id="form-idiomas" rows="3"></textarea>
-        </div>
-        <div class="group">
-          <label>Programas y Software</label>
-          <textarea id="form-programas" rows="5"></textarea>
-        </div>
+        <div class="group"><label>Habilidades (una por línea)</label><textarea id="form-habilidades" rows="5"></textarea></div>
+        <div class="group"><label>Idiomas (Formato: Idioma|Estrellas)</label><textarea id="form-idiomas" rows="3"></textarea></div>
+        <div class="group"><label>Programas y Software</label><textarea id="form-programas" rows="5"></textarea></div>
       </div>
 
       <div id="step-colores" class="step-content" style="display:none;">
@@ -190,6 +175,7 @@
     </div>
   </div>
 
+  <!-- Panel derecho de visualización -->
   <div class="panel-right">
     <div class="toolbar">
       <span style="font-weight:600; color:#475569;">Vista del Modelo Real</span>
@@ -219,49 +205,171 @@
   </div>
 </div>
 
-<!-- VENTANA FLOTANTE DE PASARELA -->
-<div id="payment-modal" class="payment-modal">
-  <div class="payment-card">
-    <button class="payment-close" onclick="closePaymentModal()">&times;</button>
-    <h3 style="margin: 0; color: #0f172a; font-size: 20px; font-weight: 700;">Planes de Descarga Premium</h3>
-    <p style="color: #64748b; font-size: 13px; margin: 8px 0 20px 0;">Selecciona una opción para procesar tu pago de forma segura con Tarjeta o PayPal:</p>
+<!-- CAPA OSCURA DE FONDO -->
+<div id="side-panel-overlay" class="side-panel-overlay" onclick="closePaymentPanel()"></div>
+
+<!-- PANEL DESLIZABLE COMPLETO (IDÉNTICO A CV WIZARD) -->
+<div id="side-payment-panel" class="side-payment-panel">
+  <div class="side-panel-header">
+    <h3>Cuenta</h3>
+    <button class="side-panel-close" onclick="closePaymentPanel()">&times;</button>
+  </div>
+  
+  <div class="side-panel-body">
+    <h4>Activar suscripción</h4>
     
-    <div class="plans-container">
-      
-      <!-- Opción 1: Pago Único ($3 USD) -->
-      <a id="link-pago-unico" href="#" target="_blank" class="plan-box">
-        <div class="plan-title">💳 Pago Único con Tarjeta / PayPal</div>
-        <div class="plan-desc">Descarga este currículum inmediatamente en formato PDF profesional de alta definición.</div>
-        <div class="plan-price">$3.00 <span>USD / pago único</span></div>
-      </a>
-
-      <!-- Opción 2: Acceso Ilimitado ($10 USD) -->
-      <a id="link-pago-mensual" href="#" target="_blank" class="plan-box" style="border-color: #cbd5e1;">
-        <div class="plan-tag">Recomendado</div>
-        <div class="plan-title">💼 Plan de Acceso Completo</div>
-        <div class="plan-desc">Crea, edita y descarga todos los currículums que quieras de forma ilimitada.</div>
-        <div class="plan-price">$10.00 <span>USD</span></div>
-      </a>
-
+    <!-- Selector de planes (Único o Mensual) -->
+    <div class="period-select-container">
+      <select id="plan-selector" class="period-select" onchange="updatePriceDisplay()">
+        <option value="unico">Pago Único</option>
+        <option value="mensual" selected>Mensual</option>
+      </select>
     </div>
 
-    <div style="margin-top: 15px; font-size: 11px; color: #94a3b8; display: flex; align-items: center; justify-content: center; gap: 4px;">
-      🔒 Conexión encriptada y procesada de forma oficial por PayPal
+    <!-- Bloque Dinámico de Precio -->
+    <div class="price-box">
+      <div id="display-price-amount" class="price-amount">10,00</div>
+      <div class="price-currency">US$</div>
+      <div id="display-price-period" class="price-period">/ Por mes</div>
+      <div id="display-price-subtext" class="price-subtext">(uso ilimitado del sistema)</div>
     </div>
+
+    <!-- Pestañas de Selección de Pasarela -->
+    <div class="payment-tabs">
+      <button id="tab-card-btn" class="pay-tab-btn active" onclick="switchPaymentTab('card')">
+        💳 <span>Tarjeta de crédito</span>
+      </button>
+      <button id="tab-paypal-btn" class="pay-tab-btn" onclick="switchPaymentTab('paypal')">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal">
+        <span>PayPal</span>
+      </button>
+      <button id="tab-google-btn" class="pay-tab-btn" onclick="switchPaymentTab('google')">
+        🔍 <span>Google Pay</span>
+      </button>
+    </div>
+
+    <!-- Contenidos de las Pestañas -->
+    <!-- 1. Tarjeta de Crédito Inteligente -->
+    <div id="pay-content-card" class="tab-content-pay active">
+      <div style="margin-top:10px;" id="paypal-card-container"></div>
+    </div>
+
+    <!-- 2. PayPal Estándar -->
+    <div id="pay-content-paypal" class="tab-content-pay">
+      <div style="margin-top:10px;" id="paypal-standard-container"></div>
+    </div>
+
+    <!-- 3. Google Pay placeholder informativo -->
+    <div id="pay-content-google" class="tab-content-pay">
+      <div style="text-align:center; padding:20px; color:#6b7280; font-size:13px; border:1px dashed #cbd5e1; border-radius:6px;">
+        Google Pay se habilitará automáticamente si su navegador y cuenta de Google lo tienen configurado de forma predeterminada.
+      </div>
+    </div>
+
+    <p class="disclaimer-text">
+      Después de recibir tu pago, el producto será entregado inmediatamente y renuncias a tu derecho de desistimiento. Si seleccionas el plan mensual, tu membresía se renovará automáticamente cada mes de manera recurrente. Puedes cancelar la membresía en cualquier momento desde tu panel.
+    </p>
   </div>
 </div>
 
+<!-- CARGA DEL SDK INTELIGENTE DE PAYPAL COMPLETO -->
+<script src="https://www.paypal.com/sdk/js?client-id=sb&currency=USD"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 
 <script>
-// --- CONTROL DE ENLACES DE COBRO ACTUALIZADO ---
-const CONFIG_PAGO = {
-  pagoUnico: "https://paypal.me/GENERACV/3", 
-  pagoMensual: "https://paypal.me/GENERACV/10" // Configurado directamente a tu link de $10 sin códigos extra
-};
+// --- CONTROL DE PRECIOS DINÁMICOS ---
+function updatePriceDisplay() {
+  const plan = document.getElementById('plan-selector').value;
+  const amountEl = document.getElementById('display-price-amount');
+  const periodEl = document.getElementById('display-price-period');
+  const subtextEl = document.getElementById('display-price-subtext');
 
-// --- INFORMACIÓN POR DEFECTO ---
+  if(plan === 'unico') {
+    amountEl.textContent = "3,00";
+    periodEl.textContent = "/ Pago único";
+    subtextEl.textContent = "(descarga inmediata de este CV)";
+  } else {
+    amountEl.textContent = "10,00";
+    periodEl.textContent = "/ Por mes";
+    subtextEl.textContent = "(renovación automática)";
+  }
+  // Reiniciar los botones para actualizar el monto a cobrar en la pasarela
+  renderPayPalButtons();
+}
+
+// --- CAMBIO DE PESTAÑAS DE PAGO ---
+function switchPaymentTab(type) {
+  document.querySelectorAll('.pay-tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content-pay').forEach(c => c.classList.remove('active'));
+  
+  if(type === 'card') {
+    document.getElementById('tab-card-btn').classList.add('active');
+    document.getElementById('pay-content-card').classList.add('active');
+  } else if(type === 'paypal') {
+    document.getElementById('tab-paypal-btn').classList.add('active');
+    document.getElementById('pay-content-paypal').classList.add('active');
+  } else {
+    document.getElementById('tab-google-btn').classList.add('active');
+    document.getElementById('pay-content-google').classList.add('active');
+  }
+}
+
+// --- MOSTRAR / OCULTAR PANEL LATERAL ---
+function openPaymentPanel() {
+  document.getElementById('side-panel-overlay').style.display = 'block';
+  document.getElementById('side-payment-panel').classList.add('open');
+}
+function closePaymentPanel() {
+  document.getElementById('side-panel-overlay').style.display = 'none';
+  document.getElementById('side-payment-panel').classList.remove('open');
+}
+
+document.getElementById('btn-descargar').addEventListener('click', openPaymentPanel);
+
+// --- INTEGRACIÓN Y GENERACIÓN DEL POPUP COMPLETO DE PAYPAL ---
+function renderPayPalButtons() {
+  // Limpiar contenedores previos
+  document.getElementById('paypal-card-container').innerHTML = '';
+  document.getElementById('paypal-standard-container').innerHTML = '';
+
+  const planSelected = document.getElementById('plan-selector').value;
+  const currentPrice = planSelected === 'unico' ? '3.00' : '10.00';
+
+  // Configuración del botón para la pestaña de Tarjeta de Crédito (Color Negro/Gris)
+  paypal.Buttons({
+    style: { layout: 'vertical', color: 'black', shape: 'rect', label: 'pay' },
+    createOrder: function(data, actions) {
+      return actions.order.create({
+        purchase_units: [{ amount: { value: currentPrice } }]
+      });
+    },
+    onApprove: function(data, actions) {
+      return actions.order.capture().then(function(details) {
+        alert('¡Pago completado con éxito por ' + details.payer.name.given_name + '! Ya puedes bajar tu CV.');
+        closePaymentPanel();
+      });
+    }
+  }).render('#paypal-card-container');
+
+  // Configuración del botón para la pestaña de PayPal Tradicional (Color Azul/Amarillo)
+  paypal.Buttons({
+    style: { layout: 'vertical', color: 'blue', shape: 'rect', label: 'paypal' },
+    createOrder: function(data, actions) {
+      return actions.order.create({
+        purchase_units: [{ amount: { value: currentPrice } }]
+      });
+    },
+    onApprove: function(data, actions) {
+      return actions.order.capture().then(function(details) {
+        alert('¡Suscripción aprobada con éxito! Gracias por tu confianza.');
+        closePaymentPanel();
+      });
+    }
+  }).render('#paypal-standard-container');
+}
+
+// --- LOGICA INTERNA DEL PROCESADOR DE CV (Mantenida intacta) ---
 let dataCV = {
   nombre: "JUAN ESPINOZA LOPEZ",
   email: "yoel.696.28@gmail.com",
@@ -405,15 +513,7 @@ document.getElementById('form-foto').addEventListener('change', e => {
   r.readAsDataURL(f);
 });
 
-function openPaymentModal() { document.getElementById('payment-modal').style.display = 'flex'; }
-function closePaymentModal() { document.getElementById('payment-modal').style.display = 'none'; }
-
-document.getElementById('btn-descargar').addEventListener('click', () => { openPaymentModal(); });
-
 window.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('link-pago-unico').href = CONFIG_PAGO.pagoUnico;
-  document.getElementById('link-pago-mensual').href = CONFIG_PAGO.pagoMensual;
-
   document.getElementById('form-nombre').value = dataCV.nombre;
   document.getElementById('form-email').value = dataCV.email;
   document.getElementById('form-telefono').value = dataCV.telefono;
@@ -431,6 +531,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   applyColors();
   renderCV();
+  renderPayPalButtons();
 });
 </script>
 </body>
