@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CVwizard - Clon Completo Profesional</title>
+    <title>CVwizard - Plataforma Completa de Plantillas</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <style>
         :root {
+            --primary: #1e3a8a; /* Azul Marino por defecto */
+            --accent: #0284c7;
             --bg-main: #f8fafc;
             --sidebar-bg: #ffffff;
-            --primary: #1e3a8a; /* Azul marino CVwizard */
-            --accent: #0284c7;  /* Celeste de realce */
             --text-main: #1e293b;
             --text-muted: #64748b;
             --border: #cbd5e1;
@@ -20,15 +20,52 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
         body { background-color: var(--bg-main); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
+        /* PORTAL DE INICIO (LANDING PAGE) */
+        #landing-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            text-align: center;
+            padding: 20px;
+            transition: all 0.5s ease;
+        }
+        #landing-page.hidden { opacity: 0; pointer-events: none; transform: translateY(-50px); }
+        .landing-logo { font-size: 42px; font-weight: 800; margin-bottom: 15px; display: flex; align-items: center; gap: 12px; }
+        .landing-logo span { color: #0284c7; }
+        .landing-tagline { font-size: 20px; color: #94a3b8; max-width: 600px; margin-bottom: 40px; line-height: 1.6; }
+        .btn-start { background: #0284c7; color: white; padding: 16px 36px; font-size: 18px; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 20px rgba(2, 132, 199, 0.3); }
+        .btn-start:hover { background: #0369a1; }
+
+        /* APP EDITOR (OCULTA POR DEFECTO) */
+        #app-interface { display: none; flex-direction: column; height: 100vh; }
+        #app-interface.active { display: flex; }
+
         /* Navbar */
         .navbar { background: #fff; padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); height: 65px; z-index: 10; }
-        .logo { font-size: 22px; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 8px; }
-        .logo span { color: var(--accent); }
+        .logo { font-size: 22px; font-weight: 800; color: #1e3a8a; display: flex; align-items: center; gap: 8px; }
+        .logo span { color: #0284c7; }
+
+        /* Selectores de Personalización en Barra Alta */
+        .customizer-bar { display: flex; gap: 20px; align-items: center; }
+        .color-picker { display: flex; gap: 8px; align-items: center; font-size: 13px; font-weight: 600; }
+        .color-dot { width: 22px; height: 22px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
+        .color-dot.active { border-color: #000; transform: scale(1.1); }
+        .template-picker { display: flex; gap: 8px; align-items: center; font-size: 13px; font-weight: 600; }
+        .template-picker select { padding: 5px 10px; border-radius: 6px; border: 1px solid var(--border); outline: none; font-weight: 600; }
 
         /* Pasos del Asistente */
         .wizard-steps { display: flex; background: #fff; padding: 12px; border-bottom: 1px solid var(--border); justify-content: center; gap: 15px; font-size: 13px; font-weight: 700; overflow-x: auto; }
         .step { display: flex; align-items: center; gap: 8px; color: var(--text-muted); white-space: nowrap; padding: 4px 8px; }
-        .step.active { color: var(--accent); background: #f0f9ff; border-radius: 6px; }
+        .step.active { color: #0284c7; background: #f0f9ff; border-radius: 6px; }
         .step.completed { color: var(--success); }
 
         /* Contenedor de Trabajo */
@@ -38,57 +75,69 @@
         .editor-container { width: 45%; background: var(--sidebar-bg); border-right: 1px solid var(--border); overflow-y: auto; padding: 30px; display: flex; flex-direction: column; justify-content: space-between; }
         .phase-block { display: none; }
         .phase-block.active { display: block; }
-        .phase-title { font-size: 22px; font-weight: 700; color: var(--primary); margin-bottom: 20px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; }
+        .phase-title { font-size: 22px; font-weight: 700; color: #1e3a8a; margin-bottom: 20px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; }
 
         /* Formularios */
         .form-group { margin-bottom: 16px; }
         .form-group label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600; color: var(--text-main); }
-        .form-control { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; outline: none; transition: border 0.2s; }
-        .form-control:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1); }
+        .form-control { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; outline: none; }
+        .form-control:focus { border-color: #0284c7; box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1); }
         textarea.form-control { height: 110px; resize: none; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
 
-        /* Secciones Dinámicas repetibles */
+        /* Elementos Dinámicos */
         .dynamic-item { border: 1px dashed var(--border); padding: 15px; border-radius: 6px; margin-bottom: 15px; background: #fafafa; position: relative; }
-        .btn-add { background: #f0f9ff; color: var(--accent); border: 1px solid #bae6fd; padding: 8px 14px; font-weight: 600; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 5px; display: flex; align-items: center; justify-content: center; gap: 6px; }
-        .btn-add:hover { background: #e0f2fe; }
+        .btn-add { background: #f0f9ff; color: #0284c7; border: 1px solid #bae6fd; padding: 8px 14px; font-weight: 600; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 5px; display: flex; align-items: center; justify-content: center; gap: 6px; }
         .btn-remove { position: absolute; top: 10px; right: 10px; background: none; border: none; color: #ef4444; cursor: pointer; font-size: 16px; }
 
         /* Navegación de pasos */
         .nav-controls { display: flex; justify-content: space-between; margin-top: 25px; padding-top: 15px; border-top: 1px solid var(--border); }
         .btn { padding: 10px 22px; border-radius: 6px; font-weight: 600; cursor: pointer; border: none; font-size: 14px; display: flex; align-items: center; gap: 8px; }
         .btn-back { background: #e2e8f0; color: var(--text-main); }
-        .btn-back:disabled { opacity: 0.5; cursor: not-allowed; }
-        .btn-next { background: var(--accent); color: white; }
+        .btn-next { background: #0284c7; color: white; }
         .btn-finish { background: var(--success); color: white; display: none; }
 
         /* Vista Previa CV (Derecha) */
         .preview-container { width: 55%; background: var(--bg-main); overflow-y: auto; padding: 40px 20px; display: flex; justify-content: center; }
-        .cv-sheet { width: 210mm; min-height: 297mm; background: #fff; box-shadow: 0 8px 20px rgba(0,0,0,0.08); display: flex; }
+        .cv-sheet { width: 210mm; min-height: 297mm; background: #fff; box-shadow: 0 8px 20px rgba(0,0,0,0.08); display: flex; box-sizing: border-box; }
         
-        /* Estilos de la Hoja del CV */
-        .cv-left-col { width: 34%; background: var(--primary); color: white; padding: 30px 20px; display: flex; flex-direction: column; gap: 25px; }
-        .cv-right-col { width: 66%; padding: 35px 25px; display: flex; flex-direction: column; gap: 25px; }
-        
-        .cv-avatar { width: 90px; height: 90px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto; border: 3px solid var(--accent); font-size: 32px; }
-        .cv-side-section-title { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid var(--accent); padding-bottom: 4px; margin-bottom: 10px; font-weight: 700; }
-        .cv-side-item { font-size: 12px; margin-bottom: 6px; line-height: 1.4; }
-        
-        .cv-name { font-size: 26px; color: var(--primary); font-weight: 800; text-transform: uppercase; line-height: 1.1; }
-        .cv-headline { font-size: 14px; color: var(--accent); font-weight: 600; margin-top: 4px; margin-bottom: 12px; text-transform: uppercase; }
-        .cv-summary { font-size: 11.5px; line-height: 1.5; text-align: justify; color: #334155; }
-        
-        .cv-body-section-title { font-size: 14px; font-weight: 700; color: var(--primary); border-bottom: 2px solid #e2e8f0; padding-bottom: 3px; margin-bottom: 12px; text-transform: uppercase; display: flex; align-items: center; gap: 6px; }
-        .cv-render-item { margin-bottom: 12px; }
-        .cv-render-meta { display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; color: var(--accent); }
-        .cv-render-main { font-size: 13px; font-weight: 700; color: var(--text-main); }
-        .cv-render-sub { font-size: 12px; color: var(--text-muted); font-style: italic; margin-bottom: 2px; }
-        .cv-render-desc { font-size: 11px; line-height: 1.4; text-align: justify; color: #334155; }
+        /* DISEÑO MODELO 1: AURA CIVIL (Dos columnas con fondo lateral) */
+        .model-aura { display: flex; width: 100%; }
+        .model-aura .cv-sidebar { width: 34%; background: var(--primary); color: white; padding: 30px 20px; display: flex; flex-direction: column; gap: 20px; }
+        .model-aura .cv-main { width: 66%; padding: 35px 25px; display: flex; flex-direction: column; gap: 20px; }
+        .model-aura .cv-name { font-size: 26px; color: var(--primary); font-weight: 800; text-transform: uppercase; }
+        .model-aura .section-title { font-size: 13px; text-transform: uppercase; border-bottom: 2px solid var(--accent); padding-bottom: 4px; margin-bottom: 10px; font-weight: 700; color: var(--primary); }
+        .model-aura .side-title { font-size: 13px; text-transform: uppercase; border-bottom: 2px solid var(--accent); padding-bottom: 4px; margin-bottom: 10px; font-weight: 700; color: #fff; }
+
+        /* DISEÑO MODELO 2: MODERNO MINIMALISTA (Todo blanco, cabecera limpia) */
+        .model-minimal { display: block; width: 100%; padding: 40px; }
+        .model-minimal .cv-header { border-bottom: 3px solid var(--primary); padding-bottom: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .model-minimal .cv-name { font-size: 28px; color: var(--primary); font-weight: 800; letter-spacing: -0.5px; }
+        .model-minimal .section-title { font-size: 14px; font-weight: 700; color: var(--primary); text-transform: uppercase; margin-top: 20px; margin-bottom: 10px; border-left: 4px solid var(--accent); padding-left: 8px; }
+        .model-minimal .grid-split { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
+
+        /* DISEÑO MODELO 3: INGENIERÍA ESTRUCTURADA (Bloques compactos, líneas divisorias rígidas) */
+        .model-engineering { display: block; width: 100%; padding: 45px; background: #fafafa; }
+        .model-engineering .cv-header { background: var(--primary); color: white; padding: 25px; border-radius: 4px; margin-bottom: 25px; }
+        .model-engineering .cv-name { font-size: 26px; color: #ffffff; font-weight: 700; }
+        .model-engineering .section-title { font-size: 13px; font-weight: 700; color: #ffffff; background: var(--accent); padding: 5px 10px; border-radius: 3px; margin-top: 15px; margin-bottom: 12px; text-transform: uppercase; }
+
+        /* Elementos transversales de renderizado */
+        .cv-headline { font-size: 14px; color: var(--accent); font-weight: 600; margin-top: 4px; text-transform: uppercase; }
+        .cv-summary { font-size: 11px; line-height: 1.5; text-align: justify; margin-top: 8px; color: #334155; }
+        .render-item { margin-bottom: 12px; }
+        .render-meta { display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; color: var(--accent); }
+        .render-main { font-size: 12.5px; font-weight: 700; color: var(--text-main); }
+        .render-desc { font-size: 11px; line-height: 1.4; text-align: justify; color: #334155; }
+        .skill-bar-container { margin-bottom: 8px; }
+        .skill-name { font-size: 11px; margin-bottom: 3px; }
+        .skill-bar { height: 5px; background: rgba(0,0,0,0.1); border-radius: 3px; overflow: hidden; }
+        .model-aura .skill-bar { background: rgba(255,255,255,0.2); }
+        .skill-progress { height: 100%; background-color: var(--accent); }
 
         /* Modal Paywall */
         .paywall { position: absolute; top: 0; right: -100%; width: 40%; height: 100%; background: white; box-shadow: -6px 0 20px rgba(0,0,0,0.1); z-index: 100; transition: right 0.3s ease; padding: 30px; display: flex; flex-direction: column; }
         .paywall.active { right: 0; }
-        .paywall-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         .paywall-box { background: #fef3c7; border: 1px solid #fde68a; padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 20px; }
 
         @media print {
@@ -101,233 +150,177 @@
 </head>
 <body>
 
-    <!-- Topbar -->
-    <nav class="navbar">
-        <div class="logo"><i class="fa-solid fa-wand-magic-sparkles"></i> CVwizard <span>Pro</span></div>
-    </nav>
-
-    <!-- Fases Completas de CVwizard -->
-    <div class="wizard-steps">
-        <div class="step active" id="st-1">1. Datos Personales</div>
-        <div class="step" id="st-2">2. Perfil</div>
-        <div class="step" id="st-3">3. Experiencia</div>
-        <div class="step" id="st-4">4. Formación</div>
-        <div class="step" id="st-5">5. Habilidades y Software</div>
-        <div class="step" id="st-6">6. Idiomas</div>
-        <div class="step" id="st-7">7. Certificados e Intereses</div>
+    <!-- PORTAL DE INICIO (LANDING PAGE) -->
+    <div id="landing-page">
+        <div class="landing-logo"><i class="fa-solid fa-wand-magic-sparkles"></i> CVwizard <span>Pro</span></div>
+        <div class="landing-tagline">Crea un currículum impecable y optimizado para sistemas ATS en minutos. Diseñado con estándares profesionales para el sector de ingeniería y gerencia.</div>
+        <button class="btn-start" onclick="enterApp()"><i class="fa-solid fa-file-signature"></i> Crear mi CV Ahora</button>
     </div>
 
-    <div class="main-wrapper">
-
-        <!-- EDITOR POR PASOS COMPLETOS (Izquierda) -->
-        <div class="editor-container">
+    <!-- INTERFAZ DEL EDITOR (ACTIVA TRAS CLICK) -->
+    <div id="app-interface">
+        
+        <!-- Topbar con Selectores Completo -->
+        <nav class="navbar">
+            <div class="logo"><i class="fa-solid fa-wand-magic-sparkles"></i> CVwizard <span>Pro</span></div>
             
-            <!-- FASE 1: Datos Personales Extendidos -->
-            <div class="phase-block active" id="ph-1">
-                <div class="phase-title">Datos Personales</div>
-                <div class="grid-2">
-                    <div class="form-group"><label>Nombre</label><input type="text" class="form-control" id="in-name" value="Alejandro" oninput="liveRender()"></div>
-                    <div class="form-group"><label>Apellidos</label><input type="text" class="form-control" id="in-lastname" value="Bermúdez Mendoza" oninput="liveRender()"></div>
+            <div class="customizer-bar">
+                <!-- Selector de 3 Colores -->
+                <div class="color-picker">
+                    <span>Color de Marca:</span>
+                    <div class="color-dot active" style="background:#1e3a8a;" onclick="changeColor('#1e3a8a', '#0284c7', this)"></div>
+                    <div class="color-dot" style="background:#0f766e;" onclick="changeColor('#0f766e', '#14b8a6', this)"></div>
+                    <div class="color-dot" style="background:#374151;" onclick="changeColor('#374151', '#6b7280', this)"></div>
                 </div>
-                <div class="form-group"><label>Título Profesional</label><input type="text" class="form-control" id="in-title" value="Ingeniero Civil - Gerente de Obras por Contrata" oninput="liveRender()"></div>
-                <div class="grid-2">
-                    <div class="form-group"><label>Email</label><input type="email" class="form-control" id="in-email" value="a.bermudez@ingenieria.com" oninput="liveRender()"></div>
-                    <div class="form-group"><label>Teléfono</label><input type="text" class="form-control" id="in-phone" value="+51 987 654 321" oninput="liveRender()"></div>
-                </div>
-                <div class="grid-2">
-                    <div class="form-group"><label>Dirección/Ciudad</label><input type="text" class="form-control" id="in-loc" value="Lima, Perú" oninput="liveRender()"></div>
-                    <div class="form-group"><label>Enlace LinkedIn / Web</label><input type="text" class="form-control" id="in-link" value="linkedin.com/in/alejandro-civil" oninput="liveRender()"></div>
+
+                <!-- Selector de 3 Modelos de CV -->
+                <div class="template-picker">
+                    <span>Diseño:</span>
+                    <select id="template-select" onchange="changeTemplateLayout()">
+                        <option value="aura">Modelo 1: Aura Civil (2 Columnas)</option>
+                        <option value="minimal">Modelo 2: Moderno Minimalista</option>
+                        <option value="engineering">Modelo 3: Ingeniería Estructurada</option>
+                    </select>
                 </div>
             </div>
+        </nav>
 
-            <!-- FASE 2: Perfil Profesional -->
-            <div class="phase-block" id="ph-2">
-                <div class="phase-title">Perfil Profesional</div>
-                <div class="form-group">
-                    <label>Resumen Ejecutivo de tu Carrera</label>
-                    <textarea class="form-control" id="in-profile" oninput="liveRender()">Ingeniero Civil colegiado con más de 12 años de trayectoria en la Gerencia y Supervisión de Obras Públicas y Privadas de gran escala. Experto en la administración de contratos bajo la modalidad de contrata, control estricto de valorizaciones, liquidación técnica y cierre económico de proyectos viales y de infraestructura.</textarea>
+        <!-- Fases -->
+        <div class="wizard-steps">
+            <div class="step active" id="st-1">1. Datos Personales</div>
+            <div class="step" id="st-2">2. Perfil</div>
+            <div class="step" id="st-3">3. Experiencia</div>
+            <div class="step" id="st-4">4. Formación</div>
+            <div class="step" id="st-5">5. Especialidades</div>
+        </div>
+
+        <div class="main-wrapper">
+            <!-- EDITOR (Izquierda) -->
+            <div class="editor-container">
+                <!-- Fase 1 -->
+                <div class="phase-block active" id="ph-1">
+                    <div class="phase-title">Datos Personales</div>
+                    <div class="grid-2">
+                        <div class="form-group"><label>Nombre</label><input type="text" class="form-control" id="in-name" value="Alejandro" oninput="liveRender()"></div>
+                        <div class="form-group"><label>Apellidos</label><input type="text" class="form-control" id="in-lastname" value="Bermúdez Mendoza" oninput="liveRender()"></div>
+                    </div>
+                    <div class="form-group"><label>Título Profesional</label><input type="text" class="form-control" id="in-title" value="Ingeniero Civil - Gerente de Obras por Contrata" oninput="liveRender()"></div>
+                    <div class="grid-2">
+                        <div class="form-group"><label>Email</label><input type="email" class="form-control" id="in-email" value="a.bermudez@ingenieria.com" oninput="liveRender()"></div>
+                        <div class="form-group"><label>Teléfono</label><input type="text" class="form-control" id="in-phone" value="+51 987 654 321" oninput="liveRender()"></div>
+                    </div>
+                    <div class="form-group"><label>Ubicación</label><input type="text" class="form-control" id="in-loc" value="Lima, Perú" oninput="liveRender()"></div>
                 </div>
-            </div>
 
-            <!-- FASE 3: Experiencia Laboral Dinámica Múltiple -->
-            <div class="phase-block" id="ph-3">
-                <div class="phase-title">Experiencia Laboral</div>
-                <div id="experience-area">
-                    <div class="dynamic-item">
-                        <div class="form-group"><label>Cargo / Puesto</label><input type="text" class="form-control exp-job" value="Ingeniero de Gerencia de Obras (Contratante)" oninput="liveRender()"></div>
-                        <div class="form-group"><label>Compañía / Empleador</label><input type="text" class="form-control exp-comp" value="Consorcio Vial Metropolitano" oninput="liveRender()"></div>
-                        <div class="grid-2">
-                            <div class="form-group"><label>Periodo (Ej: 2022 - Pres.)</label><input type="text" class="form-control exp-date" value="2022 - Presente" oninput="liveRender()"></div>
-                            <div class="form-group"><label>Ubicación</label><input type="text" class="form-control exp-city" value="Lima" oninput="liveRender()"></div>
-                        </div>
-                        <div class="form-group"><label>Descripción y Logros</label><textarea class="form-control exp-desc" oninput="liveRender()">Administración directa del contrato de obra pública adjudicado por contrata. Supervisión técnica y legal del cumplimiento de metas físicas, aprobación de valorizaciones mensuales y gestión ante controversias técnicas en campo.</textarea></div>
+                <!-- Fase 2 -->
+                <div class="phase-block" id="ph-2">
+                    <div class="phase-title">Perfil Profesional</div>
+                    <div class="form-group">
+                        <label>Resumen de tu Perfil</label>
+                        <textarea class="form-control" id="in-profile" oninput="liveRender()">Ingeniero Civil colegiado con más de 12 años de trayectoria sólida en la Gerencia de Obras contratadas. Especialista en control técnico, valorizaciones complejas y liquidaciones financieras de contratos públicos.</textarea>
                     </div>
                 </div>
-                <button class="btn-add" onclick="addExperienceField()"><i class="fa-solid fa-plus"></i> Añadir otra experiencia</button>
-            </div>
 
-            <!-- FASE 4: Educación / Formación Dinámica Múltiple -->
-            <div class="phase-block" id="ph-4">
-                <div class="phase-title">Educación y Formación</div>
-                <div id="education-area">
-                    <div class="dynamic-item">
-                        <div class="form-group"><label>Título o Grado obtenido</label><input type="text" class="form-control edu-deg" value="Licenciatura en Ingeniería Civil" oninput="liveRender()"></div>
-                        <div class="form-group"><label>Institución / Universidad</label><input type="text" class="form-control edu-inst" value="Universidad Nacional de Ingeniería" oninput="liveRender()"></div>
-                        <div class="grid-2">
-                            <div class="form-group"><label>Año de Graduación</label><input type="text" class="form-control edu-date" value="2012" oninput="liveRender()"></div>
-                            <div class="form-group"><label>Estado</label><input type="text" class="form-control edu-status" value="Titulado - CIP Colegiado" oninput="liveRender()"></div>
+                <!-- Fase 3 -->
+                <div class="phase-block" id="ph-3">
+                    <div class="phase-title">Experiencia Profesional</div>
+                    <div id="experience-area">
+                        <div class="dynamic-item">
+                            <div class="form-group"><label>Puesto</label><input type="text" class="form-control exp-job" value="Ingeniero de Gerencia de Obras (Contratante)" oninput="liveRender()"></div>
+                            <div class="form-group"><label>Empresa</label><input type="text" class="form-control exp-comp" value="Consorcio Vial Metropolitano" oninput="liveRender()"></div>
+                            <div class="form-group"><label>Periodo</label><input type="text" class="form-control exp-date" value="2022 - Presente" oninput="liveRender()"></div>
+                            <div class="form-group"><label>Funciones</label><textarea class="form-control exp-desc" oninput="liveRender()">Administración del contrato de obra pública, control de cronogramas y firmas de valorizaciones mensuales de avance físico en campo.</textarea></div>
+                        </div>
+                    </div>
+                    <button class="btn-add" onclick="addExperienceField()"><i class="fa-solid fa-plus"></i> Añadir otra experiencia</button>
+                </div>
+
+                <!-- Fase 4 -->
+                <div class="phase-block" id="ph-4">
+                    <div class="phase-title">Educación</div>
+                    <div id="education-area">
+                        <div class="dynamic-item">
+                            <div class="form-group"><label>Título o Grado</label><input type="text" class="form-control edu-deg" value="Licenciatura en Ingeniería Civil" oninput="liveRender()"></div>
+                            <div class="form-group"><label>Universidad</label><input type="text" class="form-control edu-inst" value="Universidad Nacional de Ingeniería" oninput="liveRender()"></div>
+                            <div class="form-group"><label>Año</label><input type="text" class="form-control edu-date" value="2012" oninput="liveRender()"></div>
                         </div>
                     </div>
                 </div>
-                <button class="btn-add" onclick="addEducationField()"><i class="fa-solid fa-plus"></i> Añadir otra formación</button>
-            </div>
 
-            <!-- FASE 5: Habilidades Avanzadas -->
-            <div class="phase-block" id="ph-5">
-                <div class="phase-title">Habilidades Técnicas y Software</div>
-                <div class="grid-2">
-                    <div class="form-group"><label>Habilidad 1</label><input type="text" class="form-control" id="sk-1" value="Gestión de Contratos por Contrata" oninput="liveRender()"></div>
-                    <div class="form-group"><label>Nivel % (1-100)</label><input type="number" class="form-control" id="sk-n1" value="95" oninput="liveRender()"></div>
+                <!-- Fase 5 -->
+                <div class="phase-block" id="ph-5">
+                    <div class="phase-title">Especialidades Técnicas</div>
+                    <div class="grid-2">
+                        <div class="form-group"><label>Habilidad 1</label><input type="text" class="form-control" id="sk-1" value="Gestión de Contratos de Obra" oninput="liveRender()"></div>
+                        <div class="form-group"><label>Nivel %</label><input type="number" class="form-control" id="sk-n1" value="95" oninput="liveRender()"></div>
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group"><label>Habilidad 2</label><input type="text" class="form-control" id="sk-2" value="Liquidaciones Económicas" oninput="liveRender()"></div>
+                        <div class="form-group"><label>Nivel %</label><input type="number" class="form-control" id="sk-n2" value="90" oninput="liveRender()"></div>
+                    </div>
                 </div>
-                <div class="grid-2">
-                    <div class="form-group"><label>Habilidad 2</label><input type="text" class="form-control" id="sk-2" value="Liquidación y Valorizaciones" oninput="liveRender()"></div>
-                    <div class="form-group"><label>Nivel % (1-100)</label><input type="number" class="form-control" id="sk-n2" value="90" oninput="liveRender()"></div>
-                </div>
-                <div class="grid-2">
-                    <div class="form-group"><label>Habilidad 3</label><input type="text" class="form-control" id="sk-3" value="Supervisión en Campo" oninput="liveRender()"></div>
-                    <div class="form-group"><label>Nivel % (1-100)</label><input type="number" class="form-control" id="sk-n3" value="95" oninput="liveRender()"></div>
-                </div>
-                <div class="form-group"><label>Software de Ingeniería (Separados por comas)</label><input type="text" class="form-control" id="in-software" value="MS Project, AutoCAD, S10 Costos y Presupuestos" oninput="liveRender()"></div>
-            </div>
 
-            <!-- FASE 6: Idiomas -->
-            <div class="phase-block" id="ph-6">
-                <div class="phase-title">Idiomas</div>
-                <div class="grid-2">
-                    <div class="form-group"><label>Idioma 1</label><input type="text" class="form-control" id="lang-1" value="Español" oninput="liveRender()"></div>
-                    <div class="form-group"><label>Nivel (Ej: Nativo)</label><input type="text" class="form-control" id="lang-n1" value="Nativo" oninput="liveRender()"></div>
-                </div>
-                <div class="grid-2">
-                    <div class="form-group"><label>Idioma 2</label><input type="text" class="form-control" id="lang-2" value="Inglés" oninput="liveRender()"></div>
-                    <div class="form-group"><label>Nivel (Ej: Técnico Intermedio)</label><input type="text" class="form-control" id="lang-n2" value="Técnico Avanzado" oninput="liveRender()"></div>
+                <!-- Controles Inferiores -->
+                <div class="nav-controls">
+                    <button class="btn btn-back" id="back-btn" onclick="moveStep(-1)" disabled><i class="fa-solid fa-arrow-left"></i> Atrás</button>
+                    <button class="btn btn-next" id="next-btn" onclick="moveStep(1)">Siguiente <i class="fa-solid fa-arrow-right"></i></button>
+                    <button class="btn btn-finish" id="finish-btn" onclick="openPaywall()"><i class="fa-solid fa-cloud-arrow-down"></i> Descargar Documento</button>
                 </div>
             </div>
 
-            <!-- FASE 7: Certificados e Intereses -->
-            <div class="phase-block" id="ph-7">
-                <div class="phase-title">Certificaciones y Datos Adicionales</div>
-                <div class="form-group"><label>Certificaciones Profesionales (Líneas independientes)</label><textarea class="form-control" id="in-certs" oninput="liveRender()">• Certificación en Regulación de Contratos de Obras Públicas&#10;• Especialización en Liquidación Técnica-Financiera (Colegio de Ingenieros)</textarea></div>
-                <div class="form-group"><label>Intereses o Intereses Personales</label><input type="text" class="form-control" id="in-interests" value="Infraestructura Vial Sostenible, Modelamiento BIM" oninput="liveRender()"></div>
-            </div>
-
-            <!-- Controles Inferiores -->
-            <div class="nav-controls">
-                <button class="btn btn-back" id="back-btn" onclick="moveStep(-1)" disabled><i class="fa-solid fa-arrow-left"></i> Atrás</button>
-                <button class="btn btn-next" id="next-btn" onclick="moveStep(1)">Siguiente <i class="fa-solid fa-arrow-right"></i></button>
-                <button class="btn btn-finish" id="finish-btn" onclick="openPaywall()"><i class="fa-solid fa-cloud-arrow-down"></i> Finalizar Registro</button>
+            <!-- CONTENEDOR DE LA HOJA DE PREVISUALIZACIÓN (Derecha) -->
+            <div class="preview-container">
+                <div class="cv-sheet" id="cv-target">
+                    <!-- El diseño del CV se inyectará dinámicamente mediante JS -->
+                </div>
             </div>
         </div>
 
-        <!-- PREVISUALIZACIÓN EN VIVO (Derecha - Aura Civil Premium) -->
-        <div class="preview-container">
-            <div class="cv-sheet" id="cv-target">
-                
-                <!-- Columna Lateral Azul -->
-                <div class="cv-left-col">
-                    <div class="cv-avatar"><i class="fa-solid fa-user-tie"></i></div>
-                    
-                    <div>
-                        <div class="cv-side-section-title">Contacto</div>
-                        <div class="cv-side-item" id="cv-phone">+51 987 654 321</div>
-                        <div class="cv-side-item" id="cv-email">a.bermudez@ingenieria.com</div>
-                        <div class="cv-side-item" id="cv-loc">Lima, Perú</div>
-                        <div class="cv-side-item" id="cv-link" style="font-size:10.5px;">linkedin.com/in/alejandro-civil</div>
-                    </div>
-
-                    <div>
-                        <div class="cv-side-section-title">Especialidades</div>
-                        <div id="cv-render-skills"></div>
-                    </div>
-
-                    <div>
-                        <div class="cv-side-section-title">Software</div>
-                        <div class="cv-side-item" id="cv-render-software" style="line-height:1.5;"></div>
-                    </div>
-
-                    <div>
-                        <div class="cv-side-section-title">Idiomas</div>
-                        <div id="cv-render-languages"></div>
-                    </div>
-
-                    <div>
-                        <div class="cv-side-section-title">Intereses</div>
-                        <div class="cv-side-item" id="cv-render-interests"></div>
-                    </div>
-                </div>
-
-                <!-- Cuerpo Principal -->
-                <div class="cv-right-col">
-                    <div>
-                        <div class="cv-name" id="cv-fullname">Alejandro Bermúdez Mendoza</div>
-                        <div class="cv-headline" id="cv-title">Ingeniero Civil - Gerente de Obras por Contrata</div>
-                        <div class="cv-summary" id="cv-summary"></div>
-                    </div>
-
-                    <div>
-                        <div class="cv-body-section-title"><i class="fa-solid fa-briefcase"></i> Experiencia Profesional</div>
-                        <div id="cv-render-experience"></div>
-                    </div>
-
-                    <div>
-                        <div class="cv-body-section-title"><i class="fa-solid fa-graduation-cap"></i> Educación</div>
-                        <div id="cv-render-education"></div>
-                    </div>
-
-                    <div>
-                        <div class="cv-body-section-title"><i class="fa-solid fa-award"></i> Certificaciones</div>
-                        <div class="cv-render-desc" id="cv-render-certs" style="white-space: pre-line;"></div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- Muro de Pago Emulado -->
+        <!-- Muro de Pago -->
         <div class="paywall" id="paywall-screen">
             <div class="paywall-header">
-                <h2><i class="fa-solid fa-lock" style="color:var(--premium-gold);"></i> Proceso de Descarga Premium</h2>
+                <h2><i class="fa-solid fa-lock" style="color:#d4af37;"></i> Acceso Seguro Premium</h2>
                 <button style="border:none; background:none; font-size:20px; cursor:pointer;" onclick="openPaywall()"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="paywall-box">
-                <p style="font-weight:700; color:#92400e; font-size:14px; margin-bottom:5px;">Suscripción CVwizard Pro Activada</p>
-                <p style="font-size:32px; font-weight:900; color:var(--primary);">$19.99 <span style="font-size:14px; font-weight:400;">/mes</span></p>
+                <p style="font-weight:700; color:#92400e; font-size:14px;">Suscripción Ilimitada</p>
+                <p style="font-size:32px; font-weight:900; color:var(--primary);">$19.99/mes</p>
             </div>
-            <p style="font-size:13px; font-weight:700; margin-bottom:10px;">Métodos de pago admitidos:</p>
-            <button class="btn" style="background:var(--primary); color:white; width:100%; margin-bottom:10px; justify-content:center;" onclick="alert('Transacción Simulada con Éxito. Descarga tu PDF usando Ctrl + P sin cargos.')">Tarjeta de Crédito / Débito</button>
-            <button class="btn" style="background:#ffc439; color:#003087; width:100%; justify-content:center;" onclick="alert('Redirigiendo a entorno de prueba de PayPal...')">PayPal</button>
-            <div style="font-size:10px; color:var(--text-muted); margin-top:20px; text-align:justify;">
-                Al completar la descarga técnica, usted renuncia de forma expresa a su derecho de desistimiento contractual conforme a los términos de distribución de software inmediato.
-            </div>
+            <button class="btn" style="background:var(--primary); color:white; width:100%; justify-content:center;" onclick="alert('Bypass completado con éxito. Presione Ctrl + P para exportar en el formato de diseño seleccionado.')">Simular Pago Seguro</button>
         </div>
-
     </div>
 
     <script>
         let step = 1;
-        const maxSteps = 7;
+        const maxSteps = 5;
+        let currentLayout = 'aura';
+
+        function enterApp() {
+            document.getElementById('landing-page').classList.add('hidden');
+            document.getElementById('app-interface').classList.add('active');
+            liveRender();
+        }
+
+        function changeColor(prim, acc, element) {
+            document.documentElement.style.setProperty('--primary', prim);
+            document.documentElement.style.setProperty('--accent', acc);
+            document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+            element.classList.add('active');
+            liveRender();
+        }
+
+        function changeTemplateLayout() {
+            currentLayout = document.getElementById('template-select').value;
+            liveRender();
+        }
 
         function moveStep(dir) {
             if (step + dir < 1 || step + dir > maxSteps) return;
-            
             document.getElementById(`ph-${step}`).classList.remove('active');
             document.getElementById(`st-${step}`).classList.remove('active');
-            if (dir > 0) document.getElementById(`st-${step}`).classList.add('completed');
-            
             step += dir;
-            
             document.getElementById(`ph-${step}`).classList.add('active');
             document.getElementById(`st-${step}`).classList.add('active');
-            
             document.getElementById('back-btn').disabled = (step === 1);
             
             if (step === maxSteps) {
@@ -344,28 +337,10 @@
             const html = `
                 <div class="dynamic-item">
                     <button class="btn-remove" onclick="this.parentElement.remove(); liveRender();"><i class="fa-solid fa-trash"></i></button>
-                    <div class="form-group"><label>Cargo / Puesto</label><input type="text" class="form-control exp-job" oninput="liveRender()"></div>
-                    <div class="form-group"><label>Compañía / Empleador</label><input type="text" class="form-control exp-comp" oninput="liveRender()"></div>
-                    <div class="grid-2">
-                        <div class="form-group"><label>Periodo</label><input type="text" class="form-control exp-date" oninput="liveRender()"></div>
-                        <div class="form-group"><label>Ubicación</label><input type="text" class="form-control exp-city" oninput="liveRender()"></div>
-                    </div>
-                    <div class="form-group"><label>Descripción y Logros</label><textarea class="form-control exp-desc" oninput="liveRender()"></textarea></div>
-                </div>`;
-            container.insertAdjacentHTML('beforeend', html);
-        }
-
-        function addEducationField() {
-            const container = document.getElementById('education-area');
-            const html = `
-                <div class="dynamic-item">
-                    <button class="btn-remove" onclick="this.parentElement.remove(); liveRender();"><i class="fa-solid fa-trash"></i></button>
-                    <div class="form-group"><label>Título o Grado obtenido</label><input type="text" class="form-control edu-deg" oninput="liveRender()"></div>
-                    <div class="form-group"><label>Institución / Universidad</label><input type="text" class="form-control edu-inst" oninput="liveRender()"></div>
-                    <div class="grid-2">
-                        <div class="form-group"><label>Año de Graduación</label><input type="text" class="form-control edu-date" oninput="liveRender()"></div>
-                        <div class="form-group"><label>Estado</label><input type="text" class="form-control edu-status" oninput="liveRender()"></div>
-                    </div>
+                    <div class="form-group"><label>Puesto</label><input type="text" class="form-control exp-job" oninput="liveRender()"></div>
+                    <div class="form-group"><label>Empresa</label><input type="text" class="form-control exp-comp" oninput="liveRender()"></div>
+                    <div class="form-group"><label>Periodo</label><input type="text" class="form-control exp-date" oninput="liveRender()"></div>
+                    <div class="form-group"><label>Funciones</label><textarea class="form-control exp-desc" oninput="liveRender()"></textarea></div>
                 </div>`;
             container.insertAdjacentHTML('beforeend', html);
         }
@@ -375,86 +350,122 @@
         }
 
         function liveRender() {
-            // Datos Base
-            document.getElementById('cv-fullname').innerText = document.getElementById('in-name').value + " " + document.getElementById('in-lastname').value;
-            document.getElementById('cv-title').innerText = document.getElementById('in-title').value;
-            document.getElementById('cv-email').innerText = document.getElementById('in-email').value;
-            document.getElementById('cv-phone').innerText = document.getElementById('in-phone').value;
-            document.getElementById('cv-loc').innerText = document.getElementById('in-loc').value;
-            document.getElementById('cv-link').innerText = document.getElementById('in-link').value;
-            document.getElementById('cv-summary').innerText = document.getElementById('in-profile').value;
-            document.getElementById('cv-render-software').innerText = document.getElementById('in-software').value;
-            document.getElementById('cv-render-certs').innerText = document.getElementById('in-certs').value;
-            document.getElementById('cv-render-interests').innerText = document.getElementById('in-interests').value;
+            const name = document.getElementById('in-name').value + " " + document.getElementById('in-lastname').value;
+            const title = document.getElementById('in-title').value;
+            const email = document.getElementById('in-email').value;
+            const phone = document.getElementById('in-phone').value;
+            const loc = document.getElementById('in-loc').value;
+            const profile = document.getElementById('in-profile').value;
 
-            // Renderizado de Múltiples Experiencias
+            // Compilar experiencias
             let expHTML = '';
             const jobs = document.querySelectorAll('.exp-job');
             const comps = document.querySelectorAll('.exp-comp');
             const dates = document.querySelectorAll('.exp-date');
-            const cities = document.querySelectorAll('.exp-city');
             const descs = document.querySelectorAll('.exp-desc');
-
-            jobs.forEach((job, i) => {
-                if(job.value || comps[i].value) {
-                    expHTML += `
-                        <div class="cv-render-item">
-                            <div class="cv-render-meta"><span>${comps[i].value || ''} (${cities[i].value || ''})</span><span>${dates[i].value || ''}</span></div>
-                            <div class="cv-render-main">${job.value || ''}</div>
-                            <div class="cv-render-desc">${descs[i].value || ''}</div>
-                        </div>`;
+            jobs.forEach((j, i) => {
+                if(j.value) {
+                    expHTML += `<div class="render-item">
+                        <div class="render-meta"><span>${comps[i].value}</span><span>${dates[i].value}</span></div>
+                        <div class="render-main">${j.value}</div>
+                        <div class="render-desc">${descs[i].value}</div>
+                    </div>`;
                 }
             });
-            document.getElementById('cv-render-experience').innerHTML = expHTML;
 
-            // Renderizado de Múltiples Educaciones
+            // Compilar educación
             let eduHTML = '';
             const degs = document.querySelectorAll('.edu-deg');
             const insts = document.querySelectorAll('.edu-inst');
             const edates = document.querySelectorAll('.edu-date');
-            const stats = document.querySelectorAll('.edu-status');
-
-            degs.forEach((deg, i) => {
-                if(deg.value || insts[i].value) {
-                    eduHTML += `
-                        <div class="cv-render-item">
-                            <div class="cv-render-meta"><span>${insts[i].value || ''}</span><span>${edates[i].value || ''}</span></div>
-                            <div class="cv-render-main">${deg.value || ''}</div>
-                            <div class="cv-render-sub">${stats[i].value || ''}</div>
-                        </div>`;
+            degs.forEach((d, i) => {
+                if(d.value) {
+                    eduHTML += `<div class="render-item">
+                        <div class="render-meta"><span>${insts[i].value}</span><span>${edates[i].value}</span></div>
+                        <div class="render-main">${d.value}</div>
+                    </div>`;
                 }
             });
-            document.getElementById('cv-render-education').innerHTML = eduHTML;
 
-            // Renderizado de Habilidades con Barra de nivel
+            // Compilar Habilidades
             let skillHTML = '';
-            for(let i=1; i<=3; i++) {
-                let name = document.getElementById(`sk-${i}`).value;
-                let val = document.getElementById(`sk-n1`).value; // fallback simple
-                if(i==2) val = document.getElementById(`sk-n2`).value;
-                if(i==3) val = document.getElementById(`sk-n3`).value;
-                if(name) {
-                    skillHTML += `
-                        <div class="skill-bar-container">
-                            <div class="skill-name">${name}</div>
-                            <div class="skill-bar"><div class="skill-progress" style="width: ${val}%;"></div></div>
-                        </div>`;
+            for(let i=1; i<=2; i++) {
+                let sName = document.getElementById(`sk-${i}`).value;
+                let sVal = document.getElementById(`sk-n${i}`).value;
+                if(sName) {
+                    skillHTML += `<div class="skill-bar-container">
+                        <div class="skill-name">${sName}</div>
+                        <div class="skill-bar"><div class="skill-progress" style="width:${sVal}%"></div></div>
+                    </div>`;
                 }
             }
-            document.getElementById('cv-render-skills').innerHTML = skillHTML;
 
-            // Idiomas
-            let langHTML = '';
-            for(let i=1; i<=2; i++) {
-                let l = document.getElementById(`lang-${i}`).value;
-                let n = document.getElementById(`lang-n${i}`).value;
-                if(l) { langHTML += `<div class="cv-side-item"><strong>${l}:</strong> ${n}</div>`; }
+            // SELECCIÓN ACTIVA DE PLANTILLAS
+            const target = document.getElementById('cv-target');
+            target.className = 'cv-sheet'; // Reset
+
+            if (currentLayout === 'aura') {
+                target.innerHTML = `
+                    <div class="model-aura">
+                        <div class="cv-sidebar">
+                            <div class="side-title">Contacto</div>
+                            <div style="font-size:11px;line-height:1.4;">${phone}<br>${email}<br>${loc}</div>
+                            <div class="side-title" style="margin-top:15px;">Especialidades</div>
+                            ${skillHTML}
+                        </div>
+                        <div class="cv-main">
+                            <div class="cv-name">${name}</div>
+                            <div class="cv-headline">${title}</div>
+                            <div class="cv-summary">${profile}</div>
+                            <div class="section-title" style="margin-top:20px;">Trayectoria</div>
+                            ${expHTML}
+                            <div class="section-title" style="margin-top:15px;">Formación</div>
+                            ${eduHTML}
+                        </div>
+                    </div>`;
+            } else if (currentLayout === 'minimal') {
+                target.innerHTML = `
+                    <div class="model-minimal">
+                        <div class="cv-header">
+                            <div>
+                                <div class="cv-name">${name}</div>
+                                <div class="cv-headline">${title}</div>
+                            </div>
+                            <div style="font-size:11px; text-align:right; color:var(--text-muted);">${phone} | ${email}<br>${loc}</div>
+                        </div>
+                        <div class="cv-summary" style="margin-bottom:20px;">${profile}</div>
+                        <div class="grid-split">
+                            <div>
+                                <div class="section-title">Experiencia Laboral</div>
+                                ${expHTML}
+                            </div>
+                            <div>
+                                <div class="section-title">Educación</div>
+                                ${eduHTML}
+                                <div class="section-title">Habilidades</div>
+                                ${skillHTML}
+                            </div>
+                        </div>
+                    </div>`;
+            } else if (currentLayout === 'engineering') {
+                target.innerHTML = `
+                    <div class="model-engineering">
+                        <div class="cv-header">
+                            <div class="cv-name">${name}</div>
+                            <div style="font-size:13px; opacity:0.9; margin-top:2px;">${title}</div>
+                            <div style="font-size:11px; margin-top:8px; opacity:0.8;">${phone} • ${email} • ${loc}</div>
+                        </div>
+                        <div class="section-title">Resumen Profesional</div>
+                        <div class="cv-summary" style="background:#fff; padding:10px; border-radius:4px; border:1px solid #e2e8f0;">${profile}</div>
+                        <div class="section-title">Historial de Obras y Cargos</div>
+                        ${expHTML}
+                        <div class="section-title">Estudios Técnicos</div>
+                        ${eduHTML}
+                        <div class="section-title">Especialidades Estructurales</div>
+                        <div style="background:#fff; padding:12px; border-radius:4px; border:1px solid #e2e8f0;">${skillHTML}</div>
+                    </div>`;
             }
-            document.getElementById('cv-render-languages').innerHTML = langHTML;
         }
-
-        // Ejecutar primer renderizado
-        liveRender();
     </script>
 </body>
 </html>
