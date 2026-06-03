@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CVwizard - Plataforma Completa de Plantillas</title>
+    <title>IngeniaCV Pro - Diseñador de Currículums para Ingeniería</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <style>
         :root {
@@ -20,29 +20,57 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
         body { background-color: var(--bg-main); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        /* PORTAL DE INICIO (LANDING PAGE) */
+        /* PORTAL DE INICIO (LANDING PAGE) EXPANDE CON CONTEXTO VISUAL */
         #landing-page {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             color: white;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
             z-index: 1000;
-            text-align: center;
-            padding: 20px;
+            overflow-y: auto;
+            padding: 50px 20px;
             transition: all 0.5s ease;
         }
         #landing-page.hidden { opacity: 0; pointer-events: none; transform: translateY(-50px); }
-        .landing-logo { font-size: 42px; font-weight: 800; margin-bottom: 15px; display: flex; align-items: center; gap: 12px; }
-        .landing-logo span { color: #0284c7; }
-        .landing-tagline { font-size: 20px; color: #94a3b8; max-width: 600px; margin-bottom: 40px; line-height: 1.6; }
-        .btn-start { background: #0284c7; color: white; padding: 16px 36px; font-size: 18px; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 20px rgba(2, 132, 199, 0.3); }
+        
+        .landing-header { text-align: center; max-width: 800px; margin-bottom: 40px; }
+        .landing-logo { font-size: 46px; font-weight: 800; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 12px; }
+        .landing-logo span { color: #38bdf8; }
+        .landing-tagline { font-size: 18px; color: #94a3b8; line-height: 1.6; }
+
+        /* Sección de Muestras del Portal */
+        .showcase-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            max-width: 1100px;
+            width: 100%;
+            margin-bottom: 40px;
+        }
+        .showcase-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        .showcase-card:hover { transform: translateY(-5px); background: rgba(255, 255, 255, 0.08); }
+        .showcase-icon { font-size: 32px; color: #38bdf8; margin-bottom: 12px; }
+        .showcase-card h3 { font-size: 18px; margin-bottom: 8px; }
+        .showcase-card p { font-size: 13px; color: #94a3b8; line-height: 1.4; }
+
+        /* Muestra de Paleta de Colores en la Landing */
+        .color-showcase-list { display: flex; justify-content: center; gap: 10px; margin-top: 15px; }
+        .color-sample-dot { width: 16px; height: 16px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.3); }
+
+        .btn-start { background: #0284c7; color: white; padding: 16px 40px; font-size: 18px; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 25px rgba(2, 132, 199, 0.4); margin-bottom: 20px; }
         .btn-start:hover { background: #0369a1; }
 
         /* APP EDITOR (OCULTA POR DEFECTO) */
@@ -52,20 +80,20 @@
         /* Navbar */
         .navbar { background: #fff; padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); height: 65px; z-index: 10; }
         .logo { font-size: 22px; font-weight: 800; color: #1e3a8a; display: flex; align-items: center; gap: 8px; }
-        .logo span { color: #0284c7; }
+        .logo span { color: var(--accent); }
 
-        /* Selectores de Personalización en Barra Alta */
-        .customizer-bar { display: flex; gap: 20px; align-items: center; }
-        .color-picker { display: flex; gap: 8px; align-items: center; font-size: 13px; font-weight: 600; }
-        .color-dot { width: 22px; height: 22px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
-        .color-dot.active { border-color: #000; transform: scale(1.1); }
+        /* Personalización de Colores y Estilos */
+        .customizer-bar { display: flex; gap: 25px; align-items: center; }
+        .color-picker { display: flex; gap: 6px; align-items: center; font-size: 13px; font-weight: 600; }
+        .color-dot { width: 20px; height: 20px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; }
+        .color-dot.active { border-color: #000; transform: scale(1.2); }
         .template-picker { display: flex; gap: 8px; align-items: center; font-size: 13px; font-weight: 600; }
-        .template-picker select { padding: 5px 10px; border-radius: 6px; border: 1px solid var(--border); outline: none; font-weight: 600; }
+        .template-picker select { padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border); outline: none; font-weight: 600; background: white; }
 
         /* Pasos del Asistente */
         .wizard-steps { display: flex; background: #fff; padding: 12px; border-bottom: 1px solid var(--border); justify-content: center; gap: 15px; font-size: 13px; font-weight: 700; overflow-x: auto; }
         .step { display: flex; align-items: center; gap: 8px; color: var(--text-muted); white-space: nowrap; padding: 4px 8px; }
-        .step.active { color: #0284c7; background: #f0f9ff; border-radius: 6px; }
+        .step.active { color: var(--accent); background: #f0f9ff; border-radius: 6px; }
         .step.completed { color: var(--success); }
 
         /* Contenedor de Trabajo */
@@ -81,7 +109,7 @@
         .form-group { margin-bottom: 16px; }
         .form-group label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600; color: var(--text-main); }
         .form-control { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; outline: none; }
-        .form-control:focus { border-color: #0284c7; box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1); }
+        .form-control:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1); }
         textarea.form-control { height: 110px; resize: none; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
 
@@ -94,14 +122,14 @@
         .nav-controls { display: flex; justify-content: space-between; margin-top: 25px; padding-top: 15px; border-top: 1px solid var(--border); }
         .btn { padding: 10px 22px; border-radius: 6px; font-weight: 600; cursor: pointer; border: none; font-size: 14px; display: flex; align-items: center; gap: 8px; }
         .btn-back { background: #e2e8f0; color: var(--text-main); }
-        .btn-next { background: #0284c7; color: white; }
+        .btn-next { background: var(--accent); color: white; }
         .btn-finish { background: var(--success); color: white; display: none; }
 
         /* Vista Previa CV (Derecha) */
         .preview-container { width: 55%; background: var(--bg-main); overflow-y: auto; padding: 40px 20px; display: flex; justify-content: center; }
         .cv-sheet { width: 210mm; min-height: 297mm; background: #fff; box-shadow: 0 8px 20px rgba(0,0,0,0.08); display: flex; box-sizing: border-box; }
         
-        /* DISEÑO MODELO 1: AURA CIVIL (Dos columnas con fondo lateral) */
+        /* DISEÑO MODELO 1: AURA (2 columnas con fondo lateral) */
         .model-aura { display: flex; width: 100%; }
         .model-aura .cv-sidebar { width: 34%; background: var(--primary); color: white; padding: 30px 20px; display: flex; flex-direction: column; gap: 20px; }
         .model-aura .cv-main { width: 66%; padding: 35px 25px; display: flex; flex-direction: column; gap: 20px; }
@@ -109,33 +137,34 @@
         .model-aura .section-title { font-size: 13px; text-transform: uppercase; border-bottom: 2px solid var(--accent); padding-bottom: 4px; margin-bottom: 10px; font-weight: 700; color: var(--primary); }
         .model-aura .side-title { font-size: 13px; text-transform: uppercase; border-bottom: 2px solid var(--accent); padding-bottom: 4px; margin-bottom: 10px; font-weight: 700; color: #fff; }
 
-        /* DISEÑO MODELO 2: MODERNO MINIMALISTA (Todo blanco, cabecera limpia) */
+        /* DISEÑO MODELO 2: MODERNO MINIMALISTA */
         .model-minimal { display: block; width: 100%; padding: 40px; }
         .model-minimal .cv-header { border-bottom: 3px solid var(--primary); padding-bottom: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: flex-end; }
         .model-minimal .cv-name { font-size: 28px; color: var(--primary); font-weight: 800; letter-spacing: -0.5px; }
         .model-minimal .section-title { font-size: 14px; font-weight: 700; color: var(--primary); text-transform: uppercase; margin-top: 20px; margin-bottom: 10px; border-left: 4px solid var(--accent); padding-left: 8px; }
         .model-minimal .grid-split { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
 
-        /* DISEÑO MODELO 3: INGENIERÍA ESTRUCTURADA (Bloques compactos, líneas divisorias rígidas) */
+        /* DISEÑO MODELO 3: INGENIERÍA ESTRUCTURADA */
         .model-engineering { display: block; width: 100%; padding: 45px; background: #fafafa; }
         .model-engineering .cv-header { background: var(--primary); color: white; padding: 25px; border-radius: 4px; margin-bottom: 25px; }
         .model-engineering .cv-name { font-size: 26px; color: #ffffff; font-weight: 700; }
         .model-engineering .section-title { font-size: 13px; font-weight: 700; color: #ffffff; background: var(--accent); padding: 5px 10px; border-radius: 3px; margin-top: 15px; margin-bottom: 12px; text-transform: uppercase; }
 
-        /* Elementos transversales de renderizado */
+        /* Elementos comunes de renderizado */
         .cv-headline { font-size: 14px; color: var(--accent); font-weight: 600; margin-top: 4px; text-transform: uppercase; }
         .cv-summary { font-size: 11px; line-height: 1.5; text-align: justify; margin-top: 8px; color: #334155; }
         .render-item { margin-bottom: 12px; }
         .render-meta { display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; color: var(--accent); }
         .render-main { font-size: 12.5px; font-weight: 700; color: var(--text-main); }
         .render-desc { font-size: 11px; line-height: 1.4; text-align: justify; color: #334155; }
+        
         .skill-bar-container { margin-bottom: 8px; }
         .skill-name { font-size: 11px; margin-bottom: 3px; }
         .skill-bar { height: 5px; background: rgba(0,0,0,0.1); border-radius: 3px; overflow: hidden; }
         .model-aura .skill-bar { background: rgba(255,255,255,0.2); }
         .skill-progress { height: 100%; background-color: var(--accent); }
 
-        /* Modal Paywall */
+        /* Muro de Pago */
         .paywall { position: absolute; top: 0; right: -100%; width: 40%; height: 100%; background: white; box-shadow: -6px 0 20px rgba(0,0,0,0.1); z-index: 100; transition: right 0.3s ease; padding: 30px; display: flex; flex-direction: column; }
         .paywall.active { right: 0; }
         .paywall-box { background: #fef3c7; border: 1px solid #fde68a; padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 20px; }
@@ -150,34 +179,64 @@
 </head>
 <body>
 
-    <!-- PORTAL DE INICIO (LANDING PAGE) -->
+    <!-- PORTAL DE INICIO (LANDING PAGE EXPANDIDA) -->
     <div id="landing-page">
-        <div class="landing-logo"><i class="fa-solid fa-wand-magic-sparkles"></i> CVwizard <span>Pro</span></div>
-        <div class="landing-tagline">Crea un currículum impecable y optimizado para sistemas ATS en minutos. Diseñado con estándares profesionales para el sector de ingeniería y gerencia.</div>
-        <button class="btn-start" onclick="enterApp()"><i class="fa-solid fa-file-signature"></i> Crear mi CV Ahora</button>
+        <div class="landing-header">
+            <div class="landing-logo"><i class="fa-solid fa-graduation-cap"></i> Ingenia<span>CV</span> Pro</div>
+            <div class="landing-tagline">El primer constructor de CVs optimizado exclusivamente para ingenieros, jefes de proyectos y gerentes de obra. Destaca ante algoritmos ATS y reclutadores técnicos.</div>
+        </div>
+
+        <!-- Muestra de Modelos y Colores en la presentación -->
+        <div class="showcase-container">
+            <div class="showcase-card">
+                <div class="showcase-icon"><i class="fa-solid fa-table-columns"></i></div>
+                <h3>3 Modelos Profesionales</h3>
+                <p>Cambia instantáneamente entre el diseño <b>Aura de 2 Columnas</b>, el formato <b>Moderno Minimalista</b>, o la estructura rígida de <b>Ingeniería Compacta</b>.</p>
+            </div>
+            <div class="showcase-card">
+                <div class="showcase-icon"><i class="fa-solid fa-palette"></i></div>
+                <h3>Paleta Ejecutiva Expandida</h3>
+                <p>Elige combinaciones de alto impacto: desde azules corporativos hasta tonos sofisticados de diseño femenino y de vanguardia.</p>
+                <div class="color-showcase-list">
+                    <div class="color-sample-dot" style="background:#1e3a8a;"></div>
+                    <div class="color-sample-dot" style="background:#0f766e;"></div>
+                    <div class="color-sample-dot" style="background:#be185d;"></div>
+                    <div class="color-sample-dot" style="background:#6d28d9;"></div>
+                </div>
+            </div>
+            <div class="showcase-card">
+                <div class="showcase-icon"><i class="fa-solid fa-layer-group"></i></div>
+                <h3>Campos Dinámicos</h3>
+                <p>Desglosa infinitas obras contratadas, licitaciones, formación continua y barras de nivel de software técnico con total libertad.</p>
+            </div>
+        </div>
+
+        <button class="btn-start" onclick="enterApp()"><i class="fa-solid fa-file-signature"></i> Comenzar a Construir mi CV</button>
     </div>
 
-    <!-- INTERFAZ DEL EDITOR (ACTIVA TRAS CLICK) -->
+    <!-- INTERFAZ PRINCIPAL -->
     <div id="app-interface">
         
-        <!-- Topbar con Selectores Completo -->
+        <!-- Navbar Superior Personalizada -->
         <nav class="navbar">
-            <div class="logo"><i class="fa-solid fa-wand-magic-sparkles"></i> CVwizard <span>Pro</span></div>
+            <div class="logo"><i class="fa-solid fa-graduation-cap"></i> Ingenia<span>CV</span> Pro</div>
             
             <div class="customizer-bar">
-                <!-- Selector de 3 Colores -->
+                <!-- Selector de 5 Colores (Incluye tonos corporativos femeninos) -->
                 <div class="color-picker">
-                    <span>Color de Marca:</span>
-                    <div class="color-dot active" style="background:#1e3a8a;" onclick="changeColor('#1e3a8a', '#0284c7', this)"></div>
-                    <div class="color-dot" style="background:#0f766e;" onclick="changeColor('#0f766e', '#14b8a6', this)"></div>
-                    <div class="color-dot" style="background:#374151;" onclick="changeColor('#374151', '#6b7280', this)"></div>
+                    <span>Estilo Visual:</span>
+                    <div class="color-dot active" style="background:#1e3a8a;" title="Azul Corporativo" onclick="changeColor('#1e3a8a', '#0284c7', this)"></div>
+                    <div class="color-dot" style="background:#0f766e;" title="Verde Técnico" onclick="changeColor('#0f766e', '#14b8a6', this)"></div>
+                    <div class="color-dot" style="background:#374151;" title="Gris Construcción" onclick="changeColor('#374151', '#6b7280', this)"></div>
+                    <div class="color-dot" style="background:#be185d;" title="Rosa Cuarzo Ejecutivo" onclick="changeColor('#be185d', '#f472b6', this)"></div>
+                    <div class="color-dot" style="background:#6d28d9;" title="Violeta Liderazgo" onclick="changeColor('#6d28d9', '#a78bfa', this)"></div>
                 </div>
 
-                <!-- Selector de 3 Modelos de CV -->
+                <!-- Selector de Diseños -->
                 <div class="template-picker">
-                    <span>Diseño:</span>
+                    <span>Estructura:</span>
                     <select id="template-select" onchange="changeTemplateLayout()">
-                        <option value="aura">Modelo 1: Aura Civil (2 Columnas)</option>
+                        <option value="aura">Modelo 1: Aura Civil (2 Cols)</option>
                         <option value="minimal">Modelo 2: Moderno Minimalista</option>
                         <option value="engineering">Modelo 3: Ingeniería Estructurada</option>
                     </select>
@@ -185,13 +244,13 @@
             </div>
         </nav>
 
-        <!-- Fases -->
+        <!-- Pasos del Flujo -->
         <div class="wizard-steps">
             <div class="step active" id="st-1">1. Datos Personales</div>
             <div class="step" id="st-2">2. Perfil</div>
-            <div class="step" id="st-3">3. Experiencia</div>
-            <div class="step" id="st-4">4. Formación</div>
-            <div class="step" id="st-5">5. Especialidades</div>
+            <div class="step" id="st-3">3. Experiencia y Obras</div>
+            <div class="step" id="st-4">4. Educación</div>
+            <div class="step" id="st-5">5. Competencias</div>
         </div>
 
         <div class="main-wrapper">
@@ -204,7 +263,7 @@
                         <div class="form-group"><label>Nombre</label><input type="text" class="form-control" id="in-name" value="Alejandro" oninput="liveRender()"></div>
                         <div class="form-group"><label>Apellidos</label><input type="text" class="form-control" id="in-lastname" value="Bermúdez Mendoza" oninput="liveRender()"></div>
                     </div>
-                    <div class="form-group"><label>Título Profesional</label><input type="text" class="form-control" id="in-title" value="Ingeniero Civil - Gerente de Obras por Contrata" oninput="liveRender()"></div>
+                    <div class="form-group"><label>Título o Cargo Profesional</label><input type="text" class="form-control" id="in-title" value="Ingeniero Civil - Gerente de Obras por Contrata" oninput="liveRender()"></div>
                     <div class="grid-2">
                         <div class="form-group"><label>Email</label><input type="email" class="form-control" id="in-email" value="a.bermudez@ingenieria.com" oninput="liveRender()"></div>
                         <div class="form-group"><label>Teléfono</label><input type="text" class="form-control" id="in-phone" value="+51 987 654 321" oninput="liveRender()"></div>
@@ -216,20 +275,20 @@
                 <div class="phase-block" id="ph-2">
                     <div class="phase-title">Perfil Profesional</div>
                     <div class="form-group">
-                        <label>Resumen de tu Perfil</label>
+                        <label>Resumen de Trayectoria Ejecutiva</label>
                         <textarea class="form-control" id="in-profile" oninput="liveRender()">Ingeniero Civil colegiado con más de 12 años de trayectoria sólida en la Gerencia de Obras contratadas. Especialista en control técnico, valorizaciones complejas y liquidaciones financieras de contratos públicos.</textarea>
                     </div>
                 </div>
 
                 <!-- Fase 3 -->
                 <div class="phase-block" id="ph-3">
-                    <div class="phase-title">Experiencia Profesional</div>
+                    <div class="phase-title">Experiencia y Obras</div>
                     <div id="experience-area">
                         <div class="dynamic-item">
-                            <div class="form-group"><label>Puesto</label><input type="text" class="form-control exp-job" value="Ingeniero de Gerencia de Obras (Contratante)" oninput="liveRender()"></div>
-                            <div class="form-group"><label>Empresa</label><input type="text" class="form-control exp-comp" value="Consorcio Vial Metropolitano" oninput="liveRender()"></div>
-                            <div class="form-group"><label>Periodo</label><input type="text" class="form-control exp-date" value="2022 - Presente" oninput="liveRender()"></div>
-                            <div class="form-group"><label>Funciones</label><textarea class="form-control exp-desc" oninput="liveRender()">Administración del contrato de obra pública, control de cronogramas y firmas de valorizaciones mensuales de avance físico en campo.</textarea></div>
+                            <div class="form-group"><label>Puesto o Cargo</label><input type="text" class="form-control exp-job" value="Ingeniero de Gerencia de Obras (Contratante)" oninput="liveRender()"></div>
+                            <div class="form-group"><label>Empresa / Consorcio</label><input type="text" class="form-control exp-comp" value="Consorcio Vial Metropolitano" oninput="liveRender()"></div>
+                            <div class="form-group"><label>Periodo de Tiempo</label><input type="text" class="form-control exp-date" value="2022 - Presente" oninput="liveRender()"></div>
+                            <div class="form-group"><label>Funciones y Metas del Proyecto</label><textarea class="form-control exp-desc" oninput="liveRender()">Administración del contrato de obra pública, control de cronogramas y firmas de valorizaciones mensuales de avance físico en campo.</textarea></div>
                         </div>
                     </div>
                     <button class="btn-add" onclick="addExperienceField()"><i class="fa-solid fa-plus"></i> Añadir otra experiencia</button>
@@ -240,8 +299,8 @@
                     <div class="phase-title">Educación</div>
                     <div id="education-area">
                         <div class="dynamic-item">
-                            <div class="form-group"><label>Título o Grado</label><input type="text" class="form-control edu-deg" value="Licenciatura en Ingeniería Civil" oninput="liveRender()"></div>
-                            <div class="form-group"><label>Universidad</label><input type="text" class="form-control edu-inst" value="Universidad Nacional de Ingeniería" oninput="liveRender()"></div>
+                            <div class="form-group"><label>Grado u Obtención</label><input type="text" class="form-control edu-deg" value="Licenciatura en Ingeniería Civil" oninput="liveRender()"></div>
+                            <div class="form-group"><label>Universidad o Escuela</label><input type="text" class="form-control edu-inst" value="Universidad Nacional de Ingeniería" oninput="liveRender()"></div>
                             <div class="form-group"><label>Año</label><input type="text" class="form-control edu-date" value="2012" oninput="liveRender()"></div>
                         </div>
                     </div>
@@ -268,25 +327,23 @@
                 </div>
             </div>
 
-            <!-- CONTENEDOR DE LA HOJA DE PREVISUALIZACIÓN (Derecha) -->
+            <!-- CONTENEDOR DE LA HOJA DE PREVISUALIZACIÓN -->
             <div class="preview-container">
-                <div class="cv-sheet" id="cv-target">
-                    <!-- El diseño del CV se inyectará dinámicamente mediante JS -->
-                </div>
+                <div class="cv-sheet" id="cv-target"></div>
             </div>
         </div>
 
         <!-- Muro de Pago -->
         <div class="paywall" id="paywall-screen">
             <div class="paywall-header">
-                <h2><i class="fa-solid fa-lock" style="color:#d4af37;"></i> Acceso Seguro Premium</h2>
+                <h2><i class="fa-solid fa-lock" style="color:#d4af37;"></i> Exportación Profesional</h2>
                 <button style="border:none; background:none; font-size:20px; cursor:pointer;" onclick="openPaywall()"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="paywall-box">
-                <p style="font-weight:700; color:#92400e; font-size:14px;">Suscripción Ilimitada</p>
+                <p style="font-weight:700; color:#92400e; font-size:14px;">Acceso Ilimitado Pro</p>
                 <p style="font-size:32px; font-weight:900; color:var(--primary);">$19.99/mes</p>
             </div>
-            <button class="btn" style="background:var(--primary); color:white; width:100%; justify-content:center;" onclick="alert('Bypass completado con éxito. Presione Ctrl + P para exportar en el formato de diseño seleccionado.')">Simular Pago Seguro</button>
+            <button class="btn" style="background:var(--primary); color:white; width:100%; justify-content:center;" onclick="alert('Usa Ctrl + P para guardar tu PDF con el diseño y color elegidos de forma totalmente gratuita.')">Activar Descarga Imbatible</button>
         </div>
     </div>
 
@@ -357,7 +414,6 @@
             const loc = document.getElementById('in-loc').value;
             const profile = document.getElementById('in-profile').value;
 
-            // Compilar experiencias
             let expHTML = '';
             const jobs = document.querySelectorAll('.exp-job');
             const comps = document.querySelectorAll('.exp-comp');
@@ -373,7 +429,6 @@
                 }
             });
 
-            // Compilar educación
             let eduHTML = '';
             const degs = document.querySelectorAll('.edu-deg');
             const insts = document.querySelectorAll('.edu-inst');
@@ -387,7 +442,6 @@
                 }
             });
 
-            // Compilar Habilidades
             let skillHTML = '';
             for(let i=1; i<=2; i++) {
                 let sName = document.getElementById(`sk-${i}`).value;
@@ -400,9 +454,8 @@
                 }
             }
 
-            // SELECCIÓN ACTIVA DE PLANTILLAS
             const target = document.getElementById('cv-target');
-            target.className = 'cv-sheet'; // Reset
+            target.className = 'cv-sheet';
 
             if (currentLayout === 'aura') {
                 target.innerHTML = `
