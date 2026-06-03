@@ -5,13 +5,13 @@
     <title>IngeniaCV Pro | Plataforma Técnica</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <style>
-        /* ESTILOS CONSOLIDADOS */
         body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #f8fafc; }
         .hero { background: #0f172a; color: white; padding: 80px 20px; text-align: center; }
         .btn-main { background: #0284c7; color: white; padding: 15px 40px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 18px; }
         
         #app-interface { display: none; height: 100vh; flex-direction: column; }
-        .editor-layout { display: flex; height: 100%; }
+        .nav-bar { background: #fff; padding: 10px 20px; border-bottom: 1px solid #ddd; display: flex; justify-content: flex-end; }
+        .editor-layout { display: flex; height: calc(100vh - 50px); }
         .form-panel { width: 40%; padding: 30px; overflow-y: auto; background: white; border-right: 1px solid #ddd; }
         .preview-panel { width: 60%; padding: 40px; background: #e2e8f0; overflow-y: auto; }
         
@@ -19,17 +19,24 @@
         .input-field { margin-bottom: 15px; }
         .input-field label { display: block; font-size: 12px; font-weight: bold; }
         .input-field input, .input-field textarea { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        
+        .btn-back { background: #64748b; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; }
     </style>
 </head>
 <body>
 
+    <!-- PORTAL DE INICIO -->
     <div id="landing-page" class="hero">
         <h1>IngeniaCV Pro</h1>
         <p>Herramienta especializada para Gerencia de Obras y Contratos.</p>
         <button class="btn-main" onclick="startApp()">Crear CV Técnico</button>
     </div>
 
+    <!-- INTERFAZ DEL EDITOR -->
     <div id="app-interface">
+        <div class="nav-bar">
+            <button class="btn-back" onclick="goHome()"><i class="fa-solid fa-arrow-left"></i> Volver al Portal</button>
+        </div>
         <div class="editor-layout">
             <div class="form-panel">
                 <h2>Parámetros Técnicos</h2>
@@ -56,6 +63,12 @@
             document.getElementById('landing-page').style.display = 'none';
             document.getElementById('app-interface').style.display = 'flex';
         }
+        
+        function goHome() {
+            document.getElementById('app-interface').style.display = 'none';
+            document.getElementById('landing-page').style.display = 'block';
+        }
+
         function updateCV() {
             document.getElementById('cv-name').innerText = document.getElementById('name').value || "Nombre";
             document.getElementById('cv-presupuesto').innerText = document.getElementById('presupuesto').value || "-";
