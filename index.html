@@ -3,114 +3,160 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Creador de CV Profesional - Ingeniería</title>
+  <title>Creador de Currículum Profesional</title>
   <style>
     :root {
-      --primary: #2563eb;
-      --border: #e2e8f0;
-      --cv-bg-side: #2f5f82;
+      --primary: #ff4757;          /* Color vibrante acento tipo CVwizard */
+      --primary-hover: #e04050;
+      --dark-bg: #1e293b;         /* Azul noche corporativo */
+      --editor-bg: #f8fafc;       /* Fondo gris suave para el editor */
+      --border-color: #cbd5e1;
+      --text-main: #334155;
+      --cv-bg-side: #2f5f82;      /* Configuración inicial plantilla */
       --cv-text-side: #ffffff;
       --cv-accent: #1e3a8a;
     }
 
-    body { margin: 0; font-family: 'Segoe UI', system-ui, sans-serif; background: #f1f5f9; color: #334155; overflow-x: hidden; }
-    .app { display: grid; grid-template-columns: 500px 1fr; min-height: 100vh; }
+    * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+    body { margin: 0; background: #e2e8f0; color: var(--text-main); overflow: hidden; }
     
-    /* Panel Izquierdo (Editor) */
-    .panel-left { background: #fff; border-right: 1px solid var(--border); display: flex; flex-direction: column; max-height: 100vh; }
-    .panel-header { padding: 20px; border-bottom: 1px solid var(--border); background: #f8fafc; }
-    .panel-header h1 { margin: 0; font-size: 20px; color: #0f172a; }
-    .tabs { display: flex; background: #f1f5f9; border-bottom: 1px solid var(--border); overflow-x: auto; }
-    .tab-btn { flex: 1; padding: 12px; border: none; background: none; font-weight: 600; font-size: 13px; color: #64748b; cursor: pointer; text-align: center; white-space: nowrap; }
-    .tab-btn.active { color: var(--primary); border-bottom: 3px solid var(--primary); background: #fff; }
-    .panel-content { padding: 20px; overflow-y: auto; flex: 1; }
+    /* Contenedor Aplicación */
+    .app { display: grid; grid-template-columns: 520px 1fr; height: 100vh; }
     
-    .group { margin-bottom: 12px; }
-    label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: #475569; }
-    input, textarea, select { width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; box-sizing: border-box; }
-    input:focus, textarea:focus, select:focus { outline: none; border-color: var(--primary); }
-    textarea { min-height: 60px; resize: vertical; }
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    /* =========================================================
+       PANEL IZQUIERDO (EDITOR INSPIRADO EN CVWIZARD)
+       ========================================================= */
+    .panel-left { background: #ffffff; display: flex; flex-direction: column; height: 100vh; border-right: 1px solid #cbd5e1; box-shadow: 4px 0 15px rgba(0,0,0,0.05); }
     
-    /* Listas dinámicas */
-    .repeater-item { border: 1px solid var(--border); padding: 12px; border-radius: 6px; margin-bottom: 10px; background: #f8fafc; }
-    .btn-delete { background: #ef4444; color: #fff; border: none; padding: 4px 8px; border-radius: 4px; font-size: 11px; cursor: pointer; float: right; }
-    .btn-add { background: #ecf2ff; color: var(--primary); border: 1px dashed var(--primary); padding: 8px; border-radius: 6px; width: 100%; font-weight: 600; cursor: pointer; font-size: 13px; margin-bottom: 15px; }
+    /* Encabezado del Editor */
+    .panel-header { padding: 24px 24px 16px 24px; background: #ffffff; border-bottom: 1px solid #f1f5f9; }
+    .panel-header h1 { margin: 0; font-size: 22px; color: #0f172a; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .panel-header h1 span { color: var(--primary); }
+    .panel-header p { margin: 4px 0 0 0; font-size: 13px; color: #64748b; }
     
-    /* Panel Derecho (Previsualización) */
-    .panel-right { display: flex; flex-direction: column; height: 100vh; background: #cbd5e1; position: relative; }
-    .toolbar { background: #fff; padding: 10px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-    .btn-download { background: #22c55e; color: #fff; border: none; padding: 8px 16px; font-weight: 600; border-radius: 6px; cursor: pointer; }
+    /* Menú de Pasos Flotante / Pestañas */
+    .tabs { display: flex; padding: 0 16px; background: #f8fafc; border-bottom: 1px solid #e2e8f0; gap: 4px; overflow-x: auto; }
+    .tab-btn { background: none; border: none; padding: 14px 12px; font-weight: 600; font-size: 13px; color: #64748b; cursor: pointer; transition: all 0.2s; border-bottom: 3px solid transparent; white-space: nowrap; }
+    .tab-btn:hover { color: #0f172a; }
+    .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 700; }
     
-    .preview-container { flex: 1; overflow: auto; padding: 20px; display: flex; justify-content: center; align-items: flex-start; }
+    /* Contenido del Editor */
+    .panel-content { padding: 24px; overflow-y: auto; flex: 1; background: var(--editor-bg); }
     
-    /* Estructura del CV */
-    .cv-page { background: #fff; width: 210mm; min-height: 297mm; box-shadow: 0 10px 25px rgba(0,0,0,0.15); box-sizing: border-box; display: grid; grid-template-columns: 260px 1fr; font-size: 13px; color: #333; line-height: 1.4; }
-    .cv-side { background: var(--cv-bg-side); color: var(--cv-text-side); padding: 30px 15px; box-sizing: border-box; }
-    .cv-photo-container { width: 150px; height: 150px; border-radius: 50%; overflow: hidden; margin: 0 auto 15px; border: 3px solid #fff; background: #e2e8f0; position: relative; }
-    .cv-photo { width: 100%; height: 100%; object-fit: cover; display: none; }
-    .cv-photo-placeholder { position: absolute; top:0; left:0; width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:40px; color:#94a3b8; background:#f1f5f9; }
-    .cv-side-title { text-align: center; font-size: 16px; font-weight: bold; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .cv-side h2 { font-size: 14px; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.4); padding-bottom: 4px; margin: 20px 0 10px 0; font-weight: 600; }
-    .cv-info-item { margin-bottom: 10px; font-size: 12px; display: flex; align-items: flex-start; gap: 8px; }
-    .cv-side-list { margin: 0; padding: 0; list-style: none; }
-    .cv-side-list li { margin-bottom: 6px; font-size: 12px; text-transform: uppercase; font-weight: 500; }
+    /* Bloques / Tarjetas de Formulario */
+    .form-card { background: #ffffff; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02); margin-bottom: 20px; }
+    .form-card h3 { margin: 0 0 16px 0; font-size: 15px; color: #0f172a; border-left: 4px solid var(--primary); padding-left: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
     
-    .lang-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 12px; }
-    .stars { color: #fff; font-size: 14px; letter-spacing: 1px; }
-    .stars .dot { opacity: 0.3; }
-    .prog-item { font-size: 12px; margin-bottom: 8px; display: flex; align-items: flex-start; gap: 6px; }
-    .prog-item::before { content: "■"; font-size: 10px; margin-top: 1px; opacity: 0.7; }
+    .group { margin-bottom: 16px; }
+    .group:last-child { margin-bottom: 0; }
+    label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: #475569; text-transform: uppercase; letter-spacing: 0.3px; }
     
-    .cv-main { padding: 30px 25px; box-sizing: border-box; background: #fff; }
-    .cv-main h2 { font-size: 15px; text-transform: uppercase; color: #000; border-bottom: 1px solid #ddd; padding-bottom: 4px; margin: 20px 0 12px 0; font-weight: 700; letter-spacing: 0.5px; }
-    .cv-main h2:first-of-type { margin-top: 0; }
-    .cv-profile-text { text-align: justify; font-size: 12.5px; margin-bottom: 15px; color: #222; min-height: 20px; }
+    input, textarea, select { width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13.5px; color: #1e293b; background: #f8fafc; transition: all 0.2s; }
+    input:focus, textarea:focus, select:focus { outline: none; border-color: var(--primary); background: #ffffff; box-shadow: 0 0 0 3px rgba(255, 71, 87, 0.1); }
+    textarea { min-height: 80px; resize: vertical; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     
-    .cv-row { display: grid; grid-template-columns: 120px 1fr; margin-bottom: 12px; font-size: 12.5px; }
-    .cv-date { font-weight: bold; color: #333; font-size: 12px; padding-right: 10px; }
-    .cv-content-title { font-weight: bold; color: #111; text-transform: uppercase; }
-    .cv-content-sub { color: var(--cv-accent); font-weight: 600; margin-top: 1px; text-transform: uppercase; font-size: 11.5px; }
-    .consent-text { font-size: 9px; color: #666; margin-top: 30px; text-align: justify; line-height: 1.2; }
+    /* Listas dinámicas / Repetidores */
+    .repeater-item { border: 1px solid #e2e8f0; padding: 16px; border-radius: 10px; margin-bottom: 12px; background: #ffffff; position: relative; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
+    .btn-delete { position: absolute; top: 12px; right: 12px; background: #fee2e2; color: #ef4444; border: none; width: 24px; height: 24px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+    .btn-delete:hover { background: #ef4444; color: #ffffff; }
+    .btn-add { background: #fff; color: var(--primary); border: 2px dashed #fca5a5; padding: 10px; border-radius: 10px; width: 100%; font-weight: 700; cursor: pointer; font-size: 13px; transition: all 0.2s; margin-top: 4px; margin-bottom: 20px; }
+    .btn-add:hover { background: #fff5f5; border-color: var(--primary); }
+    
+    /* Subida de foto estilizada */
+    .file-upload-wrapper { display: flex; align-items: center; gap: 12px; background: #f1f5f9; padding: 10px; border-radius: 8px; border: 1px dashed #cbd5e1; }
+    .file-upload-wrapper input[type="file"] { background: none; border: none; padding: 0; font-size: 12px; cursor: pointer; }
 
-    /* Panel deslizable de pago */
-    .side-panel-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); z-index: 9999; }
-    .side-payment-panel { position: fixed; top: 0; right: -460px; width: 430px; height: 100%; background: #ffffff; box-shadow: -5px 0 25px rgba(0,0,0,0.15); z-index: 10000; display: flex; flex-direction: column; transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+    /* =========================================================
+       PANEL DERECHO (VISTA DE PREVIO DE DOCUMENTO)
+       ========================================================= */
+    .panel-right { display: flex; flex-direction: column; height: 100vh; background: #64748b; position: relative; }
+    
+    /* Barra superior Toolbar */
+    .toolbar { background: #ffffff; padding: 14px 24px; border-bottom: 1px solid #cbd5e1; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04); z-index: 10; }
+    .toolbar-info { display: flex; align-items: center; gap: 8px; font-weight: 600; color: #334155; font-size: 14px; }
+    .toolbar-info::before { content: "👁"; font-size: 16px; }
+    
+    .btn-download { background: #10b981; color: #ffffff; border: none; padding: 10px 20px; font-weight: 700; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2); transition: all 0.2s; font-size: 13.5px; }
+    .btn-download:hover { background: #059669; transform: translateY(-1px); }
+    
+    /* Área de Previsualización Desplazable */
+    .preview-container { flex: 1; overflow: auto; padding: 40px 20px; display: flex; justify-content: center; align-items: flex-start; }
+    
+    /* Estructura A4 del Currículum */
+    .cv-page { background: #ffffff; width: 210mm; min-height: 297mm; box-shadow: 0 20px 40px rgba(0,0,0,0.3); box-sizing: border-box; display: grid; grid-template-columns: 260px 1fr; font-size: 13px; color: #333; line-height: 1.45; }
+    .cv-side { background: var(--cv-bg-side); color: var(--cv-text-side); padding: 35px 20px; box-sizing: border-box; }
+    .cv-photo-container { width: 140px; height: 140px; border-radius: 50%; overflow: hidden; margin: 0 auto 20px; border: 4px solid rgba(255,255,255,0.8); background: #e2e8f0; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    .cv-photo { width: 100%; height: 100%; object-fit: cover; display: none; }
+    .cv-photo-placeholder { position: absolute; top:0; left:0; width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:45px; color:#94a3b8; background:#f1f5f9; }
+    
+    .cv-side-title { text-align: center; font-size: 15px; font-weight: 700; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9; }
+    .cv-side h2 { font-size: 13px; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 5px; margin: 24px 0 12px 0; font-weight: 700; letter-spacing: 0.5px; }
+    .cv-info-item { margin-bottom: 12px; font-size: 12px; display: flex; align-items: flex-start; gap: 8px; line-height: 1.3; }
+    .cv-side-list { margin: 0; padding: 0; list-style: none; }
+    .cv-side-list li { margin-bottom: 7px; font-size: 12px; text-transform: uppercase; font-weight: 500; }
+    
+    .lang-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 12px; }
+    .stars { color: #ffffff; font-size: 13px; letter-spacing: 1px; }
+    .stars .dot { opacity: 0.25; }
+    .prog-item { font-size: 12px; margin-bottom: 8px; display: flex; align-items: flex-start; gap: 6px; }
+    .prog-item::before { content: "■"; font-size: 9px; margin-top: 2px; opacity: 0.6; }
+    
+    .cv-main { padding: 40px 35px; box-sizing: border-box; background: #ffffff; }
+    .cv-main h2 { font-size: 14px; text-transform: uppercase; color: #0f172a; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px; margin: 26px 0 14px 0; font-weight: 800; letter-spacing: 0.5px; }
+    .cv-main h2:first-of-type { margin-top: 0; }
+    .cv-profile-text { text-align: justify; font-size: 12.5px; margin-bottom: 15px; color: #334155; min-height: 20px; }
+    
+    .cv-row { display: grid; grid-template-columns: 130px 1fr; margin-bottom: 14px; font-size: 12.5px; }
+    .cv-date { font-weight: 700; color: #475569; font-size: 11.5px; padding-right: 12px; text-transform: uppercase; }
+    .cv-content-title { font-weight: 700; color: #0f172a; text-transform: uppercase; font-size: 13px; }
+    .cv-content-sub { color: var(--cv-accent); font-weight: 700; margin-top: 2px; text-transform: uppercase; font-size: 11.5px; }
+    .consent-text { font-size: 9px; color: #64748b; margin-top: 40px; text-align: justify; line-height: 1.3; border-top: 1px solid #f1f5f9; padding-top: 10px; }
+
+    /* =========================================================
+       PANEL LATERAL DESLIZABLE DE PAGO (DISEÑO PREMIUM)
+       ========================================================= */
+    .side-panel-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 9999; }
+    .side-payment-panel { position: fixed; top: 0; right: -480px; width: 450px; height: 100%; background: #ffffff; box-shadow: -10px 0 30px rgba(0,0,0,0.15); z-index: 10000; display: flex; flex-direction: column; transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
     .side-payment-panel.open { right: 0; }
     
-    .side-panel-header { background: #111827; color: #ffffff; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; }
-    .side-panel-header h3 { margin: 0; font-size: 15px; font-weight: 600; }
-    .side-panel-close { background: none; border: none; color: #9ca3af; font-size: 20px; cursor: pointer; }
+    .side-panel-header { background: var(--dark-bg); color: #ffffff; padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; }
+    .side-panel-header h3 { margin: 0; font-size: 16px; font-weight: 600; letter-spacing: 0.5px; }
+    .side-panel-close { background: none; border: none; color: #9ca3af; font-size: 24px; cursor: pointer; transition: color 0.2s; }
+    .side-panel-close:hover { color: #fff; }
 
-    .side-panel-body { padding: 24px; overflow-y: auto; flex: 1; }
-    .side-panel-body h4 { margin: 0 0 16px 0; font-size: 18px; color: #111827; font-weight: 700; }
+    .side-panel-body { padding: 28px; overflow-y: auto; flex: 1; }
+    .side-panel-body h4 { margin: 0 0 8px 0; font-size: 20px; color: #0f172a; font-weight: 800; }
+    .side-panel-body .subtitle { font-size: 13px; color: #64748b; margin-bottom: 24px; margin-top: 0; }
     
-    .period-select-container { display: flex; justify-content: flex-end; margin-bottom: 15px; align-items: center; gap: 8px; }
-    .period-select { width: auto; padding: 4px 10px; font-size: 13px; border: 1px solid #d1d5db; border-radius: 4px; cursor: pointer; }
+    .period-select-container { background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 8px; display: flex; justify-content: space-between; margin-bottom: 20px; align-items: center; }
+    .period-select-container span { font-size: 13px; font-weight: 600; color: #334155; }
+    .period-select { width: auto; padding: 6px 12px; font-size: 13px; border: 1px solid #cbd5e1; border-radius: 6px; cursor: pointer; background: #fff; font-weight: 600; }
 
-    /* Registro de cuenta */
-    .register-box { background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: block; }
-    .register-box h5 { margin: 0 0 10px 0; font-size: 13px; color: #1e293b; font-weight: 600; text-transform: uppercase; }
+    /* Registro de membresía */
+    .register-box { background: #fff8f8; border: 1px dashed #fca5a5; padding: 18px; border-radius: 10px; margin-bottom: 24px; display: block; }
+    .register-box h5 { margin: 0 0 12px 0; font-size: 12px; color: #991b1b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
 
-    .price-box { text-align: center; margin: 20px 0; }
-    .price-amount { font-size: 42px; font-weight: 700; color: #111827; display: inline-block; }
-    .price-currency { font-size: 24px; font-weight: 600; margin-left: 4px; }
-    .price-period { font-size: 12px; color: #6b7280; display: inline-block; margin-left: 4px; }
+    /* Cuadro de Precio */
+    .price-box { text-align: center; margin: 24px 0; background: #f8fafc; padding: 16px; border-radius: 12px; border: 1px solid #e2e8f0; }
+    .price-amount { font-size: 44px; font-weight: 800; color: #0f172a; display: inline-block; letter-spacing: -1px; }
+    .price-currency { font-size: 24px; font-weight: 700; margin-left: 2px; color: #0f172a; }
+    .price-period { font-size: 13px; color: #64748b; display: inline-block; margin-left: 4px; font-weight: 500; }
 
-    .payment-tabs { display: grid; grid-template-columns: 1fr 1fr 1fr; border: 1px solid #e5e7eb; border-radius: 6px; overflow: hidden; margin-bottom: 20px; }
-    .pay-tab-btn { background: #f9fafb; border: none; padding: 12px 4px; font-size: 11px; font-weight: 500; color: #4b5563; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 6px; border-right: 1px solid #e5e7eb; }
-    .pay-tab-btn:last-child { border-right: none; }
-    .pay-tab-btn img { height: 14px; }
-    .pay-tab-btn.active { background: #ffffff; color: #2563eb; font-weight: 600; box-shadow: inset 0 -2px 0 #2563eb; }
+    /* Pestañas Pasarelas */
+    .payment-tabs { display: grid; grid-template-columns: 1fr 1fr 1fr; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; margin-bottom: 24px; background: #f1f5f9; padding: 4px; gap: 4px; }
+    .pay-tab-btn { background: none; border: none; padding: 12px 4px; font-size: 12px; font-weight: 600; color: #64748b; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; border-radius: 6px; transition: all 0.2s; }
+    .pay-tab-btn img { height: 16px; }
+    .pay-tab-btn.active { background: #ffffff; color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
     .tab-content-pay { display: none; }
     .tab-content-pay.active { display: block; }
-    .disclaimer-text { font-size: 11px; color: #6b7280; line-height: 1.4; text-align: justify; margin-top: 20px; border-top: 1px solid #f3f4f6; padding-top: 12px; }
+    .disclaimer-text { font-size: 11px; color: #64748b; line-height: 1.5; text-align: justify; margin-top: 24px; border-top: 1px solid #e2e8f0; padding-top: 16px; }
 
     @media (max-width: 1024px) {
       .app { grid-template-columns: 1fr; }
-      .panel-left { max-height: none; }
-      .preview-container { overflow-x: auto; justify-content: flex-start; }
+      .panel-left { height: auto; }
+      .preview-container { overflow-x: auto; justify-content: flex-start; padding: 20px 10px; }
       .cv-page { min-width: 210mm; }
       .side-payment-panel { width: 100%; right: -100%; }
     }
@@ -119,68 +165,120 @@
 <body>
 
 <div class="app">
-  <!-- Panel izquierdo de edición (Cargando datos limpios) -->
   <div class="panel-left">
     <div class="panel-header">
-      <h1>Panel de Edición de Currículum</h1>
+      <h1>CV<span>wizard</span> Editor</h1>
+      <p>Completa tus campos y diseña tu futuro profesional</p>
     </div>
     
     <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab('datos')">Personal</button>
-      <button class="tab-btn" onclick="switchTab('trayectoria')">Experiencia/Estudios</button>
-      <button class="tab-btn" onclick="switchTab('complementos')">Habilidades/Otros</button>
-      <button class="tab-btn" onclick="switchTab('colores')">Colores</button>
+      <button class="tab-btn active" onclick="switchTab('datos')">👤 Datos Personales</button>
+      <button class="tab-btn" onclick="switchTab('trayectoria')">💼 Experiencia e Historial</button>
+      <button class="tab-btn" onclick="switchTab('complementos')">🛠️ Competencias</button>
+      <button class="tab-btn" onclick="switchTab('colores')">🎨 Diseño</button>
     </div>
 
     <div class="panel-content">
       <div id="step-datos" class="step-content">
-        <div class="group"><label>Nombre Completo</label><input id="form-nombre" placeholder="Ej: CARLOS MENDOZA ALVARADO" oninput="syncDataFromForm()"></div>
-        <div class="group"><label>Correo Electrónico</label><input id="form-email" placeholder="Ej: c.mendoza.ing@outlook.com" oninput="syncDataFromForm()"></div>
-        <div class="group"><label>Teléfono</label><input id="form-telefono" placeholder="Ej: 945123789" oninput="syncDataFromForm()"></div>
-        <div class="group"><label>Dirección / Ubicación</label><input id="form-ubicacion" placeholder="Ej: Urb. Los Próceres Mz. F Lote 12, Cusco" oninput="syncDataFromForm()"></div>
-        <div class="group"><label>Foto de Perfil</label><input id="form-foto" type="file" accept="image/*"></div>
-        <div class="group"><label>Sobre Mí (Resumen Profesional)</label><textarea id="form-sobreMi" placeholder="Ej: Ingeniero Civil colegiado con más de 6 años de trayectoria liderando la supervisión y ejecución de infraestructuras viales y edificaciones de gran envergadura..." oninput="syncDataFromForm()"></textarea></div>
+        <div class="form-card">
+          <h3>Información de Perfil</h3>
+          <div class="group"><label>Nombre Completo</label><input id="form-nombre" placeholder="Ej: CARLOS MENDOZA ALVARADO" oninput="syncDataFromForm()"></div>
+          <div class="group"><label>Fotografía de Currículum</label>
+            <div class="file-upload-wrapper">
+              <input id="form-foto" type="file" accept="image/*">
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-card">
+          <h3>Datos de Contacto</h3>
+          <div class="group"><label>Correo Electrónico</label><input id="form-email" placeholder="Ej: c.mendoza.ing@outlook.com" oninput="syncDataFromForm()"></div>
+          <div class="group"><label>Teléfono de Contacto</label><input id="form-telefono" placeholder="Ej: 945123789" oninput="syncDataFromForm()"></div>
+          <div class="group"><label>Ubicación / Dirección</label><input id="form-ubicacion" placeholder="Ej: Urb. Los Próceres Mz. F Lote 12, Cusco" oninput="syncDataFromForm()"></div>
+        </div>
+
+        <div class="form-card">
+          <h3>Perfil Profesional</h3>
+          <div class="group"><label>Breve Resumen (Sobre Mí)</label><textarea id="form-sobreMi" placeholder="Ej: Ingeniero Civil colegiado con más de 6 años de trayectoria liderando la supervisión y ejecución de infraestructuras viales y edificaciones de gran envergadura..." oninput="syncDataFromForm()"></textarea></div>
+        </div>
       </div>
 
       <div id="step-trayectoria" class="step-content" style="display:none;">
-        <h3>Formación Académica</h3><div id="wrapper-educacion"></div><button class="btn-add" onclick="addItem('educacion')">+ Agregar Educación</button>
-        <h3>Experiencia Laboral</h3><div id="wrapper-experiencia"></div><button class="btn-add" onclick="addItem('experiencia')">+ Agregar Experiencia</button>
-        <h3>Certificados</h3><div id="wrapper-certificados"></div><button class="btn-add" onclick="addItem('certificados')">+ Agregar Certificado</button>
-        <h3>Cursos</h3><div id="wrapper-cursos"></div><button class="btn-add" onclick="addItem('cursos')">+ Agregar Curso</button>
-        <h3>Diplomados</h3><div id="wrapper-diplomados"></div><button class="btn-add" onclick="addItem('diplomados')">+ Agregar Diplomado</button>
+        <div class="form-card">
+          <h3>Historial de Educación</h3>
+          <div id="wrapper-educacion"></div>
+          <button class="btn-add" onclick="addItem('educacion')">+ Agregar formación académica</button>
+        </div>
+
+        <div class="form-card">
+          <h3>Trayectoria Laboral</h3>
+          <div id="wrapper-experiencia"></div>
+          <button class="btn-add" onclick="addItem('experiencia')">+ Agregar experiencia laboral</button>
+        </div>
+
+        <div class="form-card">
+          <h3>Certificaciones Obtenidas</h3>
+          <div id="wrapper-certificados"></div>
+          <button class="btn-add" onclick="addItem('certificados')">+ Agregar certificado oficial</button>
+        </div>
+
+        <div class="form-card">
+          <h3>Cursos de Especialización</h3>
+          <div id="wrapper-cursos"></div>
+          <button class="btn-add" onclick="addItem('cursos')">+ Agregar curso corto</button>
+        </div>
+
+        <div class="form-card">
+          <h3>Diplomados Realizados</h3>
+          <div id="wrapper-diplomados"></div>
+          <button class="btn-add" onclick="addItem('diplomados')">+ Agregar diplomado de posgrado</button>
+        </div>
       </div>
 
       <div id="step-complementos" class="step-content" style="display:none;">
-        <div class="group"><label>Habilidades (una por línea)</label><textarea id="form-habilidades" placeholder="Ej: GESTIÓN DE PROYECTOS&#10;SUPERVISIÓN DE OBRA&#10;COMUNICACIÓN ASERTIVA" oninput="syncDataFromForm()"></textarea></div>
-        <div class="group"><label>Idiomas (Formato: Idioma|Estrellas del 1 al 5)</label><textarea id="form-idiomas" placeholder="Ej: INGLÉS INTERMEDIO|3&#10;PORTUGUÉS BÁSICO|1" oninput="syncDataFromForm()"></textarea></div>
-        <div class="group"><label>Programas y Software (uno por línea)</label><textarea id="form-programas" placeholder="Ej: MS Project - Avanzado&#10;S10 Costos y Presupuestos&#10;ETABS & SAP2000" oninput="syncDataFromForm()"></textarea></div>
+        <div class="form-card">
+          <h3>Habilidades Clave</h3>
+          <div class="group"><label>Habilidades (Una por renglón)</label><textarea id="form-habilidades" placeholder="Ej: GESTIÓN DE PROYECTOS&#10;SUPERVISIÓN DE OBRA&#10;COMUNICACIÓN ASERTIVA" oninput="syncDataFromForm()"></textarea></div>
+        </div>
+
+        <div class="form-card">
+          <h3>Dominio de Idiomas</h3>
+          <div class="group"><label>Idiomas (Formato: Idioma|Estrellas del 1 al 5)</label><textarea id="form-idiomas" placeholder="Ej: INGLÉS INTERMEDIO|3&#10;PORTUGUÉS BÁSICO|1" oninput="syncDataFromForm()"></textarea></div>
+        </div>
+
+        <div class="form-card">
+          <h3>Herramientas Informáticas</h3>
+          <div class="group"><label>Software Técnico (Uno por renglón)</label><textarea id="form-programas" placeholder="Ej: MS Project - Avanzado&#10;S10 Costos y Presupuestos&#10;ETABS & SAP2000" oninput="syncDataFromForm()"></textarea></div>
+        </div>
       </div>
 
       <div id="step-colores" class="step-content" style="display:none;">
-        <div class="group">
-          <label style="font-size:14px; font-weight:bold; margin-bottom:10px;">Selecciona una combinación de color:</label>
-          <select id="cfg-color" onchange="changeColorPalette()">
-            <option value="azul-clasico">🔵 Azul Acero Original</option>
-            <option value="azul-marino">🏢 Azul Marino Ejecutivo</option>
-            <option value="gris-plomo">⬛ Gris Plomo</option>
-          </select>
+        <div class="form-card">
+          <h3>Paleta de Color del Documento</h3>
+          <div class="group">
+            <label>Elige una combinación profesional:</label>
+            <select id="cfg-color" onchange="changeColorPalette()">
+              <option value="azul-clasico">🔵 Azul Acero Original</option>
+              <option value="azul-marino">🏢 Azul Marino Ejecutivo</option>
+              <option value="gris-plomo">⬛ Gris Plomo Profesional</option>
+            </select>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Panel derecho de visualización -->
   <div class="panel-right">
     <div class="toolbar">
-      <span style="font-weight:600; color:#475569;">Vista de Plantilla Limpia</span>
-      <button class="btn-download" id="btn-descargar">Descargar PDF</button>
+      <div class="toolbar-info">Vista previa en tiempo real</div>
+      <button class="btn-download" id="btn-descargar">Descargar Currículum</button>
     </div>
     <div class="preview-container">
       <div id="cv-render" class="cv-page">
         <div class="cv-side">
           <div class="cv-photo-container">
             <div id="cv-photo-placeholder" class="cv-photo-placeholder">👤</div>
-            <img id="cv-foto" class="cv-photo" src="" alt="Foto">
+            <img id="cv-foto" class="cv-photo" src="" alt="Foto Perfil">
           </div>
           <div class="cv-side-title">Curriculum vitae</div>
           <h2>Datos personales</h2><div id="cv-datos-contacto"></div>
@@ -191,62 +289,57 @@
         <div class="cv-main">
           <h2>Sobre Mí</h2><div class="cv-profile-text" id="cv-sobreMi"></div>
           <h2>Formación Académica</h2><div id="cv-educacion"></div>
-          <h2>Experiencia</h2><div id="cv-experiencia"></div>
+          <h2>Experiencia Laboral</h2><div id="cv-experiencia"></div>
           <h2>Certificados</h2><div id="cv-certificados"></div>
           <h2>Cursos</h2><div id="cv-cursos"></div>
           <h2>Diplomados</h2><div id="cv-diplomados"></div>
-          <div class="consent-text">Doy mi consentimiento para el procesamiento de mi datos personales de conformidad con las normativas de protección de datos vigentes.</div>
+          <div class="consent-text">Doy mi consentimiento explícito para el procesamiento y validación de mis datos personales de conformidad con las normativas internacionales de protección de datos vigentes.</div>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Capa oscura del modal posterior -->
 <div id="side-panel-overlay" class="side-panel-overlay" onclick="closePaymentPanel()"></div>
 
-<!-- PANEL LATERAL PROFESIONAL CON REGISTRO DE MEMBRESÍA -->
 <div id="side-payment-panel" class="side-payment-panel">
   <div class="side-panel-header">
-    <h3>Cuenta / Activación</h3>
+    <h3>Procesar Activación de Cuenta</h3>
     <button class="side-panel-close" onclick="closePaymentPanel()">&times;</button>
   </div>
   
   <div class="side-panel-body">
-    <h4>Activar suscripción</h4>
+    <h4>¡Casi listo para exportar!</h4>
+    <p class="subtitle">Elige la modalidad preferida para obtener tu documento en PDF de alta definición.</p>
     
-    <!-- Selector de planes comercial -->
     <div class="period-select-container">
-      <span>Plan seleccionado:</span>
+      <span>Modalidad del Plan:</span>
       <select id="plan-selector" class="period-select" onchange="updatePriceDisplay()">
-        <option value="mensual" selected>Mensual ($10.00 / mes)</option>
-        <option value="unico">Pago Único ($3.00)</option>
+        <option value="mensual" selected>Membresía Mensual ($10.00)</option>
+        <option value="unico">Descarga Única ($3.00)</option>
       </select>
     </div>
 
-    <!-- SECCIÓN DE REGISTRO INTEGRADA DE MEMBRESÍA -->
     <div id="account-register-box" class="register-box">
-      <h5>1. Crear Cuenta de Acceso</h5>
-      <div class="group" style="margin-bottom:8px;">
-        <input type="text" id="reg-user" placeholder="Asigna un nombre de usuario o correo" style="padding:6px 10px;">
+      <h5>1. Registro Obligatorio de Membresía</h5>
+      <div class="group" style="margin-bottom:10px;">
+        <input type="text" id="reg-user" placeholder="Nombre de usuario o correo de acceso">
       </div>
-      <div class="group" style="margin-bottom:4px;">
-        <input type="password" id="reg-pass" placeholder="Asigna una contraseña de acceso" style="padding:6px 10px;">
+      <div class="group" style="margin-bottom:6px;">
+        <input type="password" id="reg-pass" placeholder="Asigna una contraseña segura">
       </div>
-      <small style="font-size:11px; color:#6b7280;">Esta cuenta guardará tus datos y tu membresía activa de $10.</small>
+      <small style="font-size:11px; color:#7f1d1d; font-weight: 500;">Esta cuenta mantendrá activa tu suscripción premium de $10.</small>
     </div>
 
-    <!-- Cuadro de Precio Real -->
     <div class="price-box">
       <div id="display-price-amount" class="price-amount">10,00</div>
       <div class="price-currency">US$</div>
-      <div id="display-price-period" class="price-period">/ Por mes</div>
+      <div id="display-price-period" class="price-period">/ al mes</div>
     </div>
 
-    <!-- Pestañas de Selección de Pasarela -->
     <div class="payment-tabs">
       <button id="tab-card-btn" class="pay-tab-btn active" onclick="switchPaymentTab('card')">
-        <span>💳 Tarjeta</span>
+        <span>💳 Tarjeta Débito/Crédito</span>
       </button>
       <button id="tab-paypal-btn" class="pay-tab-btn" onclick="switchPaymentTab('paypal')">
         <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal">
@@ -256,7 +349,6 @@
       </button>
     </div>
 
-    <!-- Pasarelas inteligentes -->
     <div id="pay-content-card" class="tab-content-pay active">
       <div id="paypal-card-container"></div>
     </div>
@@ -266,18 +358,17 @@
     </div>
 
     <div id="pay-content-google" class="tab-content-pay">
-      <div style="text-align:center; padding:15px; color:#6b7280; font-size:12px; border:1px dashed #cbd5e1; border-radius:6px;">
-        Google Pay se habilitará nativamente según la compatibilidad de su cuenta.
+      <div style="text-align:center; padding:20px; color:#64748b; font-size:12px; border:2px dashed #e2e8f0; border-radius:8px; background: #f8fafc;">
+        Google Pay se habilitará automáticamente si su navegador cuenta con tarjetas guardadas compatibles.
       </div>
     </div>
 
     <p class="disclaimer-text">
-      Al procesar el pago mensual, la renovación será automática por el valor de 10 dólares cada mes. Puedes dar de baja la renovación cuando lo desees de forma inmediata desde el perfil de tu cuenta.
+      Nota: Los planes mensuales se renuevan automáticamente de forma fija por el valor de 10 dólares cada 30 días. Puedes cancelar la renovación sin penalizaciones en cualquier momento desde tu panel de usuario.
     </p>
   </div>
 </div>
 
-<!-- SDK E INYECTORES DE SCRIPTS -->
 <script src="https://www.paypal.com/sdk/js?client-id=sb&currency=USD"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
@@ -296,7 +387,7 @@ function updatePriceDisplay() {
     regBox.style.display = "none";
   } else {
     amountEl.textContent = "10,00";
-    periodEl.textContent = "/ Por mes";
+    periodEl.textContent = "/ al mes";
     regBox.style.display = "block";
   }
   renderPayPalButtons();
@@ -324,16 +415,15 @@ function openPaymentPanel() {
 }
 function closePaymentPanel() {
   document.getElementById('side-panel-overlay').style.display = 'none';
-  document.getElementById('side-payment-panel').classList.remove('remove');
-  document.getElementById('side-payment-panel').style.right = "-460px";
+  document.getElementById('side-payment-panel').classList.remove('open');
 }
 
 document.getElementById('btn-descargar').addEventListener('click', () => {
   document.getElementById('side-panel-overlay').style.display = 'block';
-  document.getElementById('side-payment-panel').style.right = "0";
+  document.getElementById('side-payment-panel').classList.add('open');
 });
 
-// --- RENDERIZACIÓN DE COMPRA SEGURA CON PAYPAL POPUP ---
+// --- ENLACE SEGURO CON PAYPAL POPUP ---
 function renderPayPalButtons() {
   document.getElementById('paypal-card-container').innerHTML = '';
   document.getElementById('paypal-standard-container').innerHTML = '';
@@ -346,7 +436,7 @@ function renderPayPalButtons() {
       const u = document.getElementById('reg-user').value.trim();
       const p = document.getElementById('reg-pass').value.trim();
       if(!u || !p) {
-        alert('Por favor, rellene el cuadro de usuario y contraseña para poder guardar su membresía de $10.');
+        alert('Por favor, ingresa los datos de tu nueva cuenta para poder activar la suscripción mensual de $10.');
         return false;
       }
     }
@@ -363,7 +453,7 @@ function renderPayPalButtons() {
     },
     onApprove: function(data, actions) {
       return actions.order.capture().then(function(details) {
-        alert('Pago procesado correctamente. ¡Cuenta activada con plan de ' + currentPrice + ' USD!');
+        alert('Pago procesado correctamente. ¡Plan de ' + currentPrice + ' USD activado con éxito!');
         closePaymentPanel();
       });
     }
@@ -379,14 +469,14 @@ function renderPayPalButtons() {
     },
     onApprove: function(data, actions) {
       return actions.order.capture().then(function(details) {
-        alert('Suscripción mensual vinculada con éxito.');
+        alert('Membresía vinculada de manera exitosa.');
         closePaymentPanel();
       });
     }
   }).render('#paypal-standard-container');
 }
 
-// --- ESTRUCTURA DINÁMICA DE REPETIDORES NUEVOS (NUEVOS ENTORNOS INVENTADOS) ---
+// --- REPETIDORES RE-ESTILIZADOS CON MARCADORES DE POSICIÓN DE INGENIERÍA ---
 function addItem(type) {
   const wrapper = document.getElementById(`wrapper-${type}`);
   if(!wrapper) return;
@@ -416,20 +506,19 @@ function addItem(type) {
   const div = document.createElement('div');
   div.className = 'repeater-item';
   div.innerHTML = `
-    <button class="btn-delete" onclick="this.parentElement.remove(); syncDataFromForm();">X</button>
+    <button class="btn-delete" onclick="this.parentElement.remove(); syncDataFromForm();">✕</button>
     <div class="row">
-      <input class="item-fecha" placeholder="${phFecha}">
-      <input class="item-titulo" placeholder="${phTitulo}">
+      <div class="group"><label>Período / Fechas</label><input class="item-fecha" placeholder="${phFecha}"></div>
+      <div class="group"><label>Título o Cargo</label><input class="item-titulo" placeholder="${phTitulo}"></div>
     </div>
-    <input class="item-sub" placeholder="${phSub}" style="margin-top:5px;">
-    <textarea class="item-desc" style="display:none;"></textarea>
+    ${phSub ? `<div class="group" style="margin-top:4px;"><label>Institución u Organización</label><input class="item-sub" placeholder="${phSub}"></div>` : '<input class="item-sub" type="hidden" value="">'}
   `;
-  div.querySelectorAll('input, textarea').forEach(el => el.addEventListener('input', syncDataFromForm));
+  div.querySelectorAll('input').forEach(el => el.addEventListener('input', syncDataFromForm));
   wrapper.appendChild(div);
   syncDataFromForm();
 }
 
-// --- MOTOR DE SINCRONIZACIÓN ---
+// --- MOTOR SÍNCRONO DE DATOS LIMPIOS ---
 function syncDataFromForm() {
   const n = document.getElementById('form-nombre').value;
   const e = document.getElementById('form-email').value;
@@ -464,7 +553,7 @@ function syncDataFromForm() {
     const items = Array.from(document.querySelectorAll(`#wrapper-${type} .repeater-item`)).map(item => ({
       fecha: item.querySelector('.item-fecha').value,
       titulo: item.querySelector('.item-titulo').value,
-      sub: item.querySelector('.item-sub').value
+      sub: item.querySelector('.item-sub') ? item.querySelector('.item-sub').value : ''
     }));
     
     document.getElementById(targetId).innerHTML = items.map(item => `
@@ -485,7 +574,7 @@ function syncDataFromForm() {
   renderSection('cv-diplomados', 'diplomados');
 }
 
-// --- COLORES ---
+// --- PALETAS DE COLORES ---
 const paletas = {
   "azul-clasico": { sideBg: "#2f5f82", sideText: "#ffffff", accent: "#2f5f82" },
   "azul-marino": { sideBg: "#1e293b", sideText: "#ffffff", accent: "#0f172a" },
@@ -500,7 +589,7 @@ function changeColorPalette() {
   document.documentElement.style.setProperty('--cv-accent', p.accent);
 }
 
-// --- CARGA DE FOTO ---
+// --- MANEJO DE IMÁGENES ---
 document.getElementById('form-foto').addEventListener('change', e => {
   const f = e.target.files[0];
   if (!f) return;
@@ -515,7 +604,7 @@ document.getElementById('form-foto').addEventListener('change', e => {
 
 function switchTab(tabId) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.step-content').forEach(c => c.style.style.display = 'none');
+  document.querySelectorAll('.step-content').forEach(c => c.style.display = 'none');
   event.target.classList.add('active');
   document.getElementById(`step-${tabId}`).style.display = 'block';
 }
