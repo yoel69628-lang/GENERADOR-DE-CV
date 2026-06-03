@@ -1,1150 +1,739 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CVwizard - Editor de Currículum Profesional</title>
-  <style>
-    :root {
-      --primary: #2563eb;
-      --primary-hover: #1d4ed8;
-      --dark-sidebar: #1e293b;
-      --light-bg: #f1f5f9;
-      --border-color: #e2e8f0;
-      --text-main: #0f172a;
-      --text-muted: #64748b;
-      
-      /* CV Template Colors matched to the screenshots */
-      --cv-sidebar-bg: #326284;
-      --cv-sidebar-text: #ffffff;
-      --cv-main-bg: #ffffff;
-      --cv-text-dark: #1e293b;
-      --cv-text-light: #475569;
-    }
-
-    * {
-      box-sizing: border-box;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    }
-
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #f8fafc;
-      color: var(--text-main);
-      height: 100vh;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* Top Navbar */
-    .navbar {
-      height: 56px;
-      background-color: #ffffff;
-      border-bottom: 1px solid var(--border-color);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 24px;
-      z-index: 100;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 18px;
-      font-weight: 700;
-      color: #0f172a;
-    }
-
-    .brand span {
-      color: #2563eb;
-    }
-
-    .nav-actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .btn-top-download {
-      background-color: #2563eb;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: background 0.2s;
-    }
-
-    .btn-top-download:hover {
-      background-color: #1d4ed8;
-    }
-
-    /* Main Workspace Split */
-    .workspace {
-      display: grid;
-      grid-template-columns: 480px 1fr;
-      flex: 1;
-      height: calc(100vh - 56px);
-      overflow: hidden;
-    }
-
-    /* Left Form Editor Panel */
-    .editor-panel {
-      background-color: #ffffff;
-      border-right: 1px solid var(--border-color);
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      overflow: hidden;
-    }
-
-    .editor-header {
-      padding: 20px 24px;
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    .editor-header h1 {
-      margin: 0;
-      font-size: 18px;
-      font-weight: 600;
-    }
-
-    .editor-scroll {
-      padding: 24px;
-      overflow-y: auto;
-      flex: 1;
-      background-color: #f8fafc;
-    }
-
-    /* Accordion / Sections */
-    .accordion-section {
-      background: white;
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      margin-bottom: 16px;
-      overflow: hidden;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-    }
-
-    .accordion-header {
-      padding: 16px 20px;
-      font-weight: 600;
-      font-size: 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
-      background-color: #ffffff;
-      user-select: none;
-      border-bottom: 1px solid transparent;
-    }
-
-    .accordion-section.open .accordion-header {
-      border-bottom-color: var(--border-color);
-      background-color: #fdfdfd;
-    }
-
-    .accordion-content {
-      padding: 20px;
-      display: none;
-    }
-
-    .accordion-section.open .accordion-content {
-      display: block;
-    }
-
-    .form-group {
-      margin-bottom: 16px;
-    }
-
-    .form-group:last-child {
-      margin-bottom: 0;
-    }
-
-    label {
-      display: block;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-muted);
-      margin-bottom: 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    input[type="text"], input[type="email"], input[type="tel"], textarea, select {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid #cbd5e1;
-      border-radius: 6px;
-      font-size: 14px;
-      color: var(--text-main);
-      background-color: #ffffff;
-      transition: all 0.2s;
-    }
-
-    input:focus, textarea:focus, select:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-    }
-
-    textarea {
-      min-height: 90px;
-      resize: vertical;
-    }
-
-    .row-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    /* Repeater Entries */
-    .repeater-container {
-      margin-bottom: 12px;
-    }
-
-    .repeater-item {
-      border: 1px solid var(--border-color);
-      padding: 14px;
-      border-radius: 6px;
-      background-color: #f8fafc;
-      margin-bottom: 12px;
-      position: relative;
-    }
-
-    .btn-remove {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: none;
-      border: none;
-      color: #ef4444;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 14px;
-    }
-
-    .btn-add-item {
-      background: none;
-      border: 1px dashed var(--primary);
-      color: var(--primary);
-      padding: 10px;
-      border-radius: 6px;
-      width: 100%;
-      font-weight: 600;
-      font-size: 13px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    .btn-add-item:hover {
-      background-color: rgba(37, 99, 235, 0.05);
-    }
-
-    /* Right Live Preview Panel */
-    .preview-panel {
-      background-color: #cbd5e1;
-      overflow-y: auto;
-      padding: 40px;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-    }
-
-    /* Exact CV Document Structure based on user image */
-    .cv-document {
-      width: 210mm;
-      min-height: 297mm;
-      background-color: white;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-      display: grid;
-      grid-template-columns: 240px 1fr;
-      position: relative;
-    }
-
-    /* CV Left Sidebar Accent */
-    .cv-sidebar {
-      background-color: var(--cv-sidebar-bg);
-      color: var(--cv-sidebar-text);
-      padding: 30px 20px;
-    }
-
-    .cv-photo-box {
-      width: 130px;
-      height: 130px;
-      border-radius: 50%;
-      overflow: hidden;
-      margin: 0 auto 20px auto;
-      border: 3px solid rgba(255,255,255,0.2);
-      background-color: #e2e8f0;
-    }
-
-    .cv-photo-box img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .cv-sidebar h2 {
-      font-size: 14px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      border-bottom: 1px solid rgba(255,255,255,0.3);
-      padding-bottom: 4px;
-      margin-top: 28px;
-      margin-bottom: 12px;
-      font-weight: 600;
-    }
-
-    .cv-sidebar h2:first-of-type {
-      margin-top: 0;
-    }
-
-    .cv-contact-item {
-      font-size: 12px;
-      margin-bottom: 8px;
-      word-break: break-word;
-      line-height: 1.4;
-    }
-
-    .cv-sidebar-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .cv-sidebar-list li {
-      font-size: 11.5px;
-      margin-bottom: 6px;
-      text-transform: uppercase;
-      font-weight: 500;
-    }
-
-    /* Rating Dots for Languages */
-    .lang-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 6px;
-      font-size: 11.5px;
-    }
-
-    .rating-dots {
-      display: flex;
-      gap: 3px;
-    }
-
-    .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background-color: rgba(255,255,255,0.3);
-    }
-
-    .dot.filled {
-      background-color: #ffffff;
-    }
-
-    /* Program tags */
-    .program-item {
-      font-size: 11px;
-      background: rgba(255,255,255,0.15);
-      padding: 4px 8px;
-      border-radius: 4px;
-      margin-bottom: 6px;
-      display: inline-block;
-      margin-right: 4px;
-    }
-
-    /* CV Main Body */
-    .cv-main {
-      background-color: var(--cv-main-bg);
-      color: var(--cv-text-dark);
-      padding: 40px 30px;
-    }
-
-    .cv-name {
-      font-size: 24px;
-      font-weight: 700;
-      margin: 0 0 4px 0;
-      color: #0f172a;
-      text-transform: uppercase;
-    }
-
-    .cv-title-sub {
-      font-size: 13px;
-      color: #2563eb;
-      font-weight: 600;
-      margin-bottom: 24px;
-      text-transform: uppercase;
-    }
-
-    .cv-main h3 {
-      font-size: 14px;
-      text-transform: uppercase;
-      color: #0f172a;
-      border-bottom: 2px solid #e2e8f0;
-      padding-bottom: 4px;
-      margin-top: 24px;
-      margin-bottom: 12px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-    }
-
-    .cv-main h3:first-of-type {
-      margin-top: 0;
-    }
-
-    .cv-profile-desc {
-      font-size: 12px;
-      line-height: 1.5;
-      color: var(--cv-text-light);
-      text-align: justify;
-    }
-
-    /* Timeline Row Entry */
-    .timeline-item {
-      display: grid;
-      grid-template-columns: 120px 1fr;
-      margin-bottom: 12px;
-      font-size: 12px;
-    }
-
-    .timeline-date {
-      font-weight: 600;
-      color: #64748b;
-    }
-
-    .timeline-title {
-      font-weight: 700;
-      color: #0f172a;
-    }
-
-    .timeline-subtitle {
-      color: #2563eb;
-      font-size: 11px;
-      font-weight: 600;
-      margin-top: 1px;
-    }
-
-    .cv-footer-consent {
-      margin-top: 40px;
-      font-size: 9px;
-      color: #94a3b8;
-      text-align: justify;
-      line-height: 1.3;
-      border-top: 1px solid #f1f5f9;
-      padding-top: 8px;
-    }
-
-    /* Side Checkout Panel Drawer */
-    .checkout-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(15, 23, 42, 0.4);
-      backdrop-filter: blur(4px);
-      z-index: 1000;
-    }
-
-    .checkout-drawer {
-      position: fixed;
-      top: 0;
-      right: -460px;
-      width: 440px;
-      height: 100%;
-      background: #ffffff;
-      box-shadow: -8px 0 24px rgba(0,0,0,0.15);
-      z-index: 1001;
-      display: flex;
-      flex-direction: column;
-      transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .checkout-drawer.open {
-      right: 0;
-    }
-
-    .drawer-header {
-      padding: 20px 24px;
-      border-bottom: 1px solid var(--border-color);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: #1e293b;
-      color: white;
-    }
-
-    .drawer-header h2 {
-      margin: 0;
-      font-size: 16px;
-      font-weight: 600;
-    }
-
-    .btn-close-drawer {
-      background: none;
-      border: none;
-      color: #94a3b8;
-      font-size: 22px;
-      cursor: pointer;
-    }
-
-    .btn-close-drawer:hover {
-      color: white;
-    }
-
-    .drawer-body {
-      padding: 24px;
-      overflow-y: auto;
-      flex: 1;
-    }
-
-    .plan-header-title {
-      font-size: 20px;
-      font-weight: 700;
-      margin: 0 0 4px 0;
-    }
-
-    .plan-subtitle {
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-bottom: 24px;
-    }
-
-    .price-card {
-      background-color: #f8fafc;
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 16px;
-      margin-bottom: 20px;
-    }
-
-    .price-flex {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .price-amount {
-      font-size: 32px;
-      font-weight: 800;
-      color: #0f172a;
-    }
-
-    .price-amount span {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text-muted);
-    }
-
-    /* Gateway Tabs */
-    .gateway-tabs {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      overflow: hidden;
-      margin-bottom: 20px;
-    }
-
-    .gt-btn {
-      background: #f8fafc;
-      border: none;
-      padding: 12px;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-muted);
-      cursor: pointer;
-      border-right: 1px solid var(--border-color);
-      transition: all 0.2s;
-    }
-
-    .gt-btn:last-child {
-      border-right: none;
-    }
-
-    .gt-btn.active {
-      background: #ffffff;
-      color: #2563eb;
-      box-shadow: inset 0 -2px 0 #2563eb;
-    }
-
-    /* Embedded Simulated Payment Windows */
-    .payment-placeholder-box {
-      border: 1px solid #cbd5e1;
-      border-radius: 8px;
-      padding: 24px;
-      text-align: center;
-      background-color: #ffffff;
-    }
-
-    .paypal-btn-sim {
-      background-color: #ffc439;
-      color: #111;
-      padding: 12px;
-      border-radius: 4px;
-      font-weight: 700;
-      font-size: 14px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      border: none;
-      margin-bottom: 12px;
-    }
-
-    .paypal-card-btn-sim {
-      background-color: #2c2e2f;
-      color: #fff;
-      padding: 12px;
-      border-radius: 4px;
-      font-weight: 600;
-      font-size: 14px;
-      cursor: pointer;
-      border: none;
-    }
-
-    .legal-notice {
-      font-size: 11px;
-      color: var(--text-muted);
-      line-height: 1.4;
-      margin-top: 20px;
-      text-align: justify;
-    }
-
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CVwizard Pro - Editor Premium (Aura Civil Layout)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <style>
+        :root {
+            --bg-main: #f4f6f9;
+            --sidebar-edit-bg: #ffffff;
+            --cv-preview-bg: #ffffff;
+            --primary-color: #1a365d; /* Azul estructural profundo */
+            --accent-color: #00b4d8;  /* Cian creativo */
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --border-color: #e2e8f0;
+            --premium-gold: #d4af37;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-dark);
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navbar Superior */
+        .navbar {
+            background-color: #fff;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            height: 60px;
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo span {
+            color: var(--accent-color);
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-size: 14px;
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--text-light);
+        }
+
+        .btn-primary {
+            background-color: #2ec4b6;
+            color: white;
+            box-shadow: 0 4px 6px rgba(46, 196, 182, 0.2);
+        }
+
+        .btn-primary:hover {
+            background-color: #25a195;
+        }
+
+        /* Contenedor Principal */
+        .main-container {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 60px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Bloque Izquierdo: Editor */
+        .editor-side {
+            width: 45%;
+            background-color: var(--sidebar-edit-bg);
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+            padding: 25px;
+        }
+
+        .section-block {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 15px 20px;
+            background-color: #fafbfc;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            border-bottom: 1px solid transparent;
+        }
+
+        .section-header.active {
+            border-bottom-color: var(--border-color);
+            color: var(--primary-color);
+        }
+
+        .section-content {
+            padding: 20px;
+            display: none;
+        }
+
+        .section-content.open {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            color: var(--text-dark);
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent-color);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            height: 80px;
+        }
+
+        .row-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        /* Bloque Derecho: Preview CV */
+        .preview-side {
+            width: 55%;
+            background-color: var(--bg-main);
+            overflow-y: auto;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 40px 20px;
+        }
+
+        /* Formato A4 Real */
+        .cv-page {
+            width: 210mm;
+            min-height: 297mm;
+            background-color: var(--cv-preview-bg);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            display: flex;
+            position: relative;
+        }
+
+        /* Plantilla: Aura Civil Layout */
+        .cv-sidebar {
+            width: 32%;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .cv-main-content {
+            width: 68%;
+            padding: 35px 30px;
+            background-color: #fff;
+        }
+
+        /* Detalles de la Plantilla */
+        .profile-img-placeholder {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background-color: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid var(--accent-color);
+            margin: 0 auto 10px auto;
+            font-size: 35px;
+        }
+
+        .sidebar-title {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 5px;
+            margin-bottom: 12px;
+            color: #fff;
+        }
+
+        .sidebar-item {
+            font-size: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            word-break: break-all;
+        }
+
+        .sidebar-item i {
+            color: var(--accent-color);
+            width: 14px;
+        }
+
+        .skill-bar-container {
+            margin-bottom: 10px;
+        }
+        .skill-name {
+            font-size: 12px;
+            margin-bottom: 4px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .skill-bar {
+            height: 5px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .skill-progress {
+            height: 100%;
+            background-color: var(--accent-color);
+            width: 85%;
+        }
+
+        /* Estilos del cuerpo del CV */
+        .cv-header h1 {
+            font-size: 26px;
+            color: var(--primary-color);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .cv-header .subtitle {
+            font-size: 15px;
+            color: var(--accent-color);
+            font-weight: 600;
+            margin-top: 2px;
+            margin-bottom: 15px;
+        }
+        .cv-header p {
+            font-size: 12.5px;
+            line-height: 1.5;
+            color: var(--text-dark);
+            text-align: justify;
+        }
+
+        .cv-section {
+            margin-top: 25px;
+        }
+        .cv-section-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--primary-color);
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 4px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .cv-section-title i {
+            color: var(--accent-color);
+        }
+
+        .timeline-item {
+            margin-bottom: 18px;
+            position: relative;
+        }
+        .timeline-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent-color);
+            margin-bottom: 3px;
+        }
+        .timeline-job {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        .timeline-company {
+            font-size: 12.5px;
+            color: var(--text-light);
+            font-style: italic;
+            margin-bottom: 5px;
+        }
+        .timeline-desc {
+            font-size: 12px;
+            line-height: 1.4;
+            color: var(--text-dark);
+            text-align: justify;
+        }
+
+        /* Modal / Panel lateral de Checkout Premium */
+        .checkout-overlay {
+            position: absolute;
+            top: 0;
+            right: -100%;
+            width: 40%;
+            height: 100%;
+            background: white;
+            box-shadow: -5px 0 25px rgba(0,0,0,0.15);
+            z-index: 100;
+            transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .checkout-overlay.active {
+            right: 0;
+        }
+
+        .checkout-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .checkout-body {
+            padding: 25px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .pricing-card {
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .payment-methods {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .pay-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .pay-cc { background-color: #1a365d; color: white; }
+        .pay-paypal { background-color: #ffc439; color: #003087; }
+        .pay-google { background-color: #000000; color: white; }
+
+        .legal-text {
+            font-size: 11px;
+            color: var(--text-light);
+            line-height: 1.4;
+            margin-top: 20px;
+            text-align: justify;
+        }
+
+        /* Ajustes de Impresión / PDF */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .preview-side, .preview-side *, .cv-page, .cv-page * {
+                visibility: visible;
+            }
+            .preview-side {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                padding: 0;
+                background: none;
+            }
+            .cv-page {
+                box-shadow: none;
+                margin: 0;
+            }
+        }
+    </style>
 </head>
 <body>
 
-  <!-- Top Navigation Bar -->
-  <div class="navbar">
-    <div class="brand">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="color: #2563eb;"><path d="M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 7H17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 12H17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 17H13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      CV<span>wizard</span>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fa-solid fa-file-invoice-gradient" style="color: var(--accent-color);"></i>
+            CVwizard <span>Pro</span>
+        </div>
+        <div class="nav-actions">
+            <button class="btn btn-secondary"><i class="fa-solid fa-eye"></i> Vista Previa</button>
+            <button class="btn btn-primary" onclick="toggleCheckout()"><i class="fa-solid fa-download"></i> Descargar CV</button>
+        </div>
+    </nav>
+
+    <!-- Contenedor Base -->
+    <div class="main-container">
+
+        <!-- EDITOR (Izquierda) -->
+        <div class="editor-side">
+            
+            <!-- Bloque 1: Datos Personales -->
+            <div class="section-block">
+                <div class="section-header active" onclick="toggleSection(this)">
+                    <span><i class="fa-solid fa-user" style="margin-right: 8px;"></i> Datos Personales</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <div class="section-content open">
+                    <div class="row-grid">
+                        <div class="form-group">
+                            <label>Nombre(s)</label>
+                            <input type="text" class="form-control" id="in-name" value="Alejandro" oninput="updateCV()">
+                        </div>
+                        <div class="form-group">
+                            <label>Apellidos</label>
+                            <input type="text" class="form-control" id="in-lastname" value="Bermúdez Mendoza" oninput="updateCV()">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Puesto / Titulado</label>
+                        <input type="text" class="form-control" id="in-title" value="Ingeniero Civil - Gerente de Supervisión de Obras" oninput="updateCV()">
+                    </div>
+                    <div class="row-grid">
+                        <div class="form-group">
+                            <label>Correo Electrónico</label>
+                            <input type="email" class="form-control" id="in-email" value="a.bermudez@ingenieria.com" oninput="updateCV()">
+                        </div>
+                        <div class="form-group">
+                            <label>Teléfono</label>
+                            <input type="text" class="form-control" id="in-phone" value="+51 987 654 321" oninput="updateCV()">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Dirección / Ubicación</label>
+                        <input type="text" class="form-control" id="in-location" value="Lima, Perú" oninput="updateCV()">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bloque 2: Perfil Profesional -->
+            <div class="section-block">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span><i class="fa-solid fa-address-card" style="margin-right: 8px;"></i> Perfil Profesional</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <div class="section-content">
+                    <div class="form-group">
+                        <label>Extracto Profesional</label>
+                        <textarea class="form-control" id="in-profile" oninput="updateCV()">Ingeniero Civil colegiado con más de 12 años de trayectoria sólida en la Gerencia y Supervisión de Obras Públicas y Privadas de gran envergadura. Especialista en la gestión integral de contratos bajo modalidades complejas, control estricto de valorizaciones, liquidación técnica-financiera y mitigación de riesgos contractuales.</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bloque 3: Experiencia Laboral -->
+            <div class="section-block">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span><i class="fa-solid fa-briefcase" style="margin-right: 8px;"></i> Experiencia Laboral</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <div class="section-content">
+                    <div class="form-group">
+                        <label>Puesto</label>
+                        <input type="text" class="form-control" id="in-job1" value="Ingeniero de Gerencia de Obras (Contratante)" oninput="updateCV()">
+                    </div>
+                    <div class="form-group">
+                        <label>Empresa / Entidad</label>
+                        <input type="text" class="form-control" id="in-comp1" value="Consorcio Vial Metropolitano" oninput="updateCV()">
+                    </div>
+                    <div class="row-grid">
+                        <div class="form-group">
+                            <label>Inicio / Fin</label>
+                            <input type="text" class="form-control" id="in-date1" value="2022 - Presente" oninput="updateCV()">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Descripción de Logros y Funciones</label>
+                        <textarea class="form-control" id="in-desc1" oninput="updateCV()">Responsable directo de la administración y supervisión del contrato de obra pública. Dirección técnica encargada del cumplimiento estricto de los cronogramas físicos-financieros. Control de calidad de procesos constructivos en campo y resolución inmediata de controversias técnicas.</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bloque 4: Competencias y Software -->
+            <div class="section-block">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span><i class="fa-solid fa-screwdriver-wrench" style="margin-right: 8px;"></i> Competencias Avanzadas</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <div class="section-content">
+                    <div class="form-group">
+                        <label>Habilidad Principal 1</label>
+                        <input type="text" class="form-control" id="in-skill1" value="Gestión de Contratos de Obra" oninput="updateCV()">
+                    </div>
+                    <div class="form-group">
+                        <label>Habilidad Principal 2</label>
+                        <input type="text" class="form-control" id="in-skill2" value="Supervisión Técnica y Control de Calidad" oninput="updateCV()">
+                    </div>
+                    <div class="form-group">
+                        <label>Habilidad Principal 3</label>
+                        <input type="text" class="form-control" id="in-skill3" value="Liquidaciones Económicas" oninput="updateCV()">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- PREVISUALIZACIÓN EN VIVO (Derecha) -->
+        <div class="preview-side">
+            <div class="cv-page" id="cv-document">
+                
+                <!-- Barra Lateral Plantilla Premium (Aura Civil) -->
+                <div class="cv-sidebar">
+                    <div class="profile-area">
+                        <div class="profile-img-placeholder">
+                            <i class="fa-solid fa-user-gear"></i>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="sidebar-title">Contacto</div>
+                        <div class="sidebar-item" id="cv-phone"><i class="fa-solid fa-phone"></i> +51 987 654 321</div>
+                        <div class="sidebar-item" id="cv-email"><i class="fa-solid fa-envelope"></i> a.bermudez@ingenieria.com</div>
+                        <div class="sidebar-item" id="cv-location"><i class="fa-solid fa-location-dot"></i> Lima, Perú</div>
+                    </div>
+
+                    <div>
+                        <div class="sidebar-title">Especialidades</div>
+                        <div class="skill-bar-container">
+                            <div class="skill-name"><span id="cv-sk1">Gestión de Contratos de Obra</span></div>
+                            <div class="skill-bar"><div class="skill-progress" style="width: 95%;"></div></div>
+                        </div>
+                        <div class="skill-bar-container">
+                            <div class="skill-name"><span id="cv-sk2">Supervisión Técnica</span></div>
+                            <div class="skill-bar"><div class="skill-progress" style="width: 90%;"></div></div>
+                        </div>
+                        <div class="skill-bar-container">
+                            <div class="skill-name"><span id="cv-sk3">Liquidaciones Económicas</span></div>
+                            <div class="skill-bar"><div class="skill-progress" style="width: 85%;"></div></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="sidebar-title">Idiomas</div>
+                        <div class="sidebar-item"><i class="fa-solid fa-language"></i> Español (Nativo)</div>
+                        <div class="sidebar-item"><i class="fa-solid fa-language"></i> Inglés Técnico (Intermedio)</div>
+                    </div>
+                </div>
+
+                <!-- Cuerpo Principal Plantilla Premium -->
+                <div class="cv-main-content">
+                    <div class="cv-header">
+                        <h1 id="cv-fullname">Alejandro Bermúdez Mendoza</h1>
+                        <div class="subtitle" id="cv-jobtitle">Ingeniero Civil - Gerente de Supervisión de Obras</div>
+                        <p id="cv-profile-text">Ingeniero Civil colegiado con más de 12 años de trayectoria sólida en la Gerencia y Supervisión de Obras Públicas y Privadas de gran envergadura. Especialista en la gestión integral de contratos bajo modalidades complejas, control estricto de valorizaciones, liquidación técnica-financiera y mitigación de riesgos contractuales.</p>
+                    </div>
+
+                    <div class="cv-section">
+                        <div class="cv-section-title"><i class="fa-solid fa-briefcase"></i> Trayectoria Profesional</div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-meta">
+                                <span id="cv-comp1">Consorcio Vial Metropolitano</span>
+                                <span id="cv-date1">2022 - Presente</span>
+                            </div>
+                            <div class="timeline-job" id="cv-job1">Ingeniero de Gerencia de Obras (Contratante)</div>
+                            <div class="timeline-desc" id="cv-desc1">Responsable directo de la administración y supervisión del contrato de obra pública. Dirección técnica encargada del cumplimiento estricto de los cronogramas físicos-financieros. Control de calidad de procesos constructivos en campo y resolución inmediata de controversias técnicas.</div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-meta">
+                                <span>G&M Inspectores Civiles S.A.C.</span>
+                                <span>2018 - 2022</span>
+                            </div>
+                            <div class="timeline-job">Jefe de Supervisión de Infraestructura Vial</div>
+                            <div class="timeline-desc">Lideré la supervisión técnica en campo del proyecto de ampliación de autopistas regionales. Encargado de la firma de valorizaciones mensuales de avance, aprobación de adicionales justificables y control de penalidades asociadas al contrato.</div>
+                        </div>
+                    </div>
+
+                    <div class="cv-section">
+                        <div class="cv-section-title"><i class="fa-solid fa-graduation-cap"></i> Educación y Certificaciones</div>
+                        <div class="timeline-item">
+                            <div class="timeline-meta">
+                                <span>Universidad Nacional de Ingeniería</span>
+                                <span>Graduado</span>
+                            </div>
+                            <div class="timeline-job">Licenciatura en Ingeniería Civil</div>
+                            <div class="timeline-desc">CIP Colegiado y Habilitado Vigente. Especialización enfocada en Gerencia de la Construcción.</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- PASARELA DE PAGO / CHECKOUT (Desplegable Lateral Oculto) -->
+        <div class="checkout-overlay" id="checkoutPanel">
+            <div class="checkout-header">
+                <h2><i class="fa-solid fa-lock" style="color: var(--premium-gold);"></i> Exportar en Alta Definición</h2>
+                <button class="btn btn-secondary" onclick="toggleCheckout()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="checkout-body">
+                <div class="pricing-card">
+                    <p style="font-size: 13px; font-weight: 600; color: #856404;">ACCESO PREMIUM ILIMITADO</p>
+                    <p style="font-size: 28px; font-weight: 800; color: var(--primary-color); margin: 5px 0;">$19.99 <span style="font-size: 14px; font-weight: 400;">/ mes</span></p>
+                    <p style="font-size: 11px; color: #856404;">Cancela cuando quieras desde tu perfil con un solo clic.</p>
+                </div>
+
+                <p style="font-size: 14px; font-weight: bold; margin-bottom: 12px;">Selecciona tu método de pago:</p>
+                <div class="payment-methods">
+                    <button class="pay-btn pay-cc" onclick="alert('Simulación de Pago con Tarjeta Procesada con Éxito. ¡Ya puedes guardar como PDF con Ctrl+P!')"><i class="fa-solid fa-credit-card"></i> Pagar con Tarjeta de Crédito</button>
+                    <button class="pay-btn pay-paypal" onclick="alert('Redirigiendo a entorno seguro de PayPal simulado...')"><i class="fa-brands fa-paypal"></i> PayPal</button>
+                    <button class="pay-btn pay-google" onclick="alert('Enlazando con Google Wallet simulación...')"><i class="fa-brands fa-google-pay" style="font-size: 24px;"></i></button>
+                </div>
+
+                <div class="legal-text">
+                    Al proceder con el pago, usted autoriza la activación inmediata de su suscripción premium. Conforme a las normativas de comercio electrónico, usted acepta expresamente que al iniciar la descarga del contenido digital cede su derecho de desistimiento una vez comenzada la ejecución del servicio.
+                </div>
+            </div>
+        </div>
+
     </div>
-    <div class="nav-actions">
-      <button class="btn-top-download" onclick="openCheckout()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v4M7 10l5 5 5-5M12 15V3"/></svg>
-        Descargar
-      </button>
-    </div>
-  </div>
 
-  <!-- Main Grid Workspace -->
-  <div class="workspace">
-    
-    <!-- Left Panel with Inputs arranged like CVwizard Fields -->
-    <div class="editor-panel">
-      <div class="editor-header">
-        <h1>Modificar Contenido del Currículum</h1>
-      </div>
-      <div class="editor-scroll">
+    <!-- PROGRAMACIÓN / LÓGICA INTERACTIVA -->
+    <script>
+        // Función para abrir y cerrar acordeones del editor
+        function toggleSection(headerElement) {
+            const content = headerElement.nextElementSibling;
+            
+            // Cerrar otros abiertos por limpieza visual
+            document.querySelectorAll('.section-content').forEach(item => {
+                if (item !== content) {
+                    item.classList.remove('open');
+                    item.previousElementSibling.classList.remove('active');
+                }
+            });
 
-        <!-- Personal Info Section -->
-        <div class="accordion-section open">
-          <div class="accordion-header" onclick="toggleSection(this)">
-            <span>Datos personales</span>
-            <span>▼</span>
-          </div>
-          <div class="accordion-content">
-            <div class="form-group">
-              <label>Nombre Completo</label>
-              <input type="text" id="in-name" value="JUAN ESPINOZA LOPEZ" oninput="updateCV()">
-            </div>
-            <div class="form-group">
-              <label>Correo electrónico</label>
-              <input type="email" id="in-email" value="yoel.696.28@gmail.com" oninput="updateCV()">
-            </div>
-            <div class="form-group">
-              <label>Teléfono</label>
-              <input type="tel" id="in-phone" value="951517452" oninput="updateCV()">
-            </div>
-            <div class="form-group">
-              <label>Dirección / Ubicación</label>
-              <input type="text" id="in-address" value="Urb. Vallecito el olivo etapa 2 Av.seoane #102, Abancay" oninput="updateCV()">
-            </div>
-          </div>
-        </div>
-
-        <!-- Professional Summary -->
-        <div class="accordion-section">
-          <div class="accordion-header" onclick="toggleSection(this)">
-            <span>Sobre Mí / Perfil</span>
-            <span>▼</span>
-          </div>
-          <div class="accordion-content">
-            <div class="form-group">
-              <label>Descripción de perfil</label>
-              <textarea id="in-profile" oninput="updateCV()">Bachiller en Ingeniería Civil (UTEA). Apto para trabajar en equipo, resolver problemas, innovar y con participación. FÁCIL adaptación a nuevos ambientes y tecnologías. Disponibilidad inmediata.</textarea>
-            </div>
-          </div>
-        </div>
-
-        <!-- Academic History -->
-        <div class="accordion-section">
-          <div class="accordion-header" onclick="toggleSection(this)">
-            <span>Formación Académica</span>
-            <span>▼</span>
-          </div>
-          <div class="accordion-content">
-            <div id="edu-repeater" class="repeater-container">
-              <div class="repeater-item">
-                <button class="btn-remove" onclick="this.parentElement.remove(); updateCV();">✕</button>
-                <div class="form-group"><label>Periodo</label><input type="text" class="edu-date" value="ago 2015 - jun 2023" oninput="updateCV()"></div>
-                <div class="form-group"><label>Título</label><input type="text" class="edu-title" value="Ingeniería Civil, ABANCAY" oninput="updateCV()"></div>
-                <div class="form-group"><label>Institución</label><input type="text" class="edu-sub" value="Universidad Tecnológica de los Andes" oninput="updateCV()"></div>
-              </div>
-            </div>
-            <button class="btn-add-item" onclick="addEdu()">+ Añadir formación académica</button>
-          </div>
-        </div>
-
-        <!-- Work Experience -->
-        <div class="accordion-section">
-          <div class="accordion-header" onclick="toggleSection(this)">
-            <span>Experiencia Laboral</span>
-            <span>▼</span>
-          </div>
-          <div class="accordion-content">
-            <div id="exp-repeater" class="repeater-container">
-              <!-- Item 1 -->
-              <div class="repeater-item">
-                <button class="btn-remove" onclick="this.parentElement.remove(); updateCV();">✕</button>
-                <div class="form-group"><label>Periodo</label><input type="text" class="exp-date" value="abr 2025 - dic 2025" oninput="updateCV()"></div>
-                <div class="form-group"><label>Cargo</label><input type="text" class="exp-title" value="ASISTENTE TECNICO DEL RESIDENTE DE OBRA" oninput="updateCV()"></div>
-                <div class="form-group"><label>Empresa</label><input type="text" class="exp-sub" value="CONSORCIO M Y M, CHALHUANCA" oninput="updateCV()"></div>
-              </div>
-              <!-- Item 2 -->
-              <div class="repeater-item">
-                <button class="btn-remove" onclick="this.parentElement.remove(); updateCV();">✕</button>
-                <div class="form-group"><label>Periodo</label><input type="text" class="exp-date" value="mar 2024 - jul 2024" oninput="updateCV()"></div>
-                <div class="form-group"><label>Cargo</label><input type="text" class="exp-title" value="ASISTENTE TECNICO DE FORMULACION DE EXPEDIENTE TECNICO" oninput="updateCV()"></div>
-                <div class="form-group"><label>Empresa</label><input type="text" class="exp-sub" value="CONSORCIO HUACCANA, HUACCANA" oninput="updateCV()"></div>
-              </div>
-              <!-- Item 3 -->
-              <div class="repeater-item">
-                <button class="btn-remove" onclick="this.parentElement.remove(); updateCV();">✕</button>
-                <div class="form-group"><label>Periodo</label><input type="text" class="exp-date" value="nov 2023 - ene 2024" oninput="updateCV()"></div>
-                <div class="form-group"><label>Cargo</label><input type="text" class="exp-title" value="ASISTENTE TECNICO DE SUPERVISOR DE OBRA" oninput="updateCV()"></div>
-                <div class="form-group"><label>Empresa</label><input type="text" class="exp-sub" value="CONSORCIO ILLAYUQ, COLCABAMBA" oninput="updateCV()"></div>
-              </div>
-            </div>
-            <button class="btn-add-item" onclick="addExp()">+ Añadir experiencia laboral</button>
-          </div>
-        </div>
-
-        <!-- Certifications -->
-        <div class="accordion-section">
-          <div class="accordion-header" onclick="toggleSection(this)">
-            <span>Certificados</span>
-            <span>▼</span>
-          </div>
-          <div class="accordion-content">
-            <div id="cert-repeater" class="repeater-container">
-              <div class="repeater-item">
-                <button class="btn-remove" onclick="this.parentElement.remove(); updateCV();">✕</button>
-                <div class="form-group"><label>Fecha</label><input type="text" class="cert-date" value="ene 2025" oninput="updateCV()"></div>
-                <div class="form-group"><label>Certificación</label><input type="text" class="cert-title" value="RESIDENTE DE OBRA CRITERIOS Y CASOS PRACTICOS" oninput="updateCV()"></div>
-              </div>
-              <div class="repeater-item">
-                <button class="btn-remove" onclick="this.parentElement.remove(); updateCV();">✕</button>
-                <div class="form-group"><label>Fecha</label><input type="text" class="cert-date" value="ene 2025" oninput="updateCV()"></div>
-                <div class="form-group"><label>Certificación</label><input type="text" class="cert-title" value="EJECUCION RESUPUESTARIA DIRECTA EN OBRAS PUBLICAS" oninput="updateCV()"></div>
-              </div>
-            </div>
-            <button class="btn-add-item" onclick="addCert()">+ Añadir certificado</button>
-          </div>
-        </div>
-
-        <!-- Skills Column -->
-        <div class="accordion-section">
-          <div class="accordion-header" onclick="toggleSection(this)">
-            <span>Habilidades (Barra lateral)</span>
-            <span>▼</span>
-          </div>
-          <div class="accordion-content">
-            <div class="form-group">
-              <label>Habilidades (una por línea)</label>
-              <textarea id="in-skills" oninput="updateCV()">BUENA COMUNICACION&#10;INICIATIVA&#10;LIDERASGO&#10;TRABAJO PROACTIVO&#10;TRABAJO EN EQUIPO</textarea>
-            </div>
-          </div>
-        </div>
-
-        <!-- Languages with Dots -->
-        <div class="accordion-section">
-          <div class="accordion-header" onclick="toggleSection(this)">
-            <span>Idiomas</span>
-            <span>▼</span>
-          </div>
-          <div class="accordion-content">
-            <div class="form-group">
-              <label>Idiomas (Formato: Idioma|Estrellas de 1 a 5)</label>
-              <textarea id="in-langs" oninput="updateCV()">QUECHUA|4&#10;INGLES BASICO|2</textarea>
-            </div>
-          </div>
-        </div>
-
-        <!-- Software Programs -->
-        <div class="accordion-section">
-          <div class="accordion-header" onclick="toggleSection(this)">
-            <span>Programas y Software</span>
-            <span>▼</span>
-          </div>
-          <div class="accordion-content">
-            <div class="form-group">
-              <label>Programas (uno por línea)</label>
-              <textarea id="in-programs" oninput="updateCV()">Delphin Express bim 360 - Nivel Intermedio&#10;Costos y Presupuestos S10 - Nivel Intermedio&#10;Arcgis - Nivel Intermedio&#10;CIVIL 3D - Nivel Intermedio&#10;AUTOCAD - Nivel Nivel Intermedio&#10;EXCEL - Nivel Intermedio&#10;WORD - Nivel Intermedio</textarea>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- Right Live Preview Rendering Area -->
-    <div class="preview-panel">
-      <div class="cv-document" id="cv-node">
-        
-        <!-- Sidebar Segment -->
-        <div class="cv-sidebar">
-          <div class="cv-photo-box">
-            <!-- Simulated User Profile Placeholder Avatar matching original proportions -->
-            <svg viewBox="0 0 100 100" fill="#cbd5e1" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:100%;"><circle cx="50" cy="40" r="22" fill="#94a3b8"/><path d="M16 85C16 68 31 58 50 58C69 58 84 68 84 85H16Z" fill="#94a3b8"/></svg>
-          </div>
-          
-          <div style="text-align: center; margin-bottom: 24px; font-weight: 500; font-size: 13px; letter-spacing: 0.5px; opacity: 0.95;">
-            Curriculum vitae
-          </div>
-
-          <h2>Datos personales</h2>
-          <div id="cv-contact-output"></div>
-
-          <h2>Habilidades</h2>
-          <ul class="cv-sidebar-list" id="cv-skills-output"></ul>
-
-          <h2>Idiomas</h2>
-          <div id="cv-langs-output"></div>
-
-          <h2>Programas</h2>
-          <div id="cv-programs-output"></div>
-        </div>
-
-        <!-- Main Body Segment -->
-        <div class="cv-main">
-          <div class="cv-name" id="cv-name-output">JUAN ESPINOZA LOPEZ</div>
-          <div class="cv-title-sub">Bachiller en Ingeniería Civil</div>
-
-          <h3>Sobre Mí</h3>
-          <div class="cv-profile-desc" id="cv-profile-output"></div>
-
-          <h3>Formación Académica</h3>
-          <div id="cv-edu-output"></div>
-
-          <h3>Experiencia Laboral</h3>
-          <div id="cv-exp-output"></div>
-
-          <h3>Certificados</h3>
-          <div id="cv-cert-output"></div>
-
-          <div class="cv-footer-consent">
-            Doy mi consentimiento para el procesamiento de mis datos personales para el proceso de selección del puesto que solicito.
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-  </div>
-
-  <!-- Sliding Checkout Gateway Panel matching the image exactly -->
-  <div class="checkout-overlay" id="checkout-overlay" onclick="closeCheckout()"></div>
-  <div class="checkout-drawer" id="checkout-drawer">
-    <div class="drawer-header">
-      <h2>Activar Suscripción Premium</h2>
-      <button class="btn-close-drawer" onclick="closeCheckout()">✕</button>
-    </div>
-    <div class="drawer-body">
-      <div class="plan-header-title">Planes de Descarga Premium</div>
-      <div class="plan-subtitle">Selecciona una opción para procesar tu pago de forma segura con Tarjeta o PayPal.</div>
-
-      <div class="price-card">
-        <div class="price-flex">
-          <div>
-            <div style="font-weight: 700; color: #0f172a; font-size: 15px;">Suscripción Mensual Completa</div>
-            <div style="font-size: 12px; color: #64748b; margin-top: 2px;">Acceso ilimitado a plantillas y descargas</div>
-          </div>
-          <div class="price-amount">19,99 US$<span>/ Mes</span></div>
-        </div>
-      </div>
-
-      <!-- Gateway Selector Tabs -->
-      <div class="gateway-tabs">
-        <button class="gt-btn active" id="gt-cc" onclick="switchGateway('cc')">💳 Tarjeta</button>
-        <button class="gt-btn" id="gt-pp" onclick="switchGateway('pp')">🔹 PayPal</button>
-        <button class="gt-btn" id="gt-gp" onclick="switchGateway('gp')">🤖 Google Pay</button>
-      </div>
-
-      <!-- Live Interactive Window Simulated View -->
-      <div id="gateway-view-cc" class="payment-placeholder-box">
-        <div style="text-align: left; margin-bottom: 12px;">
-          <label style="font-size: 11px;">Número de tarjeta de crédito o débito</label>
-          <input type="text" placeholder="0000 0000 0000 0000" style="margin-top: 4px;">
-        </div>
-        <div class="row-2" style="text-align: left;">
-          <div>
-            <label style="font-size: 11px;">Vencimiento</label>
-            <input type="text" placeholder="MM / AA" style="margin-top: 4px;">
-          </div>
-          <div>
-            <label style="font-size: 11px;">Código CVC</label>
-            <input type="text" placeholder="123" style="margin-top: 4px;">
-          </div>
-        </div>
-        <button class="paypal-card-btn-sim" style="width: 100%; margin-top: 20px;" onclick="processSimulatedPayment()">Pagar 19,99 USD</button>
-      </div>
-
-      <div id="gateway-view-pp" class="payment-placeholder-box" style="display: none;">
-        <button class="paypal-btn-sim" style="width:100%;" onclick="processSimulatedPayment()">
-          <i>PayPal</i> Checkout
-        </button>
-        <div style="font-size: 12px; color: #64748b;">Conéctese de forma segura con su cuenta de PayPal para completar la transacción.</div>
-      </div>
-
-      <div id="gateway-view-gp" class="payment-placeholder-box" style="display: none;">
-        <button class="paypal-card-btn-sim" style="width: 100%; background-color: #000; fill: white; display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="processSimulatedPayment()">
-          Comprar con <span style="font-weight: 700;">G Pay</span>
-        </button>
-      </div>
-
-      <div class="legal-notice">
-        Después de recibir tu pago, el producto será entregado inmediatamente y renuncias a tu derecho de desistimiento. Después de Un mes, tu membresía se renovará automáticamente. Puedes cancelar la membresía en cualquier momento desde tu panel de configuración.
-      </div>
-    </div>
-  </div>
-
-  <script>
-    // Toggle accordions on left panel
-    function toggleSection(element) {
-      const section = element.parentElement;
-      const isOpen = section.classList.contains('open');
-      
-      // Close all sections first for accordion look
-      document.querySelectorAll('.accordion-section').forEach(s => s.classList.remove('open'));
-      
-      if (!isOpen) {
-        section.classList.add('open');
-      }
-    }
-
-    // Add new academic item
-    function addEdu() {
-      const rep = document.getElementById('edu-repeater');
-      const item = document.createElement('div');
-      item.className = 'repeater-item';
-      item.innerHTML = `
-        <button class="btn-remove" onclick="this.parentElement.remove(); updateCV();">✕</button>
-        <div class="form-group"><label>Periodo</label><input type="text" class="edu-date" value="2024 - Presente" oninput="updateCV()"></div>
-        <div class="form-group"><label>Título</label><input type="text" class="edu-title" value="Curso Especializado" oninput="updateCV()"></div>
-        <div class="form-group"><label>Institución</label><input type="text" class="edu-sub" value="Escuela Global" oninput="updateCV()"></div>
-      `;
-      rep.appendChild(item);
-      updateCV();
-    }
-
-    // Add new experience item
-    function addExp() {
-      const rep = document.getElementById('exp-repeater');
-      const item = document.createElement('div');
-      item.className = 'repeater-item';
-      item.innerHTML = `
-        <button class="btn-remove" onclick="this.parentElement.remove(); updateCV();">✕</button>
-        <div class="form-group"><label>Periodo</label><input type="text" class="exp-date" value="2024 - 2024" oninput="updateCV()"></div>
-        <div class="form-group"><label>Cargo</label><input type="text" class="exp-title" value="INGENIERO ASISTENTE" oninput="updateCV()"></div>
-        <div class="form-group"><label>Empresa</label><input type="text" class="exp-sub" value="EMPRESA CONSTRUCTORA" oninput="updateCV()"></div>
-      `;
-      rep.appendChild(item);
-      updateCV();
-    }
-
-    // Add new certification
-    function addCert() {
-      const rep = document.getElementById('cert-repeater');
-      const item = document.createElement('div');
-      item.className = 'repeater-item';
-      item.innerHTML = `
-        <button class="btn-remove" onclick="this.parentElement.remove(); updateCV();">✕</button>
-        <div class="form-group"><label>Fecha</label><input type="text" class="cert-date" value="2025" oninput="updateCV()"></div>
-        <div class="form-group"><label>Certificación</label><input type="text" class="cert-title" value="NUEVA CERTIFICACIÓN TÉCNICA" oninput="updateCV()"></div>
-      `;
-      rep.appendChild(item);
-      updateCV();
-    }
-
-    // Reactive live sync function to update document in real time
-    function updateCV() {
-      // Identity
-      const nameVal = document.getElementById('in-name').value;
-      document.getElementById('cv-name-output').textContent = nameVal;
-      
-      // Personal Info Box
-      const email = document.getElementById('in-email').value;
-      const phone = document.getElementById('in-phone').value;
-      const addr = document.getElementById('in-address').value;
-      
-      let contactHtml = '';
-      if(phone) contactHtml += `<div class="cv-contact-item">📞 ${phone}</div>`;
-      if(email) contactHtml += `<div class="cv-contact-item">✉ ${email}</div>`;
-      if(addr) contactHtml += `<div class="cv-contact-item">🏠 ${addr}</div>`;
-      document.getElementById('cv-contact-output').innerHTML = contactHtml;
-
-      // Description Profile text
-      document.getElementById('cv-profile-output').textContent = document.getElementById('in-profile').value;
-
-      // Academic Repeater Sync
-      let eduHtml = '';
-      document.querySelectorAll('#edu-repeater .repeater-item').forEach(item => {
-        const date = item.querySelector('.edu-date').value;
-        const title = item.querySelector('.edu-title').value;
-        const sub = item.querySelector('.edu-sub').value;
-        eduHtml += `
-          <div class="timeline-item">
-            <div class="timeline-date">${date}</div>
-            <div>
-              <div class="timeline-title">${title}</div>
-              <div class="timeline-subtitle">${sub}</div>
-            </div>
-          </div>
-        `;
-      });
-      document.getElementById('cv-edu-output').innerHTML = eduHtml;
-
-      // Experience Repeater Sync
-      let expHtml = '';
-      document.querySelectorAll('#exp-repeater .repeater-item').forEach(item => {
-        const date = item.querySelector('.exp-date').value;
-        const title = item.querySelector('.exp-title').value;
-        const sub = item.querySelector('.exp-sub').value;
-        expHtml += `
-          <div class="timeline-item">
-            <div class="timeline-date">${date}</div>
-            <div>
-              <div class="timeline-title">${title}</div>
-              <div class="timeline-subtitle">${sub}</div>
-            </div>
-          </div>
-        `;
-      });
-      document.getElementById('cv-exp-output').innerHTML = expHtml;
-
-      // Certifications Sync
-      let certHtml = '';
-      document.querySelectorAll('#cert-repeater .repeater-item').forEach(item => {
-        const date = item.querySelector('.cert-date').value;
-        const title = item.querySelector('.cert-title').value;
-        certHtml += `
-          <div class="timeline-item">
-            <div class="timeline-date">${date}</div>
-            <div>
-              <div class="timeline-title" style="font-weight: 500;">${title}</div>
-            </div>
-          </div>
-        `;
-      });
-      document.getElementById('cv-cert-output').innerHTML = certHtml;
-
-      // Skills Sync
-      const skills = document.getElementById('in-skills').value.split('\n');
-      let skillsHtml = '';
-      skills.forEach(s => {
-        if(s.trim()) skillsHtml += `<li>${s.trim()}</li>`;
-      });
-      document.getElementById('cv-skills-output').innerHTML = skillsHtml;
-
-      // Languages Sync with interactive ranking dots
-      const langs = document.getElementById('in-langs').value.split('\n');
-      let langsHtml = '';
-      langs.forEach(l => {
-        if(l.includes('|')) {
-          const parts = l.split('|');
-          const name = parts[0].trim();
-          const count = parseInt(parts[1]) || 0;
-          
-          let dots = '';
-          for(let i=1; i<=5; i++) {
-            dots += `<div class="dot ${i <= count ? 'filled' : ''}"></div>`;
-          }
-          
-          langsHtml += `
-            <div class="lang-row">
-              <span>${name}</span>
-              <div class="rating-dots">${dots}</div>
-            </div>
-          `;
+            // Conmutar el actual
+            content.classList.toggle('open');
+            headerElement.classList.toggle('active');
         }
-      });
-      document.getElementById('cv-langs-output').innerHTML = langsHtml;
 
-      // Programs Software tag tokens
-      const progs = document.getElementById('in-programs').value.split('\n');
-      let progsHtml = '';
-      progs.forEach(p => {
-        if(p.trim()) progsHtml += `<div class="program-item">${p.trim()}</div>`;
-      });
-      document.getElementById('cv-programs-output').innerHTML = progsHtml;
-    }
+        // Función para abrir y cerrar la pasarela de pago simulada
+        function toggleCheckout() {
+            const panel = document.getElementById('checkoutPanel');
+            panel.classList.toggle('active');
+        }
 
-    // Drawer management
-    function openCheckout() {
-      document.getElementById('checkout-overlay').style.display = 'block';
-      document.getElementById('checkout-drawer').classList.add('open');
-    }
+        // Motor de renderizado en vivo (Actualiza el CV automáticamente mientras escribes)
+        function updateCV() {
+            // Datos Personales
+            const name = document.getElementById('in-name').value;
+            const lastname = document.getElementById('in-lastname').value;
+            document.getElementById('cv-fullname').innerText = name + " " + lastname;
+            
+            document.getElementById('cv-jobtitle').innerText = document.getElementById('in-title').value;
+            document.getElementById('cv-email').innerText = document.getElementById('in-email').value;
+            document.getElementById('cv-phone').innerText = document.getElementById('in-phone').value;
+            document.getElementById('cv-location').innerText = document.getElementById('in-location').value;
+            
+            // Perfil
+            document.getElementById('cv-profile-text').innerText = document.getElementById('in-profile').value;
+            
+            // Experiencia 1
+            document.getElementById('cv-job1').innerText = document.getElementById('in-job1').value;
+            document.getElementById('cv-comp1').innerText = document.getElementById('in-comp1').value;
+            document.getElementById('cv-date1').innerText = document.getElementById('in-date1').value;
+            document.getElementById('cv-desc1').innerText = document.getElementById('in-desc1').value;
 
-    function closeCheckout() {
-      document.getElementById('checkout-overlay').style.display = 'none';
-      document.getElementById('checkout-drawer').classList.remove('open');
-    }
-
-    function switchGateway(type) {
-      document.querySelectorAll('.gt-btn').forEach(b => b.classList.remove('active'));
-      document.getElementById('gateway-view-cc').style.display = 'none';
-      document.getElementById('gateway-view-pp').style.display = 'none';
-      document.getElementById('gateway-view-gp').style.display = 'none';
-
-      if(type === 'cc') {
-        document.getElementById('gt-cc').classList.add('active');
-        document.getElementById('gateway-view-cc').style.display = 'block';
-      } else if(type === 'pp') {
-        document.getElementById('gt-pp').classList.add('active');
-        document.getElementById('gateway-view-pp').style.display = 'block';
-      } else if(type === 'gp') {
-        document.getElementById('gt-gp').classList.add('active');
-        document.getElementById('gateway-view-gp').style.display = 'block';
-      }
-    }
-
-    function processSimulatedPayment() {
-      alert("¡Simulación de pasarela de pago exitosa! Su suscripción de CVwizard ha sido emulada correctamente.");
-      closeCheckout();
-    }
-
-    // Initial load sync execution
-    window.onload = function() {
-      updateCV();
-    };
-  </script>
+            // Habilidades
+            document.getElementById('cv-sk1').innerText = document.getElementById('in-skill1').value;
+            document.getElementById('cv-sk2').innerText = document.getElementById('in-skill2').value;
+            document.getElementById('cv-sk3').innerText = document.getElementById('in-skill3').value;
+        }
+    </script>
 </body>
 </html>
