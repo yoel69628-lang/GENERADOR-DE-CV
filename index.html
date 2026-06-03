@@ -2,25 +2,32 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>IngeniaCV Pro | Plataforma Técnica</title>
+    <title>IngeniaCV Pro | Gerencia de Obras</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <style>
-        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #f8fafc; }
-        .hero { background: #0f172a; color: white; padding: 80px 20px; text-align: center; }
-        .btn-main { background: #0284c7; color: white; padding: 15px 40px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 18px; }
+        body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: #f1f5f9; }
         
+        /* Landing Page */
+        .hero { background: #0f172a; color: white; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        .btn-main { background: #0284c7; color: white; padding: 15px 40px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 18px; transition: 0.3s; }
+        .btn-main:hover { background: #0369a1; }
+        
+        /* App Interface */
         #app-interface { display: none; height: 100vh; flex-direction: column; }
-        .nav-bar { background: #fff; padding: 15px 20px; border-bottom: 1px solid #ddd; display: flex; justify-content: flex-start; }
-        .btn-back { background: #64748b; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; }
+        .nav-bar { background: #ffffff; padding: 12px 20px; border-bottom: 2px solid #e2e8f0; display: flex; align-items: center; }
+        .btn-back { background: #64748b; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; margin-right: 20px; }
         
         .editor-layout { display: flex; height: calc(100vh - 60px); }
-        .form-panel { width: 40%; padding: 30px; overflow-y: auto; background: white; border-right: 1px solid #ddd; }
-        .preview-panel { width: 60%; padding: 40px; background: #e2e8f0; overflow-y: auto; }
+        .form-panel { width: 40%; padding: 30px; background: white; border-right: 1px solid #ddd; overflow-y: auto; }
+        .preview-panel { width: 60%; padding: 40px; background: #cbd5e1; overflow-y: auto; }
         
-        .cv-paper { background: white; width: 210mm; min-height: 297mm; padding: 20mm; margin: 0 auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        .input-field { margin-bottom: 15px; }
-        .input-field label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 5px; color: #334155; }
+        /* CV Styles */
+        .cv-paper { background: white; width: 210mm; min-height: 297mm; padding: 20mm; margin: 0 auto; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .input-field { margin-bottom: 20px; }
+        .input-field label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 6px; color: #1e293b; }
         .input-field input, .input-field textarea { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; box-sizing: border-box; }
+        
+        @media print { .nav-bar, .form-panel { display: none; } .preview-panel { width: 100%; padding: 0; background: white; } .cv-paper { box-shadow: none; } }
     </style>
 </head>
 <body>
@@ -28,31 +35,33 @@
     <!-- PORTAL DE INICIO -->
     <div id="landing-page" class="hero">
         <h1>IngeniaCV Pro</h1>
-        <p>Herramienta especializada para Gerencia de Obras y Contratos.</p>
-        <button class="btn-main" onclick="startApp()">Crear CV Técnico</button>
+        <p>Optimizado para Gerencia de Obras, Liquidaciones y Control de Proyectos.</p>
+        <button class="btn-main" onclick="startApp()">Comenzar Edición</button>
     </div>
 
     <!-- INTERFAZ DEL EDITOR -->
     <div id="app-interface">
         <div class="nav-bar">
-            <button class="btn-back" onclick="goHome()"><i class="fa-solid fa-arrow-left"></i> Volver al Portal</button>
+            <button class="btn-back" onclick="goHome()"><i class="fa-solid fa-house"></i> Volver</button>
+            <strong>Editor de CV Técnico</strong>
         </div>
         <div class="editor-layout">
             <div class="form-panel">
-                <h2>Parámetros Técnicos</h2>
-                <div class="input-field"><label>Nombre</label><input type="text" id="name" oninput="updateCV()"></div>
+                <div class="input-field"><label>Nombre y Apellidos</label><input type="text" id="name" oninput="updateCV()"></div>
                 <div class="input-field"><label>Presupuesto Gestionado (USD)</label><input type="text" id="presupuesto" oninput="updateCV()"></div>
-                <div class="input-field"><label>Software (AutoCAD, P6, SAP2000)</label><input type="text" id="software" oninput="updateCV()"></div>
-                <div class="input-field"><label>Logros en Liquidación de Obras</label><textarea id="logros" rows="4" oninput="updateCV()"></textarea></div>
-                <button class="btn-main" style="width:100%; margin-top: 10px;" onclick="window.print()">Descargar PDF</button>
+                <div class="input-field"><label>Software Técnico (Ej: Primavera P6, AutoCAD)</label><input type="text" id="software" oninput="updateCV()"></div>
+                <div class="input-field"><label>Logros en Liquidación de Obras</label><textarea id="logros" rows="6" oninput="updateCV()"></textarea></div>
+                <button class="btn-main" style="width:100%;" onclick="window.print()">Exportar a PDF</button>
             </div>
             <div class="preview-panel">
                 <div class="cv-paper" id="cv-content">
-                    <h1 id="cv-name">Nombre</h1>
-                    <hr>
-                    <p><strong>Presupuesto gestionado:</strong> <span id="cv-presupuesto">-</span></p>
-                    <p><strong>Stack Técnico:</strong> <span id="cv-software">-</span></p>
-                    <p><strong>Logros clave:</strong> <span id="cv-logros">-</span></p>
+                    <h1 id="cv-name" style="margin-top:0;">Nombre</h1>
+                    <div style="background: #f8fafc; padding: 15px; border-left: 4px solid #0284c7;">
+                        <p style="margin:5px 0;"><strong>Presupuesto:</strong> <span id="cv-presupuesto">-</span></p>
+                        <p style="margin:5px 0;"><strong>Stack:</strong> <span id="cv-software">-</span></p>
+                    </div>
+                    <h3>Logros en Liquidación de Obras</h3>
+                    <p id="cv-logros" style="white-space: pre-wrap;">-</p>
                 </div>
             </div>
         </div>
@@ -66,7 +75,7 @@
         
         function goHome() {
             document.getElementById('app-interface').style.display = 'none';
-            document.getElementById('landing-page').style.display = 'block';
+            document.getElementById('landing-page').style.display = 'flex';
         }
 
         function updateCV() {
