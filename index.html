@@ -127,7 +127,6 @@
     </div>
 
     <div class="panel-content">
-      <!-- Los campos de edición se mantienen intactos -->
       <div id="step-datos" class="step-content">
         <div class="group"><label>Nombre Completo</label><input id="form-nombre"></div>
         <div class="group"><label>Correo Electrónico</label><input id="form-email"></div>
@@ -184,7 +183,7 @@
           <select id="cfg-color" onchange="changeColorPalette()">
             <option value="azul-clasico">🔵 Azul Acero Original</option>
             <option value="azul-marino">🏢 Azul Marino Ejecutivo</option>
-            <option value="gris-plomo">charcoal Gris Plomo</option>
+            <option value="gris-plomo">⬛ Gris Plomo</option>
           </select>
         </div>
       </div>
@@ -229,19 +228,19 @@
     
     <div class="plans-container">
       
-      <!-- Opción 1: Pago Único ($3 USD) -> Acepta cuenta PayPal y Tarjetas -->
+      <!-- Opción 1: Pago Único ($3 USD) -->
       <a id="link-pago-unico" href="#" target="_blank" class="plan-box">
         <div class="plan-title">💳 Pago Único con Tarjeta / PayPal</div>
         <div class="plan-desc">Descarga este currículum inmediatamente en formato PDF profesional de alta definición.</div>
         <div class="plan-price">$3.00 <span>USD / pago único</span></div>
       </a>
 
-      <!-- Opción 2: Suscripción Mensual ($10 USD) -->
+      <!-- Opción 2: Acceso Ilimitado ($10 USD) -->
       <a id="link-pago-mensual" href="#" target="_blank" class="plan-box" style="border-color: #cbd5e1;">
-        <div class="plan-tag">Ilimitado</div>
-        <div class="plan-title">💼 Suscripción Mensual Completa</div>
-        <div class="plan-desc">Crea, edita y descarga todos los currículums que quieras de forma ilimitada durante el mes.</div>
-        <div class="plan-price">$10.00 <span>USD / al mes</span></div>
+        <div class="plan-tag">Recomendado</div>
+        <div class="plan-title">💼 Plan de Acceso Completo</div>
+        <div class="plan-desc">Crea, edita y descarga todos los currículums que quieras de forma ilimitada.</div>
+        <div class="plan-price">$10.00 <span>USD</span></div>
       </a>
 
     </div>
@@ -256,11 +255,10 @@
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 
 <script>
-// --- CONTROL DE ENLACES DE COBRO ---
+// --- CONTROL DE ENLACES DE COBRO ACTUALIZADO ---
 const CONFIG_PAGO = {
-  // Al usar la cuenta Empresas, este enlace ya permite pagar con tarjeta sin registrarse
   pagoUnico: "https://paypal.me/GENERACV/3", 
-  pagoMensual: "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TU_ID_DE_BOTON_MENSUAL" 
+  pagoMensual: "https://paypal.me/GENERACV/10" // Configurado directamente a tu link de $10 sin códigos extra
 };
 
 // --- INFORMACIÓN POR DEFECTO ---
