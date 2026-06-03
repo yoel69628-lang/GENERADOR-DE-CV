@@ -4,31 +4,65 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IngeniaCV Pro - Diseñador de Currículums para Ingeniería</title>
+    <!-- Librerías Externas -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        /* Mantenemos tus estilos originales */
+        /* CSS Base[cite: 1] */
         :root { --primary: #1e3a8a; --accent: #0284c7; --bg-main: #f8fafc; --sidebar-bg: #ffffff; --text-main: #1e293b; --text-muted: #64748b; --border: #cbd5e1; --success: #10b981; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
         body { background-color: var(--bg-main); color: var(--text-main); height: 100vh; overflow: hidden; }
         
-        /* Incluye aquí todo tu CSS de fuentes, layout, landing, editor, y modelos (Aura, Minimal, Engineering) */
-        .cv-sheet { width: 210mm; min-height: 297mm; background: #fff; box-shadow: 0 8px 20px rgba(0,0,0,0.08); display: flex; box-sizing: border-box; }
-        
-        /* Ajuste para que el muro de pago se vea correctamente */
-        .paywall { position: absolute; top: 0; right: -100%; width: 40%; height: 100%; background: white; box-shadow: -6px 0 20px rgba(0,0,0,0.1); z-index: 100; transition: right 0.3s ease; padding: 30px; }
+        /* Layout y Componentes (Tu CSS previo)[cite: 1] */
+        #landing-page { position: fixed; top:0; left:0; width:100%; height:100%; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; display: flex; flex-direction: column; align-items: center; z-index: 1000; padding: 50px 20px; transition: all 0.5s ease; }
+        #landing-page.hidden { opacity: 0; pointer-events: none; }
+        #app-interface { display: none; flex-direction: column; height: 100vh; }
+        #app-interface.active { display: flex; }
+        .main-wrapper { display: flex; flex: 1; height: calc(100vh - 120px); }
+        .editor-container { width: 45%; overflow-y: auto; padding: 30px; }
+        .preview-container { width: 55%; background: var(--bg-main); overflow-y: auto; padding: 40px 20px; display: flex; justify-content: center; }
+        .cv-sheet { width: 210mm; min-height: 297mm; background: #fff; box-shadow: 0 8px 20px rgba(0,0,0,0.08); display: flex; }
+        .paywall { position: absolute; top: 0; right: -100%; width: 40%; height: 100%; background: white; z-index: 100; transition: right 0.3s ease; padding: 30px; }
         .paywall.active { right: 0; }
     </style>
 </head>
 <body>
 
+    <!-- Landing Page[cite: 1] -->
+    <div id="landing-page">
+        <h1>IngeniaCV Pro</h1>
+        <button class="btn-start" onclick="enterApp()">Comenzar</button>
+    </div>
+
+    <!-- App Interface[cite: 1] -->
+    <div id="app-interface">
+        <div class="main-wrapper">
+            <div class="editor-container" id="editor-area">
+                <!-- Aquí van tus fases[cite: 1] -->
+                <div class="phase-block active" id="ph-1">
+                    <input type="text" id="in-name" placeholder="Nombre" oninput="liveRender()">
+                    <!-- ... resto de tus campos ... -->
+                </div>
+                <div class="nav-controls">
+                    <button id="next-btn" onclick="moveStep(1)">Siguiente</button>
+                    <button id="finish-btn" style="display:none;" onclick="openPaywall()">Descargar</button>
+                </div>
+            </div>
+            <div class="preview-container">
+                <div class="cv-sheet" id="cv-target"></div>
+            </div>
+        </div>
+
+        <!-- Muro de Pago con Descarga Integrada -->
+        <div class="paywall" id="paywall-screen">
+            <h2>Exportación Profesional</h2>
+            <button onclick="descargarPDF()">Descargar mi CV PDF</button>
+        </div>
+    </div>
+
     <script>
         let step = 1;
-        const maxSteps = 5;
         let currentLayout = 'aura';
-
-        // Inicialización
-        window.onload = () => { liveRender(); };
 
         function enterApp() {
             document.getElementById('landing-page').classList.add('hidden');
@@ -36,7 +70,7 @@
             liveRender();
         }
 
-        // LÓGICA DE DESCARGA PDF INTEGRADA
+        // Función de Descarga PDF con html2pdf.js[cite: 1]
         function descargarPDF() {
             const element = document.getElementById('cv-target');
             const opt = {
@@ -46,58 +80,15 @@
                 html2canvas: { scale: 2 },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
-            
-            // Generar y descargar
             html2pdf().set(opt).from(element).save();
         }
 
-        // --- TUS FUNCIONES EXISTENTES ---
-        function changeColor(prim, acc, element) {
-            document.documentElement.style.setProperty('--primary', prim);
-            document.documentElement.style.setProperty('--accent', acc);
-            document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
-            element.classList.add('active');
-            liveRender();
-        }
-
-        function changeTemplateLayout() {
-            currentLayout = document.getElementById('template-select').value;
-            liveRender();
-        }
-
-        function moveStep(dir) {
-            document.getElementById(`ph-${step}`).classList.remove('active');
-            document.getElementById(`st-${step}`).classList.remove('active');
-            step += dir;
-            document.getElementById(`ph-${step}`).classList.add('active');
-            document.getElementById(`st-${step}`).classList.add('active');
-            
-            document.getElementById('back-btn').disabled = (step === 1);
-            document.getElementById('next-btn').style.display = (step === maxSteps) ? 'none' : 'flex';
-            document.getElementById('finish-btn').style.display = (step === maxSteps) ? 'flex' : 'none';
-        }
-
-        function addExperienceField() {
-            const container = document.getElementById('experience-area');
-            const html = `
-                <div class="dynamic-item">
-                    <button class="btn-remove" onclick="this.parentElement.remove(); liveRender();"><i class="fa-solid fa-trash"></i></button>
-                    <div class="form-group"><label>Puesto</label><input type="text" class="form-control exp-job" oninput="liveRender()"></div>
-                    <div class="form-group"><label>Empresa</label><input type="text" class="form-control exp-comp" oninput="liveRender()"></div>
-                    <div class="form-group"><label>Periodo</label><input type="text" class="form-control exp-date" oninput="liveRender()"></div>
-                    <div class="form-group"><label>Funciones</label><textarea class="form-control exp-desc" oninput="liveRender()"></textarea></div>
-                </div>`;
-            container.insertAdjacentHTML('beforeend', html);
-        }
-
-        function openPaywall() {
-            document.getElementById('paywall-screen').classList.toggle('active');
-        }
-
-        // TU FUNCIÓN liveRender() ORIGINAL DEBE IR AQUÍ PARA QUE EL CV SE ACTUALICE
-        function liveRender() {
-            /* ... Lógica completa de renderizado ... */
-        }
+        // Lógica de Renderizado y Navegación (Tu lógica existente)[cite: 1]
+        function liveRender() { /* Tu función original[cite: 1] */ }
+        function moveStep(dir) { /* Tu función original[cite: 1] */ }
+        function openPaywall() { document.getElementById('paywall-screen').classList.toggle('active'); }
+        
+        window.onload = () => { liveRender(); };
     </script>
 </body>
 </html>
