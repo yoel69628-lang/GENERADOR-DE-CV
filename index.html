@@ -2,75 +2,567 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>IngeniaCV Pro - Portal de Inicio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IngeniaCV Pro - Plataforma Avanzada de Currículums</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <style>
-        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #f8fafc; }
+        :root {
+            --primary: #1e3a8a; 
+            --accent: #0284c7;
+            --bg-main: #f8fafc;
+            --sidebar-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #cbd5e1;
+            --success: #10b981;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background-color: var(--bg-main); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+        /* PORTAL DE INICIO (LANDING PAGE PROFESIONAL) */
+        #landing-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 60px 20px;
+            transition: all 0.5s ease;
+        }
+        #landing-page.hidden { opacity: 0; pointer-events: none; transform: translateY(-50px); }
         
-        /* BLOQUE 1: HERO (IMAGEN + TEXTO) */
-        .hero-section { background: white; padding: 60px 20px; display: flex; align-items: center; justify-content: center; gap: 60px; max-width: 1100px; margin: 0 auto; }
-        .hero-image { flex: 1; max-width: 400px; }
-        .hero-image img { width: 100%; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        .hero-content { flex: 1; }
-        .btn-start { background: #0284c7; color: white; padding: 12px 30px; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; }
+        .landing-header { text-align: center; max-width: 850px; margin-bottom: 35px; }
+        .landing-logo { font-size: 48px; font-weight: 800; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 12px; }
+        .landing-logo span { color: #38bdf8; }
+        
+        /* Introducción al sistema */
+        .landing-intro { font-size: 16px; color: #cbd5e1; max-width: 750px; margin: 0 auto 30px auto; line-height: 1.6; text-align: center; background: rgba(255,255,255,0.03); padding: 20px; border-radius: 8px; border: 1px dashed rgba(255,255,255,0.1); }
 
-        /* BLOQUE 2: ¿CÓMO FUNCIONA? */
-        .how-section { text-align: center; padding: 60px 20px; background: #fff; }
-        .steps-grid { display: flex; justify-content: center; gap: 40px; margin-top: 40px; }
-        .step-item { width: 250px; }
-        .step-num { width: 40px; height: 40px; border: 2px solid #cbd5e1; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-weight: 700; }
+        /* SECCIÓN BOCETO FINAL (LO QUE OFRECEMOS) */
+        .boceto-section { width: 100%; max-width: 1000px; margin-bottom: 40px; }
+        .boceto-title { text-align: center; font-size: 20px; font-weight: 700; margin-bottom: 20px; color: #38bdf8; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .boceto-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .boceto-item { background: #ffffff; color: #1e293b; border-radius: 8px; padding: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); position: relative; overflow: hidden; height: 220px; display: flex; flex-direction: column; justify-content: space-between; }
+        
+        /* Mini bocetos simulados */
+        .boceto-header-sim { height: 12px; width: 60%; background: #1e3a8a; border-radius: 2px; margin-bottom: 8px; }
+        .boceto-line { height: 6px; background: #e2e8f0; border-radius: 2px; margin-bottom: 6px; }
+        .boceto-badge { display: inline-block; padding: 3px 8px; font-size: 10px; font-weight: 700; color: white; border-radius: 4px; margin-top: auto; align-self: flex-start; }
 
-        /* BLOQUE 3: MODELOS DE INGENIEROS */
-        .showcase-section { background: #0f172a; color: white; padding: 60px 20px; text-align: center; }
-        .scroll-container { display: flex; gap: 20px; overflow-x: auto; padding: 20px; max-width: 1000px; margin: 0 auto; }
-        .mockup-card { min-width: 280px; background: rgba(255,255,255,0.05); padding: 20px; border-radius: 8px; text-align: left; }
+        /* Cuadrícula de características */
+        .showcase-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; max-width: 1000px; width: 100%; margin-bottom: 40px; }
+        .showcase-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 20px; text-align: center; }
+        .showcase-icon { font-size: 28px; color: #38bdf8; margin-bottom: 10px; }
+        .showcase-card h3 { font-size: 16px; margin-bottom: 6px; }
+        .showcase-card p { font-size: 13px; color: #94a3b8; line-height: 1.4; }
+
+        .color-showcase-list { display: flex; justify-content: center; gap: 8px; margin-top: 10px; }
+        .color-sample-dot { width: 14px; height: 14px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.4); }
+
+        .btn-start { background: #0284c7; color: white; padding: 18px 45px; font-size: 18px; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 25px rgba(2, 132, 199, 0.4); margin-bottom: 10px; }
+        .btn-start:hover { background: #0369a1; }
+
+        /* APP EDITOR (SEGUNDO ENTORNO) */
+        #app-interface { display: none; flex-direction: column; height: 100vh; }
+        #app-interface.active { display: flex; }
+
+        /* Navbar */
+        .navbar { background: #fff; padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); height: 65px; z-index: 10; }
+        .logo { font-size: 22px; font-weight: 800; color: #1e3a8a; display: flex; align-items: center; gap: 8px; }
+        .logo span { color: var(--accent); }
+
+        /* Personalización */
+        .customizer-bar { display: flex; gap: 25px; align-items: center; }
+        .color-picker { display: flex; gap: 6px; align-items: center; font-size: 13px; font-weight: 600; }
+        .color-dot { width: 20px; height: 20px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; }
+        .color-dot.active { border-color: #000; transform: scale(1.2); }
+        .template-picker { display: flex; gap: 8px; align-items: center; font-size: 13px; font-weight: 600; }
+        .template-picker select { padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border); outline: none; font-weight: 600; background: white; }
+
+        /* Pasos del Asistente */
+        .wizard-steps { display: flex; background: #fff; padding: 12px; border-bottom: 1px solid var(--border); justify-content: center; gap: 15px; font-size: 13px; font-weight: 700; overflow-x: auto; }
+        .step { display: flex; align-items: center; gap: 8px; color: var(--text-muted); white-space: nowrap; padding: 4px 8px; }
+        .step.active { color: var(--accent); background: #f0f9ff; border-radius: 6px; }
+        .step.completed { color: var(--success); }
+
+        /* Contenedor de Trabajo */
+        .main-wrapper { display: flex; flex: 1; height: calc(100vh - 120px); position: relative; }
+
+        /* Editor (Izquierda) */
+        .editor-container { width: 45%; background: var(--sidebar-bg); border-right: 1px solid var(--border); overflow-y: auto; padding: 30px; display: flex; flex-direction: column; justify-content: space-between; }
+        .phase-block { display: none; }
+        .phase-block.active { display: block; }
+        .phase-title { font-size: 22px; font-weight: 700; color: #1e3a8a; margin-bottom: 20px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; }
+
+        /* Formularios */
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600; color: var(--text-main); }
+        .form-control { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; outline: none; }
+        .form-control:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1); }
+        textarea.form-control { height: 110px; resize: none; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+        /* Elementos Dinámicos */
+        .dynamic-item { border: 1px dashed var(--border); padding: 15px; border-radius: 6px; margin-bottom: 15px; background: #fafafa; position: relative; }
+        .btn-add { background: #f0f9ff; color: #0284c7; border: 1px solid #bae6fd; padding: 8px 14px; font-weight: 600; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 5px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .btn-remove { position: absolute; top: 10px; right: 10px; background: none; border: none; color: #ef4444; cursor: pointer; font-size: 16px; }
+
+        /* Navegación de pasos */
+        .nav-controls { display: flex; justify-content: space-between; margin-top: 25px; padding-top: 15px; border-top: 1px solid var(--border); }
+        .btn { padding: 10px 22px; border-radius: 6px; font-weight: 600; cursor: pointer; border: none; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+        .btn-back { background: #e2e8f0; color: var(--text-main); }
+        .btn-next { background: var(--accent); color: white; }
+        .btn-finish { background: var(--success); color: white; display: none; }
+
+        /* Vista Previa CV (Derecha) */
+        .preview-container { width: 55%; background: var(--bg-main); overflow-y: auto; padding: 40px 20px; display: flex; justify-content: center; }
+        .cv-sheet { width: 210mm; min-height: 297mm; background: #fff; box-shadow: 0 8px 20px rgba(0,0,0,0.08); display: flex; box-sizing: border-box; }
+        
+        /* MODELOS CV INYECTADOS */
+        .model-aura { display: flex; width: 100%; }
+        .model-aura .cv-sidebar { width: 34%; background: var(--primary); color: white; padding: 30px 20px; display: flex; flex-direction: column; gap: 20px; }
+        .model-aura .cv-main { width: 66%; padding: 35px 25px; display: flex; flex-direction: column; gap: 20px; }
+        .model-aura .cv-name { font-size: 26px; color: var(--primary); font-weight: 800; text-transform: uppercase; }
+        .model-aura .section-title { font-size: 13px; text-transform: uppercase; border-bottom: 2px solid var(--accent); padding-bottom: 4px; margin-bottom: 10px; font-weight: 700; color: var(--primary); }
+        .model-aura .side-title { font-size: 13px; text-transform: uppercase; border-bottom: 2px solid var(--accent); padding-bottom: 4px; margin-bottom: 10px; font-weight: 700; color: #fff; }
+
+        .model-minimal { display: block; width: 100%; padding: 40px; }
+        .model-minimal .cv-header { border-bottom: 3px solid var(--primary); padding-bottom: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .model-minimal .cv-name { font-size: 28px; color: var(--primary); font-weight: 800; letter-spacing: -0.5px; }
+        .model-minimal .section-title { font-size: 14px; font-weight: 700; color: var(--primary); text-transform: uppercase; margin-top: 20px; margin-bottom: 10px; border-left: 4px solid var(--accent); padding-left: 8px; }
+        .model-minimal .grid-split { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
+
+        .model-engineering { display: block; width: 100%; padding: 45px; background: #fafafa; }
+        .model-engineering .cv-header { background: var(--primary); color: white; padding: 25px; border-radius: 4px; margin-bottom: 25px; }
+        .model-engineering .cv-name { font-size: 26px; color: #ffffff; font-weight: 700; }
+        .model-engineering .section-title { font-size: 13px; font-weight: 700; color: #ffffff; background: var(--accent); padding: 5px 10px; border-radius: 3px; margin-top: 15px; margin-bottom: 12px; text-transform: uppercase; }
+
+        /* Elementos */
+        .cv-headline { font-size: 14px; color: var(--accent); font-weight: 600; margin-top: 4px; text-transform: uppercase; }
+        .cv-summary { font-size: 11px; line-height: 1.5; text-align: justify; margin-top: 8px; color: #334155; }
+        .render-item { margin-bottom: 12px; }
+        .render-meta { display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; color: var(--accent); }
+        .render-main { font-size: 12.5px; font-weight: 700; color: var(--text-main); }
+        .render-desc { font-size: 11px; line-height: 1.4; text-align: justify; color: #334155; }
+        
+        .skill-bar-container { margin-bottom: 8px; }
+        .skill-name { font-size: 11px; margin-bottom: 3px; }
+        .skill-bar { height: 5px; background: rgba(0,0,0,0.1); border-radius: 3px; overflow: hidden; }
+        .model-aura .skill-bar { background: rgba(255,255,255,0.2); }
+        .skill-progress { height: 100%; background-color: var(--accent); }
+
+        /* Muro de Pago */
+        .paywall { position: absolute; top: 0; right: -100%; width: 40%; height: 100%; background: white; box-shadow: -6px 0 20px rgba(0,0,0,0.1); z-index: 100; transition: right 0.3s ease; padding: 30px; display: flex; flex-direction: column; }
+        .paywall.active { right: 0; }
+        .paywall-box { background: #fef3c7; border: 1px solid #fde68a; padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 20px; }
+
+        @media print {
+            body * { visibility: hidden; }
+            .preview-container, .preview-container *, .cv-sheet, .cv-sheet * { visibility: visible; }
+            .preview-container { position: absolute; left: 0; top: 0; width: 100%; padding: 0; }
+            .cv-sheet { box-shadow: none; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- BLOQUE 1: CABECERA SEGÚN image_8639fe.png -->
-    <div class="hero-section">
-        <div class="hero-image">
-            <img src="image_8639fe.png" alt="Previsualización de CV">
+    <!-- PORTAL DE INICIO FINALIZADO -->
+    <div id="landing-page">
+        <div class="landing-header">
+            <div class="landing-logo"><i class="fa-solid fa-graduation-cap"></i> Ingenia<span>CV</span> Pro</div>
+            
+            <!-- Introducción Requerida -->
+            <div class="landing-intro">
+                <b>Bienvenido a la ingeniería de tu futuro profesional.</b> IngeniaCV Pro no es un editor común. Es una herramienta de precisión diseñada estructuralmente para ingenieros y gestores de contratos que necesitan plasmar obras por contrata, valorizaciones, presupuestos e hitos técnicos bajo los estándares más estrictos exigidos por reclutadores del sector público y privado.
+            </div>
         </div>
-        <div class="hero-content">
-            <h1>Crear un Currículum Vitae profesional</h1>
-            <p>Complete los datos personales, seleccione una plantilla, descargue su CV e impresione a los empleadores.</p>
-            <button class="btn-start" onclick="window.location.href='#editor'">Crear CV</button>
+
+        <!-- BOCETO FINAL DE LO QUE OFRECEMOS -->
+        <div class="boceto-section">
+            <div class="boceto-title"><i class="fa-solid fa-eye"></i> Boceto de Modelos Disponibles</div>
+            <div class="boceto-container">
+                
+                <!-- Tarjeta de Boceto 1 -->
+                <div class="boceto-item">
+                    <div style="display:flex; gap:10px; height:100%;">
+                        <div style="width:30%; background:#1e3a8a; border-radius:4px; padding:5px;">
+                            <div style="width:100%; height:8px; background:rgba(255,255,255,0.4); margin-bottom:5px;"></div>
+                            <div style="width:70%; height:4px; background:rgba(255,255,255,0.2);"></div>
+                        </div>
+                        <div style="width:70%;">
+                            <div class="boceto-header-sim"></div>
+                            <div class="boceto-line" style="width:90%;"></div>
+                            <div class="boceto-line" style="width:100%;"></div>
+                            <div class="boceto-line" style="width:40%;"></div>
+                        </div>
+                    </div>
+                    <div class="boceto-badge" style="background:#1e3a8a;">Diseño Aura (2 Columnas)</div>
+                </div>
+
+                <!-- Tarjeta de Boceto 2 -->
+                <div class="boceto-item">
+                    <div>
+                        <div class="boceto-header-sim" style="background:#be185d; width:45%;"></div>
+                        <div style="display:grid; grid-template-columns: 2fr 1fr; gap:10px; margin-top:15px;">
+                            <div>
+                                <div class="boceto-line" style="width:100%;"></div>
+                                <div class="boceto-line" style="width:90%;"></div>
+                            </div>
+                            <div>
+                                <div class="boceto-line" style="width:80%; background:#f472b6;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="boceto-badge" style="background:#be185d;">Moderno Minimalista</div>
+                </div>
+
+                <!-- Tarjeta de Boceto 3 -->
+                <div class="boceto-item">
+                    <div>
+                        <div style="background:#6d28d9; padding:8px; border-radius:4px; margin-bottom:10px;">
+                            <div style="width:50%; height:10px; background:white;"></div>
+                        </div>
+                        <div class="boceto-line" style="width:95%;"></div>
+                        <div class="boceto-line" style="width:100%;"></div>
+                        <div class="boceto-line" style="width:85%;"></div>
+                    </div>
+                    <div class="boceto-badge" style="background:#6d28d9;">Ingeniería Estructurada</div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Características Adicionales y Muestra de Paletas -->
+        <div class="showcase-container">
+            <div class="showcase-card">
+                <div class="showcase-icon"><i class="fa-solid fa-palette"></i></div>
+                <h3>Gama de Estilos y Géneros</h3>
+                <p>Configura tu marca personal con tonos ejecutivos tradicionales o nuestras paletas exclusivas para liderazgo femenino.</p>
+                <div class="color-showcase-list">
+                    <div class="color-sample-dot" style="background:#1e3a8a;" title="Azul"></div>
+                    <div class="color-sample-dot" style="background:#0f766e;" title="Verde"></div>
+                    <div class="color-sample-dot" style="background:#be185d;" title="Rosa"></div>
+                    <div class="color-sample-dot" style="background:#6d28d9;" title="Violeta"></div>
+                </div>
+            </div>
+            <div class="showcase-card">
+                <div class="showcase-icon"><i class="fa-solid fa-bolt"></i></div>
+                <h3>Fases en Tiempo Real</h3>
+                <p>Navega a través de las pestañas asistidas y observa cómo se compila el documento técnico al instante.</p>
+            </div>
+        </div>
+
+        <!-- Botón de Acción para saltar al segundo entorno -->
+        <button class="btn-start" onclick="enterApp()"><i class="fa-solid fa-gears"></i> Entrar al Editor Asistido</button>
+    </div>
+
+    <!-- SEGUNDO ENTORNO: INTERFAZ DEL EDITOR -->
+    <div id="app-interface">
+        
+        <nav class="navbar">
+            <div class="logo"><i class="fa-solid fa-graduation-cap"></i> Ingenia<span>CV</span> Pro</div>
+            
+            <div class="customizer-bar">
+                <div class="color-picker">
+                    <span>Estilo Visual:</span>
+                    <div class="color-dot active" style="background:#1e3a8a;" title="Azul Corporativo" onclick="changeColor('#1e3a8a', '#0284c7', this)"></div>
+                    <div class="color-dot" style="background:#0f766e;" title="Verde Técnico" onclick="changeColor('#0f766e', '#14b8a6', this)"></div>
+                    <div class="color-dot" style="background:#374151;" title="Gris Construcción" onclick="changeColor('#374151', '#6b7280', this)"></div>
+                    <div class="color-dot" style="background:#be185d;" title="Rosa Cuarzo Ejecutivo" onclick="changeColor('#be185d', '#f472b6', this)"></div>
+                    <div class="color-dot" style="background:#6d28d9;" title="Violeta Liderazgo" onclick="changeColor('#6d28d9', '#a78bfa', this)"></div>
+                </div>
+
+                <div class="template-picker">
+                    <span>Estructura:</span>
+                    <select id="template-select" onchange="changeTemplateLayout()">
+                        <option value="aura">Modelo 1: Aura Civil (2 Cols)</option>
+                        <option value="minimal">Modelo 2: Moderno Minimalista</option>
+                        <option value="engineering">Modelo 3: Ingeniería Estructurada</option>
+                    </select>
+                </div>
+            </div>
+        </nav>
+
+        <div class="wizard-steps">
+            <div class="step active" id="st-1">1. Datos Personales</div>
+            <div class="step" id="st-2">2. Perfil</div>
+            <div class="step" id="st-3">3. Experiencia y Obras</div>
+            <div class="step" id="st-4">4. Educación</div>
+            <div class="step" id="st-5">5. Competencias</div>
+        </div>
+
+        <div class="main-wrapper">
+            <div class="editor-container">
+                <!-- Fase 1 -->
+                <div class="phase-block active" id="ph-1">
+                    <div class="phase-title">Datos Personales</div>
+                    <div class="grid-2">
+                        <div class="form-group"><label>Nombre</label><input type="text" class="form-control" id="in-name" value="Alejandro" oninput="liveRender()"></div>
+                        <div class="form-group"><label>Apellidos</label><input type="text" class="form-control" id="in-lastname" value="Bermúdez Mendoza" oninput="liveRender()"></div>
+                    </div>
+                    <div class="form-group"><label>Título o Cargo Profesional</label><input type="text" class="form-control" id="in-title" value="Ingeniero Civil - Gerente de Obras por Contrata" oninput="liveRender()"></div>
+                    <div class="grid-2">
+                        <div class="form-group"><label>Email</label><input type="email" class="form-control" id="in-email" value="a.bermudez@ingenieria.com" oninput="liveRender()"></div>
+                        <div class="form-group"><label>Teléfono</label><input type="text" class="form-control" id="in-phone" value="+51 987 654 321" oninput="liveRender()"></div>
+                    </div>
+                    <div class="form-group"><label>Ubicación</label><input type="text" class="form-control" id="in-loc" value="Lima, Perú" oninput="liveRender()"></div>
+                </div>
+
+                <!-- Fase 2 -->
+                <div class="phase-block" id="ph-2">
+                    <div class="phase-title">Perfil Profesional</div>
+                    <div class="form-group">
+                        <label>Resumen de Trayectoria Ejecutiva</label>
+                        <textarea class="form-control" id="in-profile" oninput="liveRender()">Ingeniero Civil colegiado con más de 12 años de trayectoria sólida en la Gerencia de Obras contratadas. Especialista en control técnico, valorizaciones complejas y liquidaciones financieras de contratos públicos.</textarea>
+                    </div>
+                </div>
+
+                <!-- Fase 3 -->
+                <div class="phase-block" id="ph-3">
+                    <div class="phase-title">Experiencia y Obras</div>
+                    <div id="experience-area">
+                        <div class="dynamic-item">
+                            <div class="form-group"><label>Puesto o Cargo</label><input type="text" class="form-control exp-job" value="Ingeniero de Gerencia de Obras (Contratante)" oninput="liveRender()"></div>
+                            <div class="form-group"><label>Empresa / Consorcio</label><input type="text" class="form-control exp-comp" value="Consorcio Vial Metropolitano" oninput="liveRender()"></div>
+                            <div class="form-group"><label>Periodo de Tiempo</label><input type="text" class="form-control exp-date" value="2022 - Presente" oninput="liveRender()"></div>
+                            <div class="form-group"><label>Funciones y Metas del Proyecto</label><textarea class="form-control exp-desc" oninput="liveRender()">Administración del contrato de obra pública, control de cronogramas y firmas de valorizaciones mensuales de avance físico en campo.</textarea></div>
+                        </div>
+                    </div>
+                    <button class="btn-add" onclick="addExperienceField()"><i class="fa-solid fa-plus"></i> Añadir otra experiencia</button>
+                </div>
+
+                <!-- Fase 4 -->
+                <div class="phase-block" id="ph-4">
+                    <div class="phase-title">Educación</div>
+                    <div id="education-area">
+                        <div class="dynamic-item">
+                            <div class="form-group"><label>Grado u Obtención</label><input type="text" class="form-control edu-deg" value="Licenciatura en Ingeniería Civil" oninput="liveRender()"></div>
+                            <div class="form-group"><label>Universidad o Escuela</label><input type="text" class="form-control edu-inst" value="Universidad Nacional de Ingeniería" oninput="liveRender()"></div>
+                            <div class="form-group"><label>Año</label><input type="text" class="form-control edu-date" value="2012" oninput="liveRender()"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fase 5 -->
+                <div class="phase-block" id="ph-5">
+                    <div class="phase-title">Especialidades Técnicas</div>
+                    <div class="grid-2">
+                        <div class="form-group"><label>Habilidad 1</label><input type="text" class="form-control" id="sk-1" value="Gestión de Contratos de Obra" oninput="liveRender()"></div>
+                        <div class="form-group"><label>Nivel %</label><input type="number" class="form-control" id="sk-n1" value="95" oninput="liveRender()"></div>
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group"><label>Habilidad 2</label><input type="text" class="form-control" id="sk-2" value="Liquidaciones Económicas" oninput="liveRender()"></div>
+                        <div class="form-group"><label>Nivel %</label><input type="number" class="form-control" id="sk-n2" value="90" oninput="liveRender()"></div>
+                    </div>
+                </div>
+
+                <div class="nav-controls">
+                    <button class="btn btn-back" id="back-btn" onclick="moveStep(-1)" disabled><i class="fa-solid fa-arrow-left"></i> Atrás</button>
+                    <button class="btn btn-next" id="next-btn" onclick="moveStep(1)">Siguiente <i class="fa-solid fa-arrow-right"></i></button>
+                    <button class="btn btn-finish" id="finish-btn" onclick="openPaywall()"><i class="fa-solid fa-cloud-arrow-down"></i> Descargar Documento</button>
+                </div>
+            </div>
+
+            <div class="preview-container">
+                <div class="cv-sheet" id="cv-target"></div>
+            </div>
+        </div>
+
+        <div class="paywall" id="paywall-screen">
+            <div class="paywall-header">
+                <h2><i class="fa-solid fa-lock" style="color:#d4af37;"></i> Exportación Profesional</h2>
+                <button style="border:none; background:none; font-size:20px; cursor:pointer;" onclick="openPaywall()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="paywall-box">
+                <p style="font-weight:700; color:#92400e; font-size:14px;">Acceso Ilimitado Pro</p>
+                <p style="font-size:32px; font-weight:900; color:var(--primary);">$19.99/mes</p>
+            </div>
+            <button class="btn" style="background:var(--primary); color:white; width:100%; justify-content:center;" onclick="alert('Usa Ctrl + P para guardar tu PDF con el diseño y color elegidos.')">Activar Descarga Imbatible</button>
         </div>
     </div>
 
-    <!-- BLOQUE 2: ¿CÓMO FUNCIONA? -->
-    <div class="how-section">
-        <h2>¿Cómo funciona?</h2>
-        <div class="steps-grid">
-            <div class="step-item"><div class="step-num">1</div><p>Rellenar datos personales</p></div>
-            <div class="step-item"><div class="step-num">2</div><p>Seleccionar plantilla</p></div>
-            <div class="step-item"><div class="step-num">3</div><p>Descargar Currículum Vitae</p></div>
-        </div>
-    </div>
+    <script>
+        let step = 1;
+        const maxSteps = 5;
+        let currentLayout = 'aura';
 
-    <!-- BLOQUE 3: MODELOS DE ÉXITO PARA INGENIEROS -->
-    <div class="showcase-section">
-        <h2>Ejemplos de Perfiles de Ingeniería</h2>
-        <div class="scroll-container">
-            <div class="mockup-card">
-                <h3>Ing. Roberto Sánchez</h3>
-                <p style="font-size: 12px; color: #94a3b8;">MSc. Recursos Hídricos - UNI</p>
-                <p><strong>Obra:</strong> Represa Huancavelica</p>
-            </div>
-            <div class="mockup-card">
-                <h3>Ing. Lucía Méndez</h3>
-                <p style="font-size: 12px; color: #94a3b8;">MBA Gestión de Construcción</p>
-                <p><strong>Obra:</strong> Interconexión Vial</p>
-            </div>
-            <div class="mockup-card">
-                <h3>Ing. Carlos Quispe</h3>
-                <p style="font-size: 12px; color: #94a3b8;">Esp. Mecánica de Suelos</p>
-                <p><strong>Obra:</strong> Túneles de Alta Montaña</p>
-            </div>
-        </div>
-    </div>
+        function enterApp() {
+            document.getElementById('landing-page').classList.add('hidden');
+            document.getElementById('app-interface').classList.add('active');
+            liveRender();
+        }
 
+        function changeColor(prim, acc, element) {
+            document.documentElement.style.setProperty('--primary', prim);
+            document.documentElement.style.setProperty('--accent', acc);
+            document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+            element.classList.add('active');
+            liveRender();
+        }
+
+        function changeTemplateLayout() {
+            currentLayout = document.getElementById('template-select').value;
+            liveRender();
+        }
+
+        // Sistema de navegación por las pestañas del paso 2 en adelante
+        function moveStep(dir) {
+            if (step + dir < 1 || step + dir > maxSteps) return;
+            document.getElementById(`ph-${step}`).classList.remove('active');
+            document.getElementById(`st-${step}`).classList.remove('active');
+            step += dir;
+            document.getElementById(`ph-${step}`).classList.add('active');
+            document.getElementById(`st-${step}`).classList.add('active');
+            document.getElementById('back-btn').disabled = (step === 1);
+            
+            if (step === maxSteps) {
+                document.getElementById('next-btn').style.display = 'none';
+                document.getElementById('finish-btn').style.display = 'flex';
+            } else {
+                document.getElementById('next-btn').style.display = 'flex';
+                document.getElementById('finish-btn').style.display = 'none';
+            }
+        }
+
+        function addExperienceField() {
+            const container = document.getElementById('experience-area');
+            const html = `
+                <div class="dynamic-item">
+                    <button class="btn-remove" onclick="this.parentElement.remove(); liveRender();"><i class="fa-solid fa-trash"></i></button>
+                    <div class="form-group"><label>Puesto</label><input type="text" class="form-control exp-job" oninput="liveRender()"></div>
+                    <div class="form-group"><label>Empresa</label><input type="text" class="form-control exp-comp" oninput="liveRender()"></div>
+                    <div class="form-group"><label>Periodo</label><input type="text" class="form-control exp-date" oninput="liveRender()"></div>
+                    <div class="form-group"><label>Funciones</label><textarea class="form-control exp-desc" oninput="liveRender()"></textarea></div>
+                </div>`;
+            container.insertAdjacentHTML('beforeend', html);
+        }
+
+        function openPaywall() {
+            document.getElementById('paywall-screen').classList.toggle('active');
+        }
+
+        function liveRender() {
+            const name = document.getElementById('in-name').value + " " + document.getElementById('in-lastname').value;
+            const title = document.getElementById('in-title').value;
+            const email = document.getElementById('in-email').value;
+            const phone = document.getElementById('in-phone').value;
+            const loc = document.getElementById('in-loc').value;
+            const profile = document.getElementById('in-profile').value;
+
+            let expHTML = '';
+            const jobs = document.querySelectorAll('.exp-job');
+            const comps = document.querySelectorAll('.exp-comp');
+            const dates = document.querySelectorAll('.exp-date');
+            const descs = document.querySelectorAll('.exp-desc');
+            jobs.forEach((j, i) => {
+                if(j.value) {
+                    expHTML += `<div class="render-item">
+                        <div class="render-meta"><span>${comps[i].value}</span><span>${dates[i].value}</span></div>
+                        <div class="render-main">${j.value}</div>
+                        <div class="render-desc">${descs[i].value}</div>
+                    </div>`;
+                }
+            });
+
+            let eduHTML = '';
+            const degs = document.querySelectorAll('.edu-deg');
+            const insts = document.querySelectorAll('.edu-inst');
+            const edates = document.querySelectorAll('.edu-date');
+            degs.forEach((d, i) => {
+                if(d.value) {
+                    eduHTML += `<div class="render-item">
+                        <div class="render-meta"><span>${insts[i].value}</span><span>${edates[i].value}</span></div>
+                        <div class="render-main">${d.value}</div>
+                    </div>`;
+                }
+            });
+
+            let skillHTML = '';
+            for(let i=1; i<=2; i++) {
+                let sName = document.getElementById(`sk-${i}`).value;
+                let sVal = document.getElementById(`sk-n${i}`).value;
+                if(sName) {
+                    skillHTML += `<div class="skill-bar-container">
+                        <div class="skill-name">${sName}</div>
+                        <div class="skill-bar"><div class="skill-progress" style="width:${sVal}%"></div></div>
+                    </div>`;
+                }
+            }
+
+            const target = document.getElementById('cv-target');
+            target.className = 'cv-sheet';
+
+            if (currentLayout === 'aura') {
+                target.innerHTML = `
+                    <div class="model-aura">
+                        <div class="cv-sidebar">
+                            <div class="side-title">Contacto</div>
+                            <div style="font-size:11px;line-height:1.4;">${phone}<br>${email}<br>${loc}</div>
+                            <div class="side-title" style="margin-top:15px;">Especialidades</div>
+                            ${skillHTML}
+                        </div>
+                        <div class="cv-main">
+                            <div class="cv-name">${name}</div>
+                            <div class="cv-headline">${title}</div>
+                            <div class="cv-summary">${profile}</div>
+                            <div class="section-title" style="margin-top:20px;">Trayectoria</div>
+                            ${expHTML}
+                            <div class="section-title" style="margin-top:15px;">Formación</div>
+                            ${eduHTML}
+                        </div>
+                    </div>`;
+            } else if (currentLayout === 'minimal') {
+                target.innerHTML = `
+                    <div class="model-minimal">
+                        <div class="cv-header">
+                            <div>
+                                <div class="cv-name">${name}</div>
+                                <div class="cv-headline">${title}</div>
+                            </div>
+                            <div style="font-size:11px; text-align:right; color:var(--text-muted);">${phone} | ${email}<br>${loc}</div>
+                        </div>
+                        <div class="cv-summary" style="margin-bottom:20px;">${profile}</div>
+                        <div class="grid-split">
+                            <div>
+                                <div class="section-title">Experiencia Laboral</div>
+                                ${expHTML}
+                            </div>
+                            <div>
+                                <div class="section-title">Educación</div>
+                                ${eduHTML}
+                                <div class="section-title">Habilidades</div>
+                                ${skillHTML}
+                            </div>
+                        </div>
+                    </div>`;
+            } else if (currentLayout === 'engineering') {
+                target.innerHTML = `
+                    <div class="model-engineering">
+                        <div class="cv-header">
+                            <div class="cv-name">${name}</div>
+                            <div style="font-size:13px; opacity:0.9; margin-top:2px;">${title}</div>
+                            <div style="font-size:11px; margin-top:8px; opacity:0.8;">${phone} • ${email} • ${loc}</div>
+                        </div>
+                        <div class="section-title">Resumen Profesional</div>
+                        <div class="cv-summary" style="background:#fff; padding:10px; border-radius:4px; border:1px solid #e2e8f0;">${profile}</div>
+                        <div class="section-title">Historial de Obras y Cargos</div>
+                        ${expHTML}
+                        <div class="section-title">Estudios Técnicos</div>
+                        ${eduHTML}
+                        <div class="section-title">Especialidades Estructurales</div>
+                        <div style="background:#fff; padding:12px; border-radius:4px; border:1px solid #e2e8f0;">${skillHTML}</div>
+                    </div>`;
+            }
+        }
+    </script>
 </body>
 </html>
