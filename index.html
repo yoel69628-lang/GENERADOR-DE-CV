@@ -1,108 +1,51 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>IngeniaCV Pro - Vista Previa de Modelos</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
-    <style>
-        /* [Estilos anteriores se mantienen igual, añadimos los específicos de la galería] */
-        :root { --primary: #1e3a8a; --accent: #0284c7; --bg-main: #f8fafc; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-        
-        /* Galería de Bocetos Reales */
-        .gallery-section { padding: 40px 20px; background: #fff; text-align: center; }
-        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; max-width: 1200px; margin: 40px auto; }
-        
-        .cv-mockup { 
-            border: 1px solid #e2e8f0; padding: 20px; background: #fdfdfd; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-radius: 4px; text-align: left;
-        }
-        .mockup-header { border-bottom: 2px solid var(--primary); margin-bottom: 15px; }
-        .mockup-title { font-weight: 800; color: var(--primary); font-size: 18px; }
-        .mockup-item { margin-bottom: 10px; font-size: 12px; }
-        .mockup-meta { font-weight: 700; color: var(--accent); }
+<!-- ESTO VA DENTRO DE TU LANDING PAGE, JUSTO DESPUÉS DE LA INTRODUCCIÓN -->
 
-        /* Pasos para el usuario */
-        .steps-container { background: #f1f5f9; padding: 40px 20px; }
-        .steps-grid { display: flex; justify-content: center; gap: 40px; max-width: 1000px; margin: 0 auto; }
-        .step-card { flex: 1; padding: 20px; background: white; border-radius: 8px; }
-    </style>
-</head>
-<body>
-
-    <!-- PORTAL DE INICIO -->
-    <div id="landing-page">
-        <h1>IngeniaCV Pro</h1>
-        <p>Expertos en currículums para ingeniería.</p>
-
-        <!-- Sección de Ejemplos Aleatorios -->
-        <div class="gallery-section">
-            <h2>Modelos Generados con IngeniaCV</h2>
-            <div class="gallery-grid">
-                
-                <!-- Mockup 1: Gerencia de Obra -->
-                <div class="cv-mockup">
-                    <div class="mockup-header">
-                        <div class="mockup-title">Ing. Carlos Mendoza</div>
-                        <div style="font-size:12px;">Gerente de Proyectos Viales</div>
-                    </div>
-                    <div class="mockup-item">
-                        <div class="mockup-meta">Consorcio Norte - 2023-2025</div>
-                        <div>Ejecución de 40km de pavimentación. Liquidación exitosa del presupuesto 110%.</div>
-                    </div>
-                    <div class="mockup-item">
-                        <div class="mockup-meta">Educación</div>
-                        <div>Maestría en Gestión de la Construcción - UNI</div>
-                    </div>
-                </div>
-
-                <!-- Mockup 2: Especialista Estructural -->
-                <div class="cv-mockup">
-                    <div class="mockup-header">
-                        <div class="mockup-title">Ing. Elena Vargas</div>
-                        <div style="font-size:12px;">Especialista en Estructuras</div>
-                    </div>
-                    <div class="mockup-item">
-                        <div class="mockup-meta">Constructora Alfa - 2021-2024</div>
-                        <div>Diseño y supervisión estructural de edificios multifamiliares de +20 pisos.</div>
-                    </div>
-                    <div class="mockup-item">
-                        <div class="mockup-meta">Software</div>
-                        <div>SAP2000, ETABS, AutoCAD Civil 3D (Avanzado)</div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- Pasos a Seguir -->
-        <div class="steps-container">
-            <h2>Optimiza tu perfil con estos pasos</h2>
-            <div class="steps-grid">
-                <div class="step-card">
-                    <h3>1. Cuantifica tus Obras</h3>
-                    <p>No pongas solo "Hice una obra". Pon "Gerencié la ejecución de $2M en infraestructura".</p>
-                </div>
-                <div class="step-card">
-                    <h3>2. Software Técnico</h3>
-                    <p>Ordena tus habilidades por nivel de dominio. El ATS busca palabras clave como SAP2000 o Primavera P6.</p>
-                </div>
-                <div class="step-card">
-                    <h3>3. Alineación Corporativa</h3>
-                    <p>Elige un color que refleje tu especialidad: Azul para gestión, Verde para sostenibilidad, Gris para estructuras.</p>
-                </div>
-            </div>
-        </div>
-
-        <button onclick="enterApp()">¡Comenzar ahora!</button>
+<div class="models-showcase">
+    <div class="showcase-title">
+        <i class="fa-solid fa-file-invoice"></i> Modelos generados por ingenieros de éxito
     </div>
+    <div class="scroll-container">
+        <!-- Tarjeta 1: Especialista en Hidráulica -->
+        <div class="mockup-card">
+            <div class="mockup-header">Ing. Roberto Sánchez</div>
+            <div class="mockup-sub">MSc. en Recursos Hídricos - UNI</div>
+            <div class="mockup-content">
+                <p><strong>Obra:</strong> Represa Huancavelica</p>
+                <p><strong>Logro:</strong> Optimización de flujo al 115%</p>
+                <span class="tag">Estructuras</span>
+            </div>
+        </div>
+        <!-- Tarjeta 2: Gerente de Contratos -->
+        <div class="mockup-card">
+            <div class="mockup-header">Ing. Lucía Méndez</div>
+            <div class="mockup-sub">MBA Gestión de la Construcción</div>
+            <div class="mockup-content">
+                <p><strong>Obra:</strong> Interconexión Vial Lima</p>
+                <p><strong>Logro:</strong> Liquidación presupuestal exitosa</p>
+                <span class="tag">Gerencia</span>
+            </div>
+        </div>
+        <!-- Tarjeta 3: Especialista en Geotecnia -->
+        <div class="mockup-card">
+            <div class="mockup-header">Ing. Carlos Quispe</div>
+            <div class="mockup-sub">Esp. en Mecánica de Suelos - PUCP</div>
+            <div class="mockup-content">
+                <p><strong>Obra:</strong> Túneles de Alta Montaña</p>
+                <p><strong>Logro:</strong> Cero incidentes técnicos</p>
+                <span class="tag">Geotecnia</span>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <!-- [El resto de tu código de interfaz se mantiene igual] -->
-    <script>
-        function enterApp() {
-            document.getElementById('landing-page').style.display = 'none';
-            document.getElementById('app-interface').style.display = 'block';
-        }
-    </script>
-</body>
-</html>
+<!-- AÑADE ESTOS ESTILOS A TU <style> -->
+<style>
+    .models-showcase { margin-top: 40px; padding: 20px; width: 100%; max-width: 900px; }
+    .showcase-title { text-align: center; font-size: 18px; font-weight: 700; color: #38bdf8; margin-bottom: 20px; }
+    .scroll-container { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 15px; }
+    .mockup-card { min-width: 260px; background: #ffffff; color: #1e293b; padding: 20px; border-radius: 8px; border-left: 5px solid #0284c7; }
+    .mockup-header { font-weight: 800; font-size: 16px; margin-bottom: 4px; }
+    .mockup-sub { font-size: 12px; color: #64748b; margin-bottom: 12px; font-style: italic; }
+    .mockup-content p { font-size: 13px; margin-bottom: 5px; }
+    .tag { display: inline-block; background: #e0f2fe; color: #0369a1; padding: 2px 8px; font-size: 10px; font-weight: 700; border-radius: 4px; margin-top: 10px; }
+</style>
