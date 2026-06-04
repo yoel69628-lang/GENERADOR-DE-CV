@@ -1,94 +1,49 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Constructor CV Pro - Wizard</title>
-    <!-- Librería para generar el PDF desde el navegador -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <style>
-        body { display: flex; height: 100vh; margin: 0; font-family: 'Segoe UI', sans-serif; background: #f8fafc; }
-        #wizard { width: 40%; padding: 30px; background: white; border-right: 1px solid #e2e8f0; overflow-y: auto; }
-        #preview { width: 60%; padding: 40px; display: flex; justify-content: center; overflow-y: auto; }
-        .step { display: none; }
-        .step.active { display: block; }
-        .cv-sheet { width: 210mm; min-height: 297mm; background: white; padding: 20mm; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
-        
-        /* Muro de Pago Oculto */
-        #paywall { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); color: white; justify-content: center; align-items: center; z-index: 1000; }
-        .paywall-content { background: #1e3a8a; padding: 40px; border-radius: 10px; text-align: center; }
-        
-        button { padding: 10px 20px; cursor: pointer; border: none; border-radius: 5px; }
-        .btn-next { background: #0284c7; color: white; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generador de CV</title>
+<style>
+body{font-family:Arial,sans-serif;margin:0;padding:20px;background:#f5f5f5}
+.container{display:flex;gap:20px;flex-wrap:wrap}
+.panel,.preview{background:white;padding:20px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.panel{flex:1;min-width:300px}
+.preview{flex:1;min-width:300px}
+input,textarea{width:100%;padding:10px;margin:5px 0 15px}
+button{padding:10px 15px;cursor:pointer}
+h1,h2,h3{margin:5px 0}
+</style>
 </head>
 <body>
-
-<div id="wizard">
-    <div id="step-1" class="step active">
-        <h2>Datos Personales</h2>
-        <input type="text" id="name" placeholder="Nombre Completo" oninput="render()">
-    </div>
-    
-    <div id="step-2" class="step">
-        <h2>Experiencia</h2>
-        <div id="exp-container"></div>
-        <button onclick="addExp()">+ Agregar Puesto</button>
-    </div>
-
-    <div style="margin-top: 30px;">
-        <button onclick="changeStep(-1)">Atrás</button>
-        <button class="btn-next" onclick="changeStep(1)">Siguiente</button>
-        <button onclick="showPaywall()">Descargar CV</button>
-    </div>
+<h1>Generador de CV</h1>
+<div class="container">
+<div class="panel">
+<input id="nombre" placeholder="Nombre completo">
+<input id="cargo" placeholder="Profesión">
+<input id="email" placeholder="Email">
+<textarea id="resumen" placeholder="Resumen profesional"></textarea>
+<button onclick="actualizar()">Actualizar CV</button>
+<button onclick="window.print()">Descargar PDF</button>
 </div>
 
-<div id="preview">
-    <div id="cv-render" class="cv-sheet">
-        <h1 id="r-name"></h1>
-        <div id="r-exp"></div>
-    </div>
+<div class="preview">
+<h1 id="vNombre">Tu Nombre</h1>
+<h3 id="vCargo">Profesión</h3>
+<p id="vEmail">email@ejemplo.com</p>
+<hr>
+<h2>Resumen</h2>
+<p id="vResumen">Describe tu perfil profesional.</p>
 </div>
-
-<!-- Muro de Pago -->
-<div id="paywall">
-    <div class="paywall-content">
-        <h2>Desbloquea tu descarga</h2>
-        <p>Suscríbete para obtener tu archivo PDF profesional.</p>
-        <button onclick="downloadPDF()">Descargar Ahora</button>
-        <button onclick="hidePaywall()">Cerrar</button>
-    </div>
 </div>
 
 <script>
-    let currentStep = 1;
-
-    function changeStep(dir) {
-        document.getElementById(`step-${currentStep}`).classList.remove('active');
-        currentStep = Math.max(1, Math.min(2, currentStep + dir));
-        document.getElementById(`step-${currentStep}`).classList.add('active');
-    }
-
-    function addExp() {
-        const input = document.createElement('input');
-        input.placeholder = "Puesto de trabajo";
-        input.oninput = render;
-        input.className = "exp-input";
-        document.getElementById('exp-container').appendChild(input);
-    }
-
-    function render() {
-        document.getElementById('r-name').innerText = document.getElementById('name').value;
-        const exps = document.querySelectorAll('.exp-input');
-        document.getElementById('r-exp').innerHTML = Array.from(exps).map(e => `<p>• ${e.value}</p>`).join('');
-    }
-
-    function showPaywall() { document.getElementById('paywall').style.display = 'flex'; }
-    function hidePaywall() { document.getElementById('paywall').style.display = 'none'; }
-
-    function downloadPDF() {
-        html2pdf().from(document.getElementById('cv-render')).save('Mi_CV_Profesional.pdf');
-        hidePaywall();
-    }
+function actualizar(){
+document.getElementById('vNombre').innerText=document.getElementById('nombre').value||'Tu Nombre';
+document.getElementById('vCargo').innerText=document.getElementById('cargo').value||'Profesión';
+document.getElementById('vEmail').innerText=document.getElementById('email').value||'email@ejemplo.com';
+document.getElementById('vResumen').innerText=document.getElementById('resumen').value||'Describe tu perfil profesional.';
+}
 </script>
 </body>
 </html>
